@@ -62,4 +62,4 @@ export const services: Service[] = [
   },
 ];
 
-export const serviceHref = (s: Pick<Service, 'slug'>) => `/hizmetler/${s.slug}`;
+export const serviceHref = (s: Pick<Service, 'slug'>) => `/hizmetler/${s.slug}/`;

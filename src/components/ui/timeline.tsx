@@ -93,6 +93,8 @@ export type TimelineProps = {
 
 const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
 const DESKTOP_QUERY = "(min-width: 900px)";
+// Below this height (landscape phones) the section is a plain horizontal scroller, not pinned
+const PIN_QUERY = "(min-height: 481px)";
 
 function subscribeToReducedMotion(callback: () => void) {
   if (typeof window === "undefined") return () => {};
@@ -125,6 +127,8 @@ const layoutVars = [
   "[--tl-item-px:5vw] [--tl-k:1] [--tl-dot:10px] [--tl-dock:84px]",
   "[--tl-track-h:min(calc(100svh_-_var(--header-h,84px)_-_var(--tl-dock)_-_20px),150vw,720px)]",
   "min-[761px]:[--tl-dock:0px]",
+  // unpinned scroller on landscape phones: a smaller photo and title column
+  "[@media(max-height:480px)]:[--tl-img-w:46vw] [@media(max-height:480px)]:[--tl-intro-w:46vw]",
   "min-[900px]:[--tl-pad:5vw] min-[900px]:[--tl-gap:4vw] min-[900px]:[--tl-img-w:27vw] min-[900px]:[--tl-intro-w:21vw]",
   "min-[900px]:[--tl-half:20vw] min-[1200px]:[--tl-half:15.5vw] min-[900px]:[--tl-outro-w:34vw] min-[900px]:[--tl-item-px:2.2vw] min-[900px]:[--tl-k:1.35]",
   "min-[900px]:[--tl-dot:clamp(10px,0.75vw,14px)]",
@@ -198,9 +202,20 @@ export default function Timeline({
       // scroll offset (from the trigger start) at which each entry is fully in
       let settleAt = new Map<Element, number>();
 
+      const measureClip = () =>
+        entries.forEach((el) => {
+          const body = el.querySelector<HTMLElement>("[data-tl-body]");
+          body?.toggleAttribute("data-clipped", body.scrollHeight > body.clientHeight + 2);
+        });
+
       const create = () => {
         build?.revert();
+        build = null;
+        trigger = null;
         settleAt = new Map();
+        // measured on the plain text, before any split
+        measureClip();
+        if (!window.matchMedia(PIN_QUERY).matches) return;
         build = gsap.context(() => {
           const vw = frame.clientWidth;
           const vh = window.innerHeight;
@@ -278,15 +293,13 @@ export default function Timeline({
             const dot = el.querySelector("[data-tl-dot]");
             const titleLines = splitLines(el.querySelector("[data-tl-title]"));
             const subLines = splitLines(el.querySelector("[data-tl-sub]"));
-            const bodyEl = el.querySelector<HTMLElement>("[data-tl-body]");
-            const bodyLines = splitLines(bodyEl);
+            const bodyLines = splitLines(el.querySelector("[data-tl-body]"));
             const link = el.querySelector("[data-tl-link]");
-            if (bodyEl) bodyEl.toggleAttribute("data-clipped", bodyEl.scrollHeight > bodyEl.clientHeight + 2);
 
             gsap.set(rail, { scaleY: 0 });
             gsap.set(dot, { scale: 0 });
             gsap.set([...titleLines, ...subLines, ...bodyLines], { yPercent: 105 });
-            gsap.set(link, { yPercent: 110 });
+            gsap.set(link, { yPercent: 150 });
 
             const start = startOf(el);
             tl.to(rail, { scaleY: 1, duration: reveal * 0.4 }, start)
@@ -309,6 +322,8 @@ export default function Timeline({
       // the page to the point where that entry has slid in and finished revealing.
       const onFocusIn = (event: FocusEvent) => {
         const target = event.target as Element | null;
+        // Chrome focuses links on mousedown; scrolling then would swallow the click
+        if (!target || !target.matches(":focus-visible")) return;
         const holder = target?.closest("[data-tl-item], [data-tl-outro]");
         const offset = holder ? settleAt.get(holder) : undefined;
         if (!trigger || offset === undefined) return;
@@ -318,16 +333,19 @@ export default function Timeline({
 
       let lastW = window.innerWidth;
       let lastH = window.innerHeight;
+      let lastPinned = window.matchMedia(PIN_QUERY).matches;
       let timer = 0;
       const onResize = () => {
         window.clearTimeout(timer);
         timer = window.setTimeout(() => {
           const w = window.innerWidth;
           const h = window.innerHeight;
+          const pinned = window.matchMedia(PIN_QUERY).matches;
           // ignore the mobile URL bar showing and hiding
-          if (w === lastW && Math.abs(h - lastH) < 120) return;
+          if (w === lastW && Math.abs(h - lastH) < 120 && pinned === lastPinned) return;
           lastW = w;
           lastH = h;
+          lastPinned = pinned;
           create();
           ScrollTrigger.refresh();
         }, 180);
@@ -345,10 +363,17 @@ export default function Timeline({
       }
       section.addEventListener("focusin", onFocusIn);
       window.addEventListener("resize", onResize);
+      // focus that arrived before hydration (Tab from the hero) never reached the handler
+      const active = document.activeElement;
+      let raf = 0;
+      if (active && section.contains(active)) {
+        raf = requestAnimationFrame(() => onFocusIn({ target: active } as unknown as FocusEvent));
+      }
 
       return () => {
         alive = false;
         window.clearTimeout(timer);
+        cancelAnimationFrame(raf);
         section.removeEventListener("focusin", onFocusIn);
         window.removeEventListener("resize", onResize);
         build?.revert();
@@ -365,16 +390,16 @@ export default function Timeline({
       ref={sectionRef}
       id={id}
       aria-labelledby={headingId}
-      className={cn(layoutVars, "relative w-full [.js_&]:h-[calc(100svh+(var(--tl-track-w)-100vw)*var(--tl-k))]", className)}
+      className={cn(layoutVars, "relative w-full [@media(min-height:481px)]:[.js_&]:h-[calc(100svh+(var(--tl-track-w)-100vw)*var(--tl-k))]", className)}
       style={sectionStyle}
     >
       <div
         ref={frameRef}
-        className="flex flex-col justify-center overflow-x-auto pt-[var(--header-h,84px)] pb-[var(--tl-dock)] [.js_&]:sticky [.js_&]:top-0 [.js_&]:h-svh [.js_&]:overflow-hidden"
+        className="flex flex-col justify-center overflow-x-auto pt-[var(--header-h,84px)] pb-[var(--tl-dock)] [@media(min-height:481px)]:[.js_&]:sticky [@media(min-height:481px)]:[.js_&]:top-0 [@media(min-height:481px)]:[.js_&]:h-svh [@media(min-height:481px)]:[.js_&]:overflow-clip"
       >
         <div
           ref={trackRef}
-          className="relative flex h-[var(--tl-track-h)] w-max shrink-0 items-stretch gap-[var(--tl-gap)] px-[var(--tl-pad)]"
+          className="relative flex h-[var(--tl-track-h)] w-max shrink-0 [@media(max-height:480px)]:h-[400px] items-stretch gap-[var(--tl-gap)] px-[var(--tl-pad)]"
         >
           <figure className="relative h-full w-[var(--tl-img-w)] shrink-0 overflow-hidden rounded-card-sm min-[900px]:rounded-card">
             <img
@@ -478,7 +503,7 @@ export default function Timeline({
                       {item.content}
                     </p>
                     {item.href ? (
-                      <span className="block shrink-0 overflow-hidden pt-[2px]">
+                      <span className="-mx-2 -mt-[6px] -mb-2 block shrink-0 overflow-hidden p-2">
                         <a
                           data-tl-link
                           href={item.href}

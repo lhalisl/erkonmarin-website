@@ -56,7 +56,7 @@
 /* Layer order shared with Tailwind (src/styles/tailwind.css). The element
    reset sits in `base` so utility classes on React islands can override it;
    everything below the reset stays unlayered and keeps priority. */
-@layer theme, base, components, utilities;
+@layer properties, theme, base, components, utilities;
 
 @layer base {
   *,
@@ -128,6 +128,11 @@
     list-style: none;
     padding: 0;
   }
+
+  /* layered so a component's own radius (e.g. a pill) still shapes its ring */
+  :focus-visible {
+    border-radius: 2px;
+  }
 }
 
 ::selection {
@@ -138,7 +143,6 @@
 :focus-visible {
   outline: 2px solid var(--c-signal);
   outline-offset: 3px;
-  border-radius: 2px;
 }
 
 .container {

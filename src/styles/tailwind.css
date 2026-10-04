@@ -2,7 +2,7 @@
    Preflight is left out on purpose: global.css owns the reset, and utilities
    are only generated from the folders listed with @source, so the Astro
    components keep their own scoped styles untouched. */
-@layer theme, base, components, utilities;
+@layer properties, theme, base, components, utilities;
 @import 'tailwindcss/theme.css' layer(theme);
 @import 'tailwindcss/utilities.css' layer(utilities) source(none);
 
