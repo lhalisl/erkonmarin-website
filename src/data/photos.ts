@@ -4,6 +4,8 @@ import sevk from '../assets/sahadan/sevk-ve-itici-kontrol-paneli.jpg';
 import koprustu from '../assets/sahadan/koprustu-konsollari.jpg';
 import gmdss from '../assets/sahadan/gmdss-haberlesme-istasyonu.jpg';
 import gemi from '../assets/sahadan/seyirde-gemi.jpg';
+import kontrolOdasi from '../assets/sahadan/makine-kontrol-odasi-konsolu.jpg';
+import jenerator from '../assets/sahadan/jenerator-dairesi.jpg';
 
 // Real photos supplied by Erkon Marin. Originals live in src/assets/sahadan/
 // (metadata stripped); astro:assets serves them as responsive WebP.
@@ -35,6 +37,16 @@ export const photos = {
     alt: 'Köprüüstünde GMDSS haberleşme istasyonu: telsiz cihazları, mesaj terminalleri ve ahize',
     caption: 'GMDSS haberleşme istasyonu',
   },
+  kontrolOdasi: {
+    src: kontrolOdasi,
+    alt: 'Makine kontrol odası konsolu: yanan sinyal butonları, alarm ekranları ve acil durum telefonu',
+    caption: 'Makine kontrol odası konsolu',
+  },
+  jenerator: {
+    src: jenerator,
+    alt: 'Jeneratör dairesinde iki dizel jeneratör ve yerel kontrol panosu',
+    caption: 'Jeneratör dairesi',
+  },
   gemi: {
     src: gemi,
     alt: 'Denizde seyir halindeki kırmızı-beyaz arama kurtarma gemisi',
@@ -44,5 +56,6 @@ export const photos = {
 /** "Sahadan" gallery, as justified rows: photos in a row share one height. */
 export const galleryRows: Photo[][] = [
   [photos.msb, photos.sevk],
+  [photos.kontrolOdasi, photos.jenerator],
   [photos.koprustu, photos.gmdss],
 ];
