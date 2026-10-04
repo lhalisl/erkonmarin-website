@@ -53,74 +53,81 @@
   color-scheme: dark;
 }
 
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
+/* Layer order shared with Tailwind (src/styles/tailwind.css). The element
+   reset sits in `base` so utility classes on React islands can override it;
+   everything below the reset stays unlayered and keeps priority. */
+@layer theme, base, components, utilities;
 
-html {
-  -webkit-text-size-adjust: 100%;
-  text-size-adjust: 100%;
-  /* sections land flush with the top, so the nav takes the destination's tone; each section's own padding clears the bar */
-  scroll-padding-top: 0;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  html {
-    scroll-behavior: smooth;
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
   }
-}
 
-body {
-  margin: 0;
-  background: var(--c-abyss);
-  color: #eef2fb;
-  font-family: var(--f-sans);
-  font-size: 17px;
-  line-height: 1.6;
-  font-stretch: 100%;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
-  overflow-x: clip;
-}
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    /* sections land flush with the top, so the nav takes the destination's tone; each section's own padding clears the bar */
+    scroll-padding-top: 0;
+  }
 
-img,
-svg,
-canvas,
-video {
-  display: block;
-  max-width: 100%;
-}
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
 
-a {
-  color: inherit;
-}
+  body {
+    margin: 0;
+    background: var(--c-abyss);
+    color: #eef2fb;
+    font-family: var(--f-sans);
+    font-size: 17px;
+    line-height: 1.6;
+    font-stretch: 100%;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    overflow-x: clip;
+  }
 
-button,
-input,
-select,
-textarea {
-  font: inherit;
-  color: inherit;
-}
+  img,
+  svg,
+  canvas,
+  video {
+    display: block;
+    max-width: 100%;
+  }
 
-h1,
-h2,
-h3,
-h4,
-p,
-ul,
-ol,
-figure {
-  margin: 0;
-}
+  a {
+    color: inherit;
+  }
 
-ul[role='list'],
-ol[role='list'] {
-  list-style: none;
-  padding: 0;
+  button,
+  input,
+  select,
+  textarea {
+    font: inherit;
+    color: inherit;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  p,
+  ul,
+  ol,
+  figure {
+    margin: 0;
+  }
+
+  ul[role='list'],
+  ol[role='list'] {
+    list-style: none;
+    padding: 0;
+  }
 }
 
 ::selection {

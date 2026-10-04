@@ -1,0 +1,50 @@
+---
+// "Neler Yapıyoruz?" — the four service areas on the horizontal scroll
+// timeline (React island, src/components/ui/timeline.tsx).
+import { getImage } from 'astro:assets';
+import Timeline from './ui/timeline';
+import { services, serviceHref } from '../data/services';
+import { photos } from '../data/photos';
+import '../styles/tailwind.css';
+
+const photo = photos.kontrolOdasi;
+// Portrait crop to match the card (about 0.6 : 1 at every breakpoint)
+const poster = await getImage({
+  src: photo.src,
+  width: 980,
+  height: 1635,
+  widths: [420, 640, 980],
+  fit: 'cover',
+  format: 'webp',
+});
+
+const items = services.map((s) => ({
+  id: s.slug,
+  title: s.title,
+  subtitle: s.subtitle,
+  content: s.paragraphs[0],
+  href: serviceHref(s),
+}));
+---
+
+<Timeline
+  client:visible={{ rootMargin: '1200px' }}
+  id="hizmetler"
+  items={items}
+  title="Neler"
+  titleEmphasis="yapıyoruz?"
+  periodLabel="Ana makineden köprüüstüne, 35 yılı aşkın saha tecrübesiyle dört uzmanlık alanı."
+  textColor="#eef2fb"
+  mutedTextColor="var(--c-mist)"
+  activeColor="var(--c-signal)"
+  backgroundColor="var(--c-abyss)"
+  imageUrl={poster.src}
+  imageSrcSet={poster.srcSet.attribute}
+  imageSizes="(min-width: 900px) 27vw, 78vw"
+  imageWidth={Number(poster.attributes.width)}
+  imageHeight={Number(poster.attributes.height)}
+  imageAlt={photo.alt}
+  linkLabel="Devamını oku"
+  cta={{ label: 'Servis talebi', href: '/#talep', note: 'Gemi adı, liman ve belirtiyi iletin; ekibi biz planlayalım.' }}
+  duration={1.2}
+/>

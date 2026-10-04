@@ -1,6 +1,7 @@
 ---
 import Icon from './Icon.astro';
 import { site, nav, whatsappLink } from '../data/site';
+import { services, serviceHref } from '../data/services';
 const year = new Date().getFullYear();
 const socials = Object.entries(site.social).filter(([, url]) => url);
 ---
@@ -47,6 +48,20 @@ const socials = Object.entries(site.social).filter(([, url]) => url);
           ))
         }
       </div>
+      <nav aria-label="Hizmetler">
+        <p class="footer__h">Hizmetler</p>
+        <ul role="list">
+          {
+            services.map((s) => (
+              <li>
+                <a class="footer__link" href={serviceHref(s)}>
+                  {s.title}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
       <nav aria-label="Alt menü">
         <p class="footer__h">Sayfa</p>
         <ul role="list">
@@ -66,7 +81,7 @@ const socials = Object.entries(site.social).filter(([, url]) => url);
     <div class="footer__base">
       <span>© {year} Erkon Marin</span>
       <span>Gemi elektrik ve otomasyon servisi</span>
-      <a href="#giris">Başa dön ↑</a>
+      <a href="#top">Başa dön ↑</a>
     </div>
   </div>
 
@@ -121,7 +136,7 @@ const socials = Object.entries(site.social).filter(([, url]) => url);
 
   .footer__grid {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: 32px;
     padding-block: 48px 64px;
   }

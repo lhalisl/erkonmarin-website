@@ -1,0 +1,24 @@
+/* Tailwind v4 for the React islands (shadcn layout: src/components/ui).
+   Preflight is left out on purpose: global.css owns the reset, and utilities
+   are only generated from the folders listed with @source, so the Astro
+   components keep their own scoped styles untouched. */
+@layer theme, base, components, utilities;
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities) source(none);
+
+@source '../components/ui';
+
+/* Site tokens exposed as utilities: font-display, text-signal, rounded-card … */
+@theme inline {
+  --font-sans: var(--f-sans);
+  --font-display: var(--f-display);
+  --font-serif: var(--f-serif);
+  --color-abyss: var(--c-abyss);
+  --color-deep: var(--c-deep);
+  --color-night: var(--c-night);
+  --color-signal: var(--c-signal);
+  --color-signal-hi: var(--c-signal-hi);
+  --color-mist: var(--c-mist);
+  --radius-card: var(--r-lg);
+  --radius-card-sm: var(--r-md);
+}
