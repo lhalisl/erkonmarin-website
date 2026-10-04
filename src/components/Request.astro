@@ -1,6 +1,8 @@
 ---
+import { Image } from 'astro:assets';
 import Icon from './Icon.astro';
 import { site, whatsappLink } from '../data/site';
+import { photos } from '../data/photos';
 
 const kinds = [
   { value: 'Acil arıza · gemi bekliyor', label: 'Acil arıza', hint: 'Gemi bekliyor', urgent: true },
@@ -45,6 +47,19 @@ const systems = ['MSB / ana pano', 'Kontrol odası', 'Otomasyon panosu', 'Diğer
           </dd>
         </div>
       </dl>
+
+      <figure class="request__photo" data-reveal style="--d:280">
+        <Image
+          src={photos.gemi.src}
+          alt={photos.gemi.alt}
+          widths={[480, 800, 1080]}
+          sizes="(max-width: 1080px) 0px, 40vw"
+          format="webp"
+          quality={80}
+          loading="lazy"
+          decoding="async"
+        />
+      </figure>
     </div>
 
     <form class="rq" data-request novalidate data-reveal style="--d:120">
@@ -257,6 +272,19 @@ const systems = ['MSB / ana pano', 'Kontrol odası', 'Otomasyon panosu', 'Diğer
     transform: translateX(4px);
   }
 
+  .request__photo {
+    margin: 48px 0 0;
+    overflow: hidden;
+    border-radius: var(--r-lg);
+    aspect-ratio: 3 / 2;
+    background: var(--c-night);
+  }
+  .request__photo :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
   /* Form */
   .rq {
     padding: clamp(24px, 3.6vw, 52px);
@@ -438,6 +466,10 @@ const systems = ['MSB / ana pano', 'Kontrol odası', 'Otomasyon panosu', 'Diğer
   @media (max-width: 1080px) {
     .request__grid {
       grid-template-columns: 1fr;
+    }
+    /* keep the form close to the heading on narrow screens */
+    .request__photo {
+      display: none;
     }
   }
   @media (max-width: 640px) {

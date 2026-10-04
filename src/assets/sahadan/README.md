@@ -1,9 +1,11 @@
 # Sahadan — gerçek proje fotoğrafları
 
-Bu klasöre atılan fotoğraflar (`.jpg`, `.jpeg`, `.png`, `.webp`) ana sayfadaki
-"Sahadan" bölümünde otomatik olarak gösterilir. Boyutlandırma ve WebP dönüşümü
-derleme sırasında yapılır; orijinal, yüksek çözünürlüklü dosyaları yükleyin.
+Sitede kullanılan gerçek fotoğrafların orijinalleri (metadata temizlenmiş).
+Hangi fotoğrafın nerede, hangi açıklama ve alt metinle göründüğü
+`src/data/photos.ts` dosyasında tanımlıdır. Yeni bir fotoğraf eklemek için:
 
-- Sıralama dosya adına göredir: ilk fotoğraf büyük gösterilir (`01-...jpg`, `02-...jpg` gibi adlandırın).
-- Ana sayfada en fazla 7 fotoğraf görünür; geri kalanı Galeri sayfası için saklanır.
-- Klasör boşken bölüm sitede hiç görünmez.
+1. Dosyayı bu klasöre koyun (yüksek çözünürlüklü `.jpg` / `.png` / `.webp`).
+2. `src/data/photos.ts` içinde içe aktarın, alt metnini ve açıklamasını yazın.
+3. `galleryRows` içinde bir satıra ekleyin (aynı satırdaki fotoğraflar aynı yükseklikte gösterilir).
+
+Boyutlandırma ve WebP dönüşümü derleme sırasında yapılır.

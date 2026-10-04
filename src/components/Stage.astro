@@ -1,6 +1,11 @@
 ---
+import { getImage } from 'astro:assets';
 import Icon from './Icon.astro';
 import { site } from '../data/site';
+import { photos } from '../data/photos';
+
+// Shown instead of the 3D render when the scene can't run (no WebGL, software GPU, Data Saver)
+const realPoster = await getImage({ src: photos.msb.src, width: 2000, format: 'webp', quality: 78 });
 
 const chapters = [
   {
@@ -30,7 +35,7 @@ const chapters = [
 ];
 ---
 
-<section class="stage" data-stage aria-labelledby="hero-title">
+<section class="stage" data-stage aria-labelledby="hero-title" style={`--real-poster:url(${realPoster.src})`}>
   <div class="stage__viewport" data-stage-viewport>
     <div class="stage__poster" aria-hidden="true"></div>
     <canvas class="stage__canvas" data-stage-canvas aria-hidden="true"></canvas>
@@ -403,9 +408,18 @@ const chapters = [
     box-shadow: 0 0 10px var(--c-signal);
   }
 
-  /* No WebGL / data saver: poster only */
+  /* No WebGL / data saver: the real switchboard photo instead of the render */
   .stage:global(.is-static) .stage__canvas {
     display: none;
+  }
+  /* the bus readout belongs to the simulated scene, not to a photo */
+  .stage:global(.is-static) .stage__bottom {
+    display: none;
+  }
+  .stage:global(.is-static) .stage__poster {
+    background:
+      var(--real-poster) 62% center / cover no-repeat,
+      #070d22;
   }
 
   @media (max-width: 959px) {
