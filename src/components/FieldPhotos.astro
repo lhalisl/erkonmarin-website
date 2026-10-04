@@ -9,25 +9,25 @@ const ratio = (w: number, h: number) => +(w / h).toFixed(4);
 
 {
   galleryRows.length > 0 && (
-    <section class="field" id="sahadan" aria-labelledby="field-title">
+    <section class="sahadan" id="sahadan" aria-labelledby="field-title">
       <div class="container">
-        <header class="field__head">
+        <header class="sahadan__head">
           <h2 class="h2" id="field-title" data-reveal>
             Sahadan, <em>gerçek</em> işler.
           </h2>
-          <p class="field__lead" data-reveal style="--d:120">
+          <p class="sahadan__lead" data-reveal style="--d:120">
             Ana panodan köprüüstüne, gemide çalıştığımız sistemlerden kareler.
           </p>
         </header>
 
-        <div class="field__rows">
+        <div class="sahadan__rows">
           {galleryRows.map((row, r) => (
-            <div class="field__row">
+            <div class="sahadan__row">
               {row.map((p, i) => {
                 const ar = ratio(p.src.width, p.src.height);
                 const share = ar / row.reduce((sum, q) => sum + ratio(q.src.width, q.src.height), 0);
                 return (
-                  <figure class="field__item" style={`--ar:${ar};--d:${(r * 2 + i) * 80}`} data-reveal>
+                  <figure class="sahadan__item" style={`--ar:${ar};--d:${(r * 2 + i) * 80}`} data-reveal>
                     <Image
                       src={p.src}
                       alt={p.alt}
@@ -51,35 +51,35 @@ const ratio = (w: number, h: number) => +(w / h).toFixed(4);
 }
 
 <style>
-  .field {
+  .sahadan {
     padding-block: clamp(96px, 12vw, 170px);
     background: var(--c-deep);
   }
-  .field__head {
+  .sahadan__head {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 0.8fr);
     gap: 40px;
     align-items: end;
   }
-  .field__head .h2 em {
+  .sahadan__head .h2 em {
     color: var(--c-signal);
   }
-  .field__lead {
+  .sahadan__lead {
     max-width: 420px;
     color: #c9d3ea;
     font-size: clamp(17px, 1.35vw, 20px);
   }
 
-  .field__rows {
+  .sahadan__rows {
     display: grid;
     gap: 14px;
     margin-top: clamp(48px, 6vw, 80px);
   }
-  .field__row {
+  .sahadan__row {
     display: flex;
     gap: 14px;
   }
-  .field__item {
+  .sahadan__item {
     position: relative;
     flex: var(--ar) 1 0;
     min-width: 0;
@@ -89,16 +89,16 @@ const ratio = (w: number, h: number) => +(w / h).toFixed(4);
     border-radius: var(--r-lg);
     background: var(--c-night);
   }
-  .field__item :global(img) {
+  .sahadan__item :global(img) {
     width: 100%;
     height: 100%;
     object-fit: cover;
     transition: transform 1.2s var(--ease-out);
   }
-  .field__item:hover :global(img) {
+  .sahadan__item:hover :global(img) {
     transform: scale(1.03);
   }
-  .field__item figcaption {
+  .sahadan__item figcaption {
     position: absolute;
     left: 16px;
     bottom: 16px;
@@ -115,22 +115,22 @@ const ratio = (w: number, h: number) => +(w / h).toFixed(4);
   }
 
   @media (max-width: 760px) {
-    .field__head {
+    .sahadan__head {
       grid-template-columns: 1fr;
       gap: 20px;
     }
-    .field__rows,
-    .field__row {
+    .sahadan__rows,
+    .sahadan__row {
       gap: 10px;
     }
-    .field__row {
+    .sahadan__row {
       flex-direction: column;
     }
-    .field__item {
+    .sahadan__item {
       flex: none;
       width: 100%;
     }
-    .field__item figcaption {
+    .sahadan__item figcaption {
       left: 12px;
       bottom: 12px;
       font-size: 13.5px;
