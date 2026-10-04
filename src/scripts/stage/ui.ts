@@ -28,7 +28,6 @@ export function initStage() {
   const annotations = root.querySelector<HTMLElement>('[data-stage-annotations]')!;
   const hud = root.querySelector<HTMLElement>('[data-stage-hud]');
   const steps = Array.from(root.querySelectorAll<HTMLElement>('[data-step]'));
-  const rail = Array.from(root.querySelectorAll<HTMLAnchorElement>('[data-rail-link]'));
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   // ?force3d runs the scene even on software rendering (screenshots, debugging)
   const force = new URLSearchParams(location.search).has('force3d');
@@ -52,7 +51,6 @@ export function initStage() {
     return p;
   };
 
-  let activeIdx = -1;
   const apply = () => {
     progress = compute();
     steps.forEach((s, i) => {
@@ -60,12 +58,6 @@ export function initStage() {
       s.style.setProperty('--vis', vis.toFixed(3));
       s.toggleAttribute('data-active', vis > 0.5);
     });
-    const idx = Math.round(progress);
-    if (idx !== activeIdx) {
-      activeIdx = idx;
-      rail.forEach((a, i) => (i === idx ? a.setAttribute('aria-current', 'step') : a.removeAttribute('aria-current')));
-    }
-    root.style.setProperty('--stage-p', progress.toFixed(3));
     engine?.setProgress(progress);
   };
 

@@ -13,11 +13,7 @@ export const site = {
   // confirm: which line answers WhatsApp
   whatsapp: '905495742424',
   hours: {
-    label: 'Pzt – Cum · 10:00 – 18:00',
-    days: [1, 2, 3, 4, 5],
-    open: 10,
-    close: 18,
-    timeZone: 'Europe/Istanbul',
+    label: 'Pazartesi – Cuma, 10:00 – 18:00',
   },
   // confirm: profile URLs; empty entries are not rendered
   social: {

@@ -2,9 +2,14 @@
 import '@fontsource-variable/archivo/wdth.css';
 import '@fontsource/ibm-plex-mono/400.css';
 import '@fontsource/ibm-plex-mono/500.css';
+// Stand-ins for Grift (display) and Commune (serif) until the licensed files are in public/fonts
+import '@fontsource-variable/urbanist/wght.css';
+import '@fontsource-variable/fraunces/opsz.css';
+import '@fontsource-variable/fraunces/opsz-italic.css';
+import '../styles/fonts.css';
 import '../styles/global.css';
 import archivoLatin from '@fontsource-variable/archivo/files/archivo-latin-wdth-normal.woff2?url';
-import archivoLatinExt from '@fontsource-variable/archivo/files/archivo-latin-ext-wdth-normal.woff2?url';
+import displayLatin from '@fontsource-variable/urbanist/files/urbanist-latin-wght-normal.woff2?url';
 import LogoSprite from '../components/LogoSprite.astro';
 import { site } from '../data/site';
 
@@ -49,7 +54,7 @@ const ld = {
     <meta name="theme-color" content="#050a19" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="preload" href={archivoLatin} as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href={archivoLatinExt} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={displayLatin} as="font" type="font/woff2" crossorigin />
 
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="tr_TR" />

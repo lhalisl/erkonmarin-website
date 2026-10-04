@@ -40,10 +40,14 @@ import { site, whatsappLink } from '../data/site';
       z-index: 90;
       display: grid;
       grid-template-columns: 1fr 1fr 1.6fr;
-      gap: 1px;
-      background: var(--c-line-dark-2);
+      gap: 4px;
+      padding: 5px;
+      background: rgba(6, 12, 30, 0.88);
       border: 1px solid var(--c-line-dark-2);
+      border-radius: var(--r-pill);
       box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.6);
+      -webkit-backdrop-filter: blur(14px);
+      backdrop-filter: blur(14px);
       transition:
         transform 0.45s var(--ease-out),
         opacity 0.3s;
@@ -57,11 +61,12 @@ import { site, whatsappLink } from '../data/site';
       align-items: center;
       justify-content: center;
       gap: 8px;
-      min-height: 54px;
-      background: rgba(5, 10, 25, 0.96);
+      min-height: 50px;
+      border-radius: var(--r-pill);
       color: #fff;
-      font-size: 14px;
-      font-weight: 600;
+      font-family: var(--f-display);
+      font-size: 15px;
+      font-weight: 650;
       text-decoration: none;
     }
     .dock__item :global(svg) {

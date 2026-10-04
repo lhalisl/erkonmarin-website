@@ -24,13 +24,15 @@ is generated in code.
 src/
   data/site.ts              company facts: phones, hours, WhatsApp, social links, nav
   layouts/Base.astro        <head>, fonts, JSON-LD, logo sprite, reveal-on-scroll
+  styles/global.css         design tokens, type system (display + serif accent), buttons
+  styles/fonts.css          @font-face slots for the licensed Grift and Commune files
   components/
     LogoSprite.astro        vector logo mark (traced from the supplied PNG)
-    Header.astro            utility strip (live open/closed lamp) + nav + mobile menu
+    Header.astro            nav bar (floats as a rounded pill on scroll) + mobile menu
     Stage.astro             hero + four scroll chapters over the 3D scene
     Services.astro          services drawn as a single-line diagram (breakers close on scroll)
     Statement.astro         "why it matters" band on an oscilloscope trace
-    Process.astro           service steps as a ship's logbook page
+    Process.astro           the four service steps, numbered
     Audience.astro          who the service is for
     Request.astro           service request form → pre-filled WhatsApp message
     Footer.astro, MobileDock.astro
@@ -43,6 +45,19 @@ public/media/
   stage-poster.webp         still of the 3D scene (shown while loading and without WebGL)
   og.jpg                    social share image
 ```
+
+## Typography
+
+Headlines pair a bold geometric sans (**Grift**) with an italic serif accent word
+(**Commune**). In markup, the accent is an `<em>` inside `.display`, `.h2` or `.h3`.
+Body copy is Archivo; IBM Plex Mono is kept only for the 3D scene's instrument faces.
+
+Grift and Commune are licensed fonts and are not in the repo yet. Until they are, the stacks
+fall back to Urbanist (for Grift) and Fraunces (for Commune). To switch over:
+
+1. Add the webfont files (`.woff2`, with a web licence) to `public/fonts/`.
+2. Uncomment the `@font-face` blocks in `src/styles/fonts.css` and match the file names.
+3. Check Turkish glyphs (ğ ş ı İ ç ö ü) render in both faces.
 
 ## 3D behaviour
 
@@ -68,6 +83,7 @@ old site. Everything below was written for this build and needs sign-off:
 - Domain, for canonical and absolute Open Graph URLs.
 - An English version, if international ship managers are a target.
 - Real project photography for the coming Galeri page.
+- Licensed Grift and Commune webfont files (see Typography).
 
 The wordmark is set in Archivo Expanded rather than traced, so it stays sharp at every size;
 the mark itself is a vector trace of the supplied logo.

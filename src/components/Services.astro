@@ -4,25 +4,21 @@
 // scrolls in, and on hover.
 const services = [
   {
-    tag: 'Q1',
     title: 'Arıza tespiti',
     text: 'Ölçüm, şema takibi ve sistematik eleme ile arızanın kök nedenine ineriz. Parçayı değiştirip şansımızı denemeyiz.',
     out: 'Teşhis ve onarım raporu',
   },
   {
-    tag: 'Q2',
     title: 'Bakım',
     text: 'Periyodik ve önleyici bakımla arızayı seferin ortasında değil, sizin planladığınız günde karşılarsınız.',
     out: 'Bakım kaydı ve öneri listesi',
   },
   {
-    tag: 'Q3',
     title: 'Montaj',
     text: 'Pano ve otomasyon ekipmanlarının montajı, kablajı, testi ve devreye alınması.',
     out: 'Devreye alma test sonuçları',
   },
   {
-    tag: 'Q4',
     title: 'Demontaj',
     text: 'Değişecek ya da sökülecek sistemlerin etiketlenerek, belgelenerek ve güvenle sökülmesi.',
     out: 'Söküm ve etiket dokümanı',
@@ -33,10 +29,7 @@ const services = [
 <section class="services" id="hizmetler" aria-labelledby="services-title">
   <div class="container">
     <header class="services__head">
-      <div>
-        <p class="label section-index" data-reveal>Hizmetler</p>
-        <h2 class="h2" id="services-title" data-reveal style="--d:80">Dört iş.<br />Tek muhatap.</h2>
-      </div>
+      <h2 class="h2" id="services-title" data-reveal>Dört iş.<br /><em>Tek muhatap.</em></h2>
       <p class="lead services__lead" data-reveal style="--d:160">
         Arızayı bulan, bakımı yapan, panoyu kuran ve gerektiğinde söken aynı ekip. Sistemi baştan sona bilen tek bir muhatabınız olur;
         bilgi el değiştirirken kaybolmaz.
@@ -45,7 +38,6 @@ const services = [
 
     <div class="sld" data-sld>
       <div class="sld__bus" aria-hidden="true">
-        <span class="sld__bus-label label">Ana bara · 440 V · 60 Hz</span>
         <span class="sld__bus-line"><span></span></span>
       </div>
       <ol class="sld__feeders" role="list">
@@ -71,12 +63,13 @@ const services = [
                 <line x1="70" y1="24" x2="96" y2="24" />
               </svg>
               <div class="feeder__body">
-                <p class="feeder__tag label">{s.tag}</p>
-                <h3 class="feeder__title">{s.title}</h3>
+                <span class="feeder__n numeral" aria-hidden="true">
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+                <h3 class="feeder__title h3">{s.title}</h3>
                 <p class="feeder__text">{s.text}</p>
                 <p class="feeder__out">
-                  <span class="label">Çıktı</span>
-                  <span>{s.out}</span>
+                  Teslim: <em class="serif">{s.out}</em>
                 </p>
               </div>
             </li>
@@ -84,12 +77,6 @@ const services = [
         }
       </ol>
     </div>
-
-    <dl class="titleblock label" aria-hidden="true">
-      <div><dt>Çizim</dt><dd>Hizmet şeması</dd></div>
-      <div><dt>Firma</dt><dd>Erkon Marin</dd></div>
-      <div><dt>Sayfa</dt><dd>02 / 05</dd></div>
-    </dl>
   </div>
 </section>
 
@@ -115,9 +102,9 @@ const services = [
     padding-block: clamp(96px, 12vw, 180px) clamp(64px, 7vw, 110px);
     background-color: var(--c-paper);
     background-image:
-      linear-gradient(rgba(10, 17, 40, 0.045) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(10, 17, 40, 0.045) 1px, transparent 1px);
-    background-size: 32px 32px;
+      linear-gradient(rgba(10, 17, 40, 0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(10, 17, 40, 0.035) 1px, transparent 1px);
+    background-size: 40px 40px;
     color: var(--c-ink);
   }
 
@@ -127,11 +114,8 @@ const services = [
     gap: 48px;
     align-items: end;
   }
-  .services__head .label {
+  .services__head .h2 em {
     color: var(--c-navy);
-  }
-  .services__head .h2 {
-    margin-top: 22px;
   }
   .services__lead {
     color: var(--c-ink-2);
@@ -148,16 +132,11 @@ const services = [
     position: relative;
     display: block;
   }
-  .sld__bus-label {
-    display: block;
-    margin-bottom: 14px;
-    color: var(--c-ink-3);
-    font-size: 11px;
-  }
   .sld__bus-line {
     position: relative;
     display: block;
     height: 5px;
+    border-radius: var(--r-pill);
     background: var(--wire-off);
     overflow: hidden;
   }
@@ -236,17 +215,16 @@ const services = [
     border-left: 2px solid var(--wire-off);
     transition: border-color 0.5s var(--ease-out) calc(var(--delay) + 250ms);
   }
-  .feeder__tag {
+  .feeder__n {
+    display: block;
+    font-size: 40px;
+    font-style: italic;
     color: var(--c-ink-3);
     transition: color 0.4s var(--ease-out) var(--delay);
   }
   .feeder__title {
-    margin-top: 14px;
-    font-stretch: 112%;
-    font-weight: 720;
-    font-size: clamp(24px, 2.2vw, 32px);
-    letter-spacing: -0.02em;
-    line-height: 1.05;
+    margin-top: 10px;
+    font-size: clamp(28px, 2.6vw, 38px);
   }
   .feeder__text {
     margin-top: 16px;
@@ -255,17 +233,18 @@ const services = [
     text-wrap: pretty;
   }
   .feeder__out {
-    display: grid;
-    gap: 6px;
-    margin-top: 26px;
+    margin-top: 24px;
     padding-top: 16px;
-    border-top: 1px dashed var(--c-line-light-2);
-    font-size: 14px;
-    font-weight: 560;
-  }
-  .feeder__out .label {
+    border-top: 1px solid var(--c-line-light-2);
     color: var(--c-ink-3);
-    font-size: 10.5px;
+    font-size: 14px;
+  }
+  .feeder__out em {
+    display: block;
+    margin-top: 2px;
+    color: var(--c-ink);
+    font-size: 19px;
+    line-height: 1.3;
   }
 
   /* energised */
@@ -280,7 +259,7 @@ const services = [
   .sld.is-live .feeder__body {
     border-color: var(--wire-on);
   }
-  .sld.is-live .feeder__tag {
+  .sld.is-live .feeder__n {
     color: var(--c-navy);
   }
 
@@ -335,29 +314,6 @@ const services = [
     }
   }
 
-  /* Drawing title block */
-  .titleblock {
-    display: flex;
-    justify-content: flex-end;
-    margin: clamp(56px, 7vw, 96px) 0 0;
-    font-size: 10.5px;
-    color: var(--c-ink-3);
-  }
-  .titleblock div {
-    padding: 10px 16px;
-    border: 1px solid var(--c-line-light-2);
-  }
-  .titleblock div + div {
-    border-left: 0;
-  }
-  .titleblock dt {
-    opacity: 0.7;
-  }
-  .titleblock dd {
-    margin: 4px 0 0;
-    color: var(--c-ink);
-  }
-
   @media (max-width: 760px) {
     .services__head {
       grid-template-columns: 1fr;
@@ -378,10 +334,7 @@ const services = [
       bottom: 0;
       width: 5px;
     }
-    .sld__bus-label {
-      display: none;
-    }
-    .sld__bus-line {
+      .sld__bus-line {
       width: 5px;
       height: 100%;
     }
@@ -419,14 +372,11 @@ const services = [
       padding: 4px 0 44px;
     }
     .feeder__title {
-      margin-top: 8px;
-    }
+    margin-top: 10px;
+    font-size: clamp(28px, 2.6vw, 38px);
+  }
     .feeder__body::before {
       display: none;
-    }
-    .titleblock {
-      justify-content: flex-start;
-      flex-wrap: wrap;
     }
   }
 </style>

@@ -22,9 +22,8 @@ const roles = [
 <section class="audience" id="kimler" aria-labelledby="audience-title">
   <div class="container audience__grid">
     <header class="audience__head">
-      <p class="label section-index" data-reveal>Kimler için</p>
-      <h2 class="h2" id="audience-title" data-reveal style="--d:80">Geminin sorumluluğunu taşıyanlar için.</h2>
-      <p class="lead" data-reveal style="--d:160">
+      <h2 class="h2" id="audience-title" data-reveal>Geminin sorumluluğunu <em>taşıyanlar</em> için.</h2>
+      <p class="lead" data-reveal style="--d:120">
         Bir arızanın maliyetini en iyi, o maliyeti üstlenenler bilir. Çalışma şeklimizi onların beklentisine göre kurduk.
       </p>
     </header>
@@ -34,7 +33,7 @@ const roles = [
         roles.map((r, i) => (
           <li class="role" data-reveal style={`--d:${i * 70}`}>
             <span class="role__lamp" aria-hidden="true" />
-            <h3 class="role__who">{r.who}</h3>
+            <h3 class="role__who h3">{r.who}</h3>
             <p class="role__need">{r.need}</p>
           </li>
         ))
@@ -60,12 +59,11 @@ const roles = [
     position: sticky;
     top: calc(var(--header-h) + 40px);
   }
-  .audience__head .label {
-    color: var(--c-signal);
-  }
   .audience__head .h2 {
-    margin-top: 22px;
-    font-size: clamp(36px, 4.4vw, 68px);
+    font-size: clamp(40px, 4.8vw, 76px);
+  }
+  .audience__head .h2 em {
+    color: var(--c-signal);
   }
   .audience__head .lead {
     margin-top: 28px;
@@ -84,11 +82,13 @@ const roles = [
     column-gap: 18px;
     padding: 34px 8px 34px 0;
     border-bottom: 1px solid var(--c-line-dark-2);
+    isolation: isolate;
   }
   .role::before {
     content: '';
     position: absolute;
-    inset: 0;
+    inset: 0 -20px;
+    border-radius: var(--r-lg);
     z-index: -1;
     background: linear-gradient(90deg, rgba(43, 187, 229, 0.08), transparent 70%);
     opacity: 0;
@@ -114,11 +114,7 @@ const roles = [
     box-shadow: 0 0 16px var(--c-signal);
   }
   .role__who {
-    font-stretch: 114%;
-    font-weight: 720;
-    font-size: clamp(24px, 2.6vw, 38px);
-    letter-spacing: -0.025em;
-    line-height: 1.08;
+    font-size: clamp(26px, 2.8vw, 42px);
   }
   .role__need {
     grid-column: 2;

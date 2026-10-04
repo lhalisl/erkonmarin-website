@@ -33,12 +33,19 @@
   --c-lamp-red: #ff5a4e;
 
   --f-sans: 'Archivo Variable', 'Archivo', 'Helvetica Neue', Arial, sans-serif;
+  --f-display: 'Grift', 'Urbanist Variable', 'Helvetica Neue', Arial, sans-serif;
+  --f-serif: 'Commune', 'GC Commune', 'Fraunces Variable', Georgia, serif;
   --f-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+
+  --r-sm: 12px;
+  --r-md: 18px;
+  --r-lg: 28px;
+  --r-xl: 40px;
+  --r-pill: 999px;
 
   --gutter: clamp(20px, 4.2vw, 64px);
   --maxw: 1480px;
-  --header-h: 76px;
-  --utility-h: 34px;
+  --header-h: 84px;
 
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
@@ -162,23 +169,58 @@ ol[role='list'] {
   transform: none;
 }
 
-/* ---- Type ------------------------------------------------------ */
-.display {
-  font-family: var(--f-sans);
-  font-stretch: 116%;
-  font-weight: 760;
-  letter-spacing: -0.028em;
-  line-height: 0.95;
+/* ---- Type ------------------------------------------------------
+   Two voices: Grift for the bold, engineered headline, Commune
+   italic for the editorial accent word inside it.
+------------------------------------------------------------------ */
+.display,
+.h2,
+.h3 {
+  font-family: var(--f-display);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 0.94;
+  text-wrap: balance;
+}
+.h2 {
+  font-size: clamp(42px, 5.8vw, 96px);
+}
+.h3 {
+  font-weight: 750;
+  letter-spacing: -0.025em;
+  line-height: 1.02;
+}
+.display em,
+.h2 em,
+.h3 em {
+  font-family: var(--f-serif);
+  font-style: italic;
+  font-weight: 400;
+  font-variation-settings: 'opsz' 144;
+  letter-spacing: -0.02em;
+}
+/* running-text serif: let the optical size follow the font size */
+.serif {
+  font-family: var(--f-serif);
+  font-style: italic;
+  font-weight: 400;
+  font-optical-sizing: auto;
+}
+.display em,
+.h2 em,
+.h3 em {
+  /* serif italics sit visually smaller than the bold sans beside them */
+  font-size: 1.06em;
+  padding-right: 0.04em;
 }
 
-.h2 {
-  font-family: var(--f-sans);
-  font-stretch: 114%;
-  font-weight: 740;
-  font-size: clamp(38px, 5.2vw, 82px);
+.numeral {
+  font-family: var(--f-serif);
+  font-weight: 400;
+  font-variation-settings: 'opsz' 144;
+  font-feature-settings: 'lnum';
   letter-spacing: -0.03em;
-  line-height: 0.96;
-  text-wrap: balance;
+  line-height: 1;
 }
 
 .lead {
@@ -187,27 +229,6 @@ ol[role='list'] {
   text-wrap: pretty;
 }
 
-.label {
-  font-family: var(--f-mono);
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  line-height: 1.4;
-}
-
-.section-index {
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-}
-.section-index::before {
-  content: '';
-  width: 28px;
-  height: 1px;
-  background: currentColor;
-  opacity: 0.6;
-}
 
 /* ---- Buttons --------------------------------------------------- */
 .btn {
@@ -219,16 +240,16 @@ ol[role='list'] {
   align-items: center;
   justify-content: center;
   gap: 14px;
-  min-height: 54px;
-  padding: 0 26px;
+  min-height: 56px;
+  padding: 0 28px;
   border: 1px solid var(--btn-bd);
+  border-radius: var(--r-pill);
   background: var(--btn-bg);
   color: var(--btn-fg);
-  font-family: var(--f-sans);
-  font-size: 15px;
-  font-weight: 640;
-  font-stretch: 108%;
-  letter-spacing: 0.01em;
+  font-family: var(--f-display);
+  font-size: 16px;
+  font-weight: 650;
+  letter-spacing: 0;
   text-decoration: none;
   cursor: pointer;
   overflow: hidden;

@@ -4,26 +4,8 @@ import { site, nav, whatsappLink } from '../data/site';
 ---
 
 <header class="site-header" data-header>
-  <div class="utility">
-    <div class="container utility__inner">
-      <p class="utility__status label" data-hours>
-        <span class="lamp lamp--off" data-hours-lamp></span>
-        <span data-hours-text>{site.hours.label}</span>
-      </p>
-      <ul class="utility__phones label" role="list">
-        {
-          site.phones.map((p) => (
-            <li>
-              <a href={p.href}>{p.display}</a>
-            </li>
-          ))
-        }
-      </ul>
-    </div>
-  </div>
-
-  <div class="bar">
-    <div class="container bar__inner">
+  <div class="container">
+    <div class="bar">
       <a class="brand" href="/" aria-label="Erkon Marin, ana sayfa">
         <svg class="brand__mark" aria-hidden="true"><use href="#erkon-mark"></use></svg>
         <span class="brand__word" aria-hidden="true"><span class="brand__a">ERKON</span><span class="brand__b">MARİN</span></span>
@@ -66,7 +48,7 @@ import { site, nav, whatsappLink } from '../data/site';
           nav.map((item, i) => (
             <li style={`--i:${i}`}>
               <a href={item.href} data-menu-link>
-                <span class="label">{String(i + 1).padStart(2, '0')}</span>
+                <span class="numeral">{String(i + 1).padStart(2, '0')}</span>
                 <span>{item.label}</span>
               </a>
             </li>
@@ -74,7 +56,6 @@ import { site, nav, whatsappLink } from '../data/site';
         }
       </ol>
       <div class="mobile-menu__contact">
-        <p class="label">{site.hours.label}</p>
         {
           site.phones.map((p) => (
             <a class="mobile-menu__phone" href={p.href}>
@@ -82,9 +63,10 @@ import { site, nav, whatsappLink } from '../data/site';
             </a>
           ))
         }
+        <p>{site.hours.label}</p>
         <a class="btn btn--ghost" href={whatsappLink()} target="_blank" rel="noopener">
           <Icon name="whatsapp" />
-          <span>WhatsApp'tan yazın</span>
+          <span>WhatsApp’tan yazın</span>
         </a>
       </div>
     </nav>
@@ -92,8 +74,6 @@ import { site, nav, whatsappLink } from '../data/site';
 </header>
 
 <script>
-  import { site } from '../data/site';
-
   const header = document.querySelector<HTMLElement>('[data-header]')!;
 
   // Scrolled state
@@ -108,24 +88,6 @@ import { site, nav, whatsappLink } from '../data/site';
   };
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
-
-  // Open / closed lamp, based on Istanbul time
-  const lamp = header.querySelector<HTMLElement>('[data-hours-lamp]');
-  const text = header.querySelector<HTMLElement>('[data-hours-text]');
-  const parts = new Intl.DateTimeFormat('en-GB', {
-    timeZone: site.hours.timeZone,
-    weekday: 'short',
-    hour: 'numeric',
-    hour12: false,
-  }).formatToParts(new Date());
-  const wd = parts.find((p) => p.type === 'weekday')?.value ?? '';
-  const hr = Number(parts.find((p) => p.type === 'hour')?.value ?? 0);
-  const dayIdx = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].indexOf(wd);
-  const open = (site.hours.days as readonly number[]).includes(dayIdx) && hr >= site.hours.open && hr < site.hours.close;
-  if (lamp && text) {
-    lamp.classList.toggle('lamp--off', !open);
-    text.textContent = open ? `Şu an açığız · ${site.hours.label}` : `Mesai dışı · ${site.hours.label}`;
-  }
 
   // Mobile menu
   const toggle = header.querySelector<HTMLButtonElement>('[data-menu-toggle]')!;
@@ -161,71 +123,34 @@ import { site, nav, whatsappLink } from '../data/site';
     position: fixed;
     inset: 0 0 auto;
     z-index: 100;
+    padding-top: 14px;
     color: #fff;
   }
 
-  /* Utility strip */
-  .utility {
-    height: var(--utility-h);
-    overflow: hidden;
-    background: var(--c-abyss);
-    border-bottom: 1px solid var(--c-line-dark);
-    transition: height 0.45s var(--ease-out), opacity 0.3s;
-  }
-  .site-header[data-scrolled] .utility {
-    height: 0;
-    opacity: 0;
-  }
-  .utility__inner {
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 24px;
-    font-size: 11px;
-    color: var(--c-mist);
-  }
-  .utility__status {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    font-size: inherit;
-  }
-  .utility__status .lamp {
-    width: 6px;
-    height: 6px;
-  }
-  .utility__phones {
-    display: flex;
-    gap: 28px;
-    margin: 0;
-    font-size: inherit;
-  }
-  .utility__phones a {
-    text-decoration: none;
-    transition: color 0.2s;
-  }
-  .utility__phones a:hover {
-    color: var(--c-signal-hi);
-  }
-
-  /* Main bar */
+  /* The bar floats as a rounded pill once the page scrolls */
   .bar {
-    height: var(--header-h);
-    background: transparent;
-    border-bottom: 1px solid transparent;
-    transition: background-color 0.4s var(--ease-out), border-color 0.4s;
-  }
-  .site-header[data-scrolled] .bar,
-  .site-header[data-menu-open] .bar {
-    background: rgba(5, 10, 25, 0.94);
-    border-color: var(--c-line-dark);
-  }
-  .bar__inner {
-    height: 100%;
+    position: relative;
+    z-index: 2;
+    height: 64px;
     display: flex;
     align-items: center;
     gap: 32px;
+    padding: 0 8px 0 18px;
+    margin-inline: -18px -8px;
+    border: 1px solid transparent;
+    border-radius: var(--r-pill);
+    transition:
+      background-color 0.45s var(--ease-out),
+      border-color 0.45s var(--ease-out),
+      box-shadow 0.45s var(--ease-out);
+  }
+  .site-header[data-scrolled] .bar,
+  .site-header[data-menu-open] .bar {
+    background: rgba(6, 12, 30, 0.82);
+    border-color: var(--c-line-dark-2);
+    box-shadow: 0 18px 40px -18px rgba(0, 0, 0, 0.6);
+    -webkit-backdrop-filter: blur(14px) saturate(1.2);
+    backdrop-filter: blur(14px) saturate(1.2);
   }
 
   .brand {
@@ -238,15 +163,15 @@ import { site, nav, whatsappLink } from '../data/site';
     margin-right: auto;
   }
   .brand__mark {
-    width: 52px;
-    height: 47px;
+    width: 50px;
+    height: 45px;
   }
   .brand__word {
     display: flex;
     gap: 0.42em;
     font-stretch: 125%;
     font-weight: 560;
-    font-size: 15px;
+    font-size: 14.5px;
     letter-spacing: 0.16em;
   }
   .brand__a {
@@ -255,50 +180,40 @@ import { site, nav, whatsappLink } from '../data/site';
 
   .nav ul {
     display: flex;
-    gap: clamp(18px, 2.2vw, 36px);
+    gap: 4px;
     margin: 0;
   }
   .nav a {
-    position: relative;
-    font-size: 15px;
-    font-weight: 520;
+    display: block;
+    padding: 9px 14px;
+    border-radius: var(--r-pill);
+    font-family: var(--f-display);
+    font-size: 15.5px;
+    font-weight: 560;
     text-decoration: none;
-    color: rgba(255, 255, 255, 0.82);
-    padding-block: 8px;
-    transition: color 0.25s;
-  }
-  .nav a::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 1px;
-    background: var(--c-signal);
-    transform: scaleX(0);
-    transform-origin: right;
-    transition: transform 0.45s var(--ease-out);
+    color: rgba(255, 255, 255, 0.8);
+    transition:
+      color 0.25s,
+      background-color 0.25s;
   }
   .nav a:hover {
     color: #fff;
-  }
-  .nav a:hover::after {
-    transform: scaleX(1);
-    transform-origin: left;
+    background: rgba(255, 255, 255, 0.08);
   }
 
   .bar__actions {
     display: flex;
     align-items: center;
-    gap: 22px;
+    gap: 18px;
   }
   .bar__phone {
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    font-family: var(--f-mono);
-    font-size: 14px;
-    font-weight: 500;
+    font-family: var(--f-display);
+    font-size: 15.5px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
     text-decoration: none;
     color: #fff;
   }
@@ -308,19 +223,20 @@ import { site, nav, whatsappLink } from '../data/site';
     color: var(--c-signal);
   }
   .bar__cta {
-    min-height: 46px;
-    padding: 0 20px;
-    font-size: 14px;
+    min-height: 48px;
+    padding: 0 22px;
+    font-size: 15px;
   }
 
   .menu-toggle {
     display: none;
-    width: 46px;
-    height: 46px;
+    width: 48px;
+    height: 48px;
     align-items: center;
     justify-content: center;
-    background: transparent;
+    background: rgba(255, 255, 255, 0.06);
     border: 1px solid var(--c-line-dark-2);
+    border-radius: 50%;
     cursor: pointer;
   }
   .menu-toggle :global(svg) {
@@ -340,14 +256,13 @@ import { site, nav, whatsappLink } from '../data/site';
   /* Mobile menu */
   .mobile-menu {
     position: fixed;
-    inset: var(--header-h) 0 0;
+    inset: 0;
+    z-index: 1;
+    padding-top: calc(14px + 64px + 12px);
     background: var(--c-abyss);
     overflow-y: auto;
     opacity: 0;
     transition: opacity 0.35s var(--ease-out);
-  }
-  .site-header:not([data-scrolled]) .mobile-menu {
-    inset: calc(var(--header-h) + var(--utility-h)) 0 0;
   }
   .mobile-menu.is-open {
     opacity: 1;
@@ -358,7 +273,7 @@ import { site, nav, whatsappLink } from '../data/site';
     flex-direction: column;
     justify-content: space-between;
     gap: 40px;
-    padding-block: 28px 40px;
+    padding-block: 16px 40px;
   }
   .mobile-menu__list {
     margin: 0;
@@ -382,31 +297,35 @@ import { site, nav, whatsappLink } from '../data/site';
     gap: 18px;
     padding: 18px 0;
     text-decoration: none;
-    font-size: clamp(28px, 8vw, 40px);
-    font-stretch: 114%;
-    font-weight: 700;
-    letter-spacing: -0.02em;
+    font-family: var(--f-display);
+    font-size: clamp(30px, 8.5vw, 44px);
+    font-weight: 800;
+    letter-spacing: -0.03em;
   }
-  .mobile-menu__list .label {
+  .mobile-menu__list .numeral {
+    min-width: 1.7em;
+    font-size: 0.6em;
+    font-style: italic;
     color: var(--c-signal);
   }
   .mobile-menu__contact {
     display: grid;
-    gap: 12px;
+    gap: 8px;
     color: var(--c-mist);
   }
   .mobile-menu__phone {
-    font-family: var(--f-mono);
-    font-size: 22px;
+    font-family: var(--f-display);
+    font-size: 24px;
+    font-weight: 650;
     color: #fff;
     text-decoration: none;
   }
   .mobile-menu__contact .btn {
-    margin-top: 12px;
+    margin-top: 16px;
     color: #fff;
   }
 
-  @media (max-width: 1180px) {
+  @media (max-width: 1240px) {
     .bar__phone {
       display: none;
     }
@@ -420,23 +339,23 @@ import { site, nav, whatsappLink } from '../data/site';
     }
   }
   @media (max-width: 640px) {
-    .utility__phones {
-      display: none;
+    .site-header {
+      padding-top: 10px;
     }
-    .utility__status {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+    .bar {
+      height: 60px;
+      margin-inline: -10px -6px;
+      padding: 0 6px 0 10px;
     }
     .bar__cta {
       display: none;
     }
     .brand__mark {
-      width: 44px;
-      height: 40px;
+      width: 42px;
+      height: 38px;
     }
     .brand__word {
-      font-size: 13px;
+      font-size: 12.5px;
     }
   }
 </style>

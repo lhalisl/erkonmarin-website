@@ -9,8 +9,8 @@ import Icon from '../components/Icon.astro';
   <Header />
   <main id="main" class="nf">
     <div class="container nf__inner">
-      <p class="label nf__code"><span class="lamp lamp--off"></span>404 · Hat enerjisiz</p>
-      <h1 class="display nf__title">Bu hatta akım yok.</h1>
+      <p class="nf__code numeral" aria-hidden="true">404</p>
+      <h1 class="display nf__title">Bu hatta <em>akım</em> yok.</h1>
       <p class="lead nf__lead">Aradığınız sayfa taşınmış ya da hiç var olmamış olabilir. Ana sayfadan devam edebilirsiniz.</p>
       <a class="btn btn--signal" href="/">
         <span>Ana sayfaya dön</span>
@@ -34,15 +34,17 @@ import Icon from '../components/Icon.astro';
     padding-block: 180px 120px;
   }
   .nf__code {
-    display: inline-flex;
-    align-items: center;
-    gap: 12px;
-    color: var(--c-mist);
+    font-size: clamp(64px, 8vw, 120px);
+    font-style: italic;
+    color: var(--c-signal);
   }
   .nf__title {
-    margin-top: 28px;
-    font-size: clamp(48px, 8vw, 128px);
+    margin-top: 12px;
+    font-size: clamp(52px, 8vw, 132px);
     max-width: 12ch;
+  }
+  .nf__title em {
+    color: var(--c-signal);
   }
   .nf__lead {
     margin: 28px 0 40px;

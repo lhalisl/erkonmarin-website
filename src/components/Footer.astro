@@ -23,7 +23,7 @@ const socials = Object.entries(site.social).filter(([, url]) => url);
 
     <div class="footer__grid">
       <div>
-        <p class="label">Telefon</p>
+        <p class="footer__h">Telefon</p>
         {
           site.phones.map((p) => (
             <a class="footer__phone" href={p.href}>
@@ -33,11 +33,11 @@ const socials = Object.entries(site.social).filter(([, url]) => url);
         }
       </div>
       <div>
-        <p class="label">Çalışma saatleri</p>
+        <p class="footer__h">Çalışma saatleri</p>
         <p>Pazartesi – Cuma<br />10:00 – 18:00</p>
       </div>
       <div>
-        <p class="label">Mesaj</p>
+        <p class="footer__h">Mesaj</p>
         <a class="footer__link" href={whatsappLink()} target="_blank" rel="noopener">WhatsApp</a>
         {
           socials.map(([name, url]) => (
@@ -48,7 +48,7 @@ const socials = Object.entries(site.social).filter(([, url]) => url);
         }
       </div>
       <nav aria-label="Alt menü">
-        <p class="label">Sayfa</p>
+        <p class="footer__h">Sayfa</p>
         <ul role="list">
           {
             nav.map((n) => (
@@ -63,7 +63,7 @@ const socials = Object.entries(site.social).filter(([, url]) => url);
       </nav>
     </div>
 
-    <div class="footer__base label">
+    <div class="footer__base">
       <span>© {year} Erkon Marin</span>
       <span>Gemi elektrik ve otomasyon servisi</span>
       <a href="#giris">Başa dön ↑</a>
@@ -125,21 +125,26 @@ const socials = Object.entries(site.social).filter(([, url]) => url);
     gap: 32px;
     padding-block: 48px 64px;
   }
-  .footer__grid .label {
+  .footer__h {
     margin-bottom: 14px;
+    font-family: var(--f-display);
+    font-size: 14.5px;
+    font-weight: 600;
     color: var(--c-mist-2);
-    font-size: 11px;
   }
   .footer__grid ul {
     margin: 0;
   }
-  .footer__grid p:not(.label) {
+  .footer__grid p:not(.footer__h) {
     color: #dfe6f6;
   }
   .footer__phone {
     display: block;
-    font-family: var(--f-mono);
-    font-size: 17px;
+    width: fit-content;
+    font-family: var(--f-display);
+    font-size: 19px;
+    font-weight: 650;
+    font-variant-numeric: tabular-nums;
     text-decoration: none;
     line-height: 1.8;
   }
@@ -167,7 +172,7 @@ const socials = Object.entries(site.social).filter(([, url]) => url);
     gap: 12px 32px;
     padding-block: 26px 120px;
     border-top: 1px solid var(--c-line-dark);
-    font-size: 11px;
+    font-size: 14px;
     color: var(--c-mist-2);
   }
   .footer__base a {

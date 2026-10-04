@@ -1,0 +1,50 @@
+/* ---------------------------------------------------------------
+   Licensed brand fonts: Grift (display) and Commune (serif).
+
+   1. Put the webfont files in public/fonts/ with these names
+      (or edit the paths below).
+   2. Uncomment the matching @font-face blocks.
+
+   Until then the font stacks in global.css fall back to Urbanist
+   (for Grift) and Fraunces (for Commune). A copy of Grift or
+   Commune installed on the viewer's own machine is picked up
+   automatically, by family name.
+---------------------------------------------------------------- */
+
+/*
+@font-face {
+  font-family: 'Grift';
+  src: url('/fonts/grift-medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Grift';
+  src: url('/fonts/grift-bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Grift';
+  src: url('/fonts/grift-black.woff2') format('woff2');
+  font-weight: 800 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Commune';
+  src: url('/fonts/commune-regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Commune';
+  src: url('/fonts/commune-italic.woff2') format('woff2');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+*/

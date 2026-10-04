@@ -21,15 +21,11 @@ const wave = `M${pts.join(' L')}`;
         <path d={wave} transform={`translate(${W} 0)`} />
       </g>
     </svg>
-    <p class="scope__readout label">
-      <span>CH1</span><span>200 V/div</span><span>5 ms/div</span><span>60.0 Hz</span>
-    </p>
   </div>
 
   <div class="container statement__inner">
-    <p class="label section-index" data-reveal>Neden önemli</p>
-    <h2 class="statement__big" id="statement-title" data-reveal style="--d:80">
-      Rıhtımda geçen her saatin bir <span class="statement__hl">bedeli</span> var.
+    <h2 class="statement__big display" id="statement-title" data-reveal>
+      Rıhtımda geçen her saatin bir <em>bedeli</em> var.
     </h2>
     <div class="statement__cols">
       <p class="lead" data-reveal style="--d:120">
@@ -38,17 +34,17 @@ const wave = `M${pts.join(' L')}`;
       </p>
       <ol class="principles" role="list">
         <li data-reveal style="--d:160">
-          <span class="label">01</span>
+          <span class="numeral">01</span>
           <b>Ölç</b>
           <span>Varsayım değil, ölçüm.</span>
         </li>
         <li data-reveal style="--d:240">
-          <span class="label">02</span>
+          <span class="numeral">02</span>
           <b>Bul</b>
           <span>Kök nedene kadar in.</span>
         </li>
         <li data-reveal style="--d:320">
-          <span class="label">03</span>
+          <span class="numeral">03</span>
           <b>Belgele</b>
           <span>Her adımı kayda geçir.</span>
         </li>
@@ -129,34 +125,12 @@ const wave = `M${pts.join(' L')}`;
       animation: none;
     }
   }
-  .scope__readout {
-    position: absolute;
-    right: var(--gutter);
-    bottom: 28px;
-    display: flex;
-    gap: 24px;
-    margin: 0;
-    font-size: 10.5px;
-    color: var(--c-mist-2);
-  }
-  .scope__readout span:first-child {
-    color: var(--c-signal);
-  }
 
-  .statement__inner > .label {
-    color: var(--c-signal);
-  }
   .statement__big {
-    max-width: 15ch;
-    margin-top: 28px;
-    font-stretch: 118%;
-    font-weight: 760;
-    font-size: clamp(44px, 7.4vw, 128px);
-    letter-spacing: -0.035em;
-    line-height: 0.94;
-    text-wrap: balance;
+    max-width: 14ch;
+    font-size: clamp(48px, 8vw, 140px);
   }
-  .statement__hl {
+  .statement__big em {
     color: var(--c-signal);
   }
   .statement__cols {
@@ -186,14 +160,16 @@ const wave = `M${pts.join(' L')}`;
     padding-left: 20px;
     border-left: 1px solid var(--c-line-dark);
   }
-  .principles .label {
+  .principles .numeral {
+    font-size: 34px;
+    font-style: italic;
     color: var(--c-signal);
   }
   .principles b {
-    font-stretch: 116%;
-    font-weight: 720;
-    font-size: clamp(24px, 2.4vw, 34px);
-    letter-spacing: -0.02em;
+    font-family: var(--f-display);
+    font-weight: 800;
+    font-size: clamp(26px, 2.6vw, 38px);
+    letter-spacing: -0.03em;
     line-height: 1;
   }
   .principles span:last-child {
@@ -204,9 +180,6 @@ const wave = `M${pts.join(' L')}`;
   @media (max-width: 860px) {
     .statement__cols {
       grid-template-columns: 1fr;
-    }
-    .scope__readout {
-      display: none;
     }
   }
   @media (max-width: 520px) {
