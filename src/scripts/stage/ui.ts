@@ -5,10 +5,16 @@ const smooth = (a: number, b: number, x: number) => {
   return t * t * (3 - 2 * t);
 };
 
-function webglAvailable() {
+/** WebGL2 with a hardware renderer. Software rasterisers (SwiftShader, llvmpipe) would stall the page. */
+function hardwareWebGL() {
   try {
     const c = document.createElement('canvas');
-    return !!c.getContext('webgl2');
+    const gl = c.getContext('webgl2');
+    if (!gl) return false;
+    const info = gl.getExtension('WEBGL_debug_renderer_info');
+    const renderer = String(gl.getParameter(info ? info.UNMASKED_RENDERER_WEBGL : gl.RENDERER));
+    gl.getExtension('WEBGL_lose_context')?.loseContext();
+    return !/swiftshader|llvmpipe|softpipe|software|basic render/i.test(renderer);
   } catch {
     return false;
   }
@@ -24,8 +30,11 @@ export function initStage() {
   const steps = Array.from(root.querySelectorAll<HTMLElement>('[data-step]'));
   const rail = Array.from(root.querySelectorAll<HTMLAnchorElement>('[data-rail-link]'));
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // ?force3d runs the scene even on software rendering (screenshots, debugging)
+  const force = new URLSearchParams(location.search).has('force3d');
 
   let engine: StageHandle | null = null;
+  let failed = false;
   let tops: number[] = [];
   let progress = 0;
 
@@ -82,17 +91,34 @@ export function initStage() {
     apply();
   });
 
-  // 3D: only with WebGL2, and not when the visitor asked to save data
+  // 3D only on hardware WebGL2, and not when the visitor asked to save data
   const saveData = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData;
-  if (!webglAvailable() || saveData) {
+  if (!force && (!hardwareWebGL() || saveData)) {
     root.classList.add('is-static');
     return;
   }
 
   const boot = () =>
     import('./engine')
-      .then(({ createStage }) => createStage({ canvas, host, annotations, hud, reduced }))
+      .then(({ createStage }) =>
+        createStage({
+          canvas,
+          host,
+          annotations,
+          hud,
+          reduced,
+          force,
+          onFail: () => {
+            failed = true;
+            root.classList.add('is-static');
+            host.classList.remove('is-live');
+            engine?.dispose();
+            engine = null;
+          },
+        }),
+      )
       .then((h) => {
+        if (failed) return h.dispose();
         engine = h;
         engine.setProgress(progress);
       })

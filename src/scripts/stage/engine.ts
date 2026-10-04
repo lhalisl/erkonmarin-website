@@ -15,6 +15,10 @@ export interface StageOptions {
   annotations: HTMLElement;
   hud: HTMLElement | null;
   reduced: boolean;
+  /** Skip the slow-device bail-out (testing). */
+  force?: boolean;
+  /** Called when the device can't keep up and the engine has shut itself down. */
+  onFail?: () => void;
 }
 
 export interface StageHandle {
@@ -230,13 +234,16 @@ export async function createStage(o: StageOptions): Promise<StageHandle> {
   let visible = true;
   let firstFrame = true;
   let frames = 0;
+  let measured = 0;
   let frameTime = 0;
-  let quality = 2;
+  let steppedDown = false;
+  let startedAt = 0;
 
   const step = () => {
     raf = requestAnimationFrame(step);
     const now = performance.now();
-    const dt = Math.min((now - lastTime) / 1000, 0.1);
+    const realDt = (now - lastTime) / 1000;
+    const dt = Math.min(realDt, 0.1);
     lastTime = now;
     t += dt;
     const lt = o.reduced ? 12 : t;
@@ -286,31 +293,50 @@ export async function createStage(o: StageOptions): Promise<StageHandle> {
       o.host.classList.add('is-live');
     }
 
-    // Adaptive quality: step down once if the device struggles
-    if (quality > 0 && frames < 120) {
-      frames++;
-      if (frames > 20) frameTime += dt;
-      if (frames === 120) {
-        const avg = frameTime / 100;
-        if (avg > 0.034) {
-          quality--;
-          pixelRatio = Math.max(1, pixelRatio * 0.7);
-          renderer.setPixelRatio(pixelRatio);
-          resize();
-          if (avg > 0.05) {
-            quality--;
-            bloom.enabled = false;
-          }
-          frames = 0;
-          frameTime = 0;
-        }
+    // Performance guard, on real frame time. Skip the first frames (shader compiles).
+    frames++;
+    if (frames === 1) startedAt = now;
+    // Fewer than 20 frames in the first 3 s: this device can't run the scene
+    if (!o.force && frames < 20 && now - startedAt > 3000) {
+      fail();
+      return;
+    }
+    if (frames > 3 && measured < 120) {
+      frameTime += realDt;
+      measured++;
+      // Can't hold ~11 fps: hand the main thread back and fall back to the poster
+      const avg = frameTime / measured;
+      if (!o.force && ((measured >= 2 && avg > 0.4) || (measured >= 4 && frameTime > 1.2 && avg > 0.09))) {
+        fail();
+        return;
+      }
+      // Struggling but usable: lower the pixel ratio, and drop bloom if needed
+      if (measured === 120 && !steppedDown && avg > 0.034) {
+        steppedDown = true;
+        pixelRatio = Math.max(1, pixelRatio * 0.7);
+        renderer.setPixelRatio(pixelRatio);
+        resize();
+        if (avg > 0.05) bloom.enabled = false;
       }
     }
+  };
+
+  const fail = () => {
+    stop();
+    io.disconnect();
+    document.removeEventListener('visibilitychange', onVis);
+    o.onFail?.();
   };
 
   const start = () => {
     if (raf || !visible || document.hidden) return;
     lastTime = performance.now();
+    // a pause during warm-up (tab hidden, scrolled away) restarts the measurement
+    if (frames < 20) {
+      frames = 0;
+      measured = 0;
+      frameTime = 0;
+    }
     raf = requestAnimationFrame(step);
   };
   const stop = () => {

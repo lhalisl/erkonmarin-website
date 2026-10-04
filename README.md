@@ -47,11 +47,13 @@ public/media/
 ## 3D behaviour
 
 - Loads after the page is idle; the poster image covers the gap.
-- Falls back to the poster when WebGL2 is unavailable or the visitor has Data Saver on.
+- Falls back to the poster when WebGL2 is unavailable, the browser is rendering in software
+  (SwiftShader / llvmpipe, e.g. a blocklisted GPU), or the visitor has Data Saver on.
+- Shuts itself down and returns to the poster if frames stay slower than ~11 fps after warm-up.
 - Pauses when off-screen or in a background tab.
 - Drops pixel ratio, then bloom, if the first two seconds run slowly.
 - `prefers-reduced-motion`: no idle drift, blinking or flowing current; the camera still follows scroll.
-- Append `?snap` to the URL to disable camera easing (useful for screenshots).
+- URL flags for testing: `?force3d` runs the scene even on a software renderer, `?snap` disables camera easing.
 
 ## Content still to confirm with Erkon Marin
 
