@@ -5,21 +5,6 @@ const smooth = (a: number, b: number, x: number) => {
   return t * t * (3 - 2 * t);
 };
 
-/** WebGL2 with a hardware renderer. Software rasterisers (SwiftShader, llvmpipe) would stall the page. */
-function hardwareWebGL() {
-  try {
-    const c = document.createElement('canvas');
-    const gl = c.getContext('webgl2');
-    if (!gl) return false;
-    const info = gl.getExtension('WEBGL_debug_renderer_info');
-    const renderer = String(gl.getParameter(info ? info.UNMASKED_RENDERER_WEBGL : gl.RENDERER));
-    gl.getExtension('WEBGL_lose_context')?.loseContext();
-    return !/swiftshader|llvmpipe|softpipe|software|basic render/i.test(renderer);
-  } catch {
-    return false;
-  }
-}
-
 export function initStage() {
   const root = document.querySelector<HTMLElement>('[data-stage]');
   if (!root) return;
@@ -31,6 +16,8 @@ export function initStage() {
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   // ?force3d runs the scene even on software rendering (screenshots, debugging)
   const force = new URLSearchParams(location.search).has('force3d');
+  // Set by the inline check in Stage.astro: no WebGL2, a software renderer, or Data Saver
+  const staticMode = document.documentElement.hasAttribute('data-stage-static');
 
   let engine: StageHandle | null = null;
   let failed = false;
@@ -83,9 +70,7 @@ export function initStage() {
     apply();
   });
 
-  // 3D only on hardware WebGL2, and not when the visitor asked to save data
-  const saveData = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData;
-  if (!force && (!hardwareWebGL() || saveData)) {
+  if (staticMode) {
     root.classList.add('is-static');
     return;
   }

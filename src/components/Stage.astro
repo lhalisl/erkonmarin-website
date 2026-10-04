@@ -36,6 +36,33 @@ const chapters = [
 ---
 
 <section class="stage" data-stage aria-labelledby="hero-title" style={`--real-poster:url(${realPoster.src})`}>
+  <script is:inline>
+    // Decide before first paint whether the 3D scene can run, so fallback visitors get the
+    // real photo straight away (and download only that). ?force3d skips the check.
+    (function () {
+      var off = false;
+      try {
+        if (!/[?&]force3d\b/.test(location.search)) {
+          var conn = navigator.connection;
+          if (conn && conn.saveData) off = true;
+          if (!off) {
+            var gl = document.createElement('canvas').getContext('webgl2');
+            if (!gl) off = true;
+            else {
+              var info = gl.getExtension('WEBGL_debug_renderer_info');
+              var r = String(gl.getParameter(info ? info.UNMASKED_RENDERER_WEBGL : gl.RENDERER));
+              if (/swiftshader|llvmpipe|softpipe|software|basic render/i.test(r)) off = true;
+              var lose = gl.getExtension('WEBGL_lose_context');
+              if (lose) lose.loseContext();
+            }
+          }
+        }
+      } catch (e) {
+        off = true;
+      }
+      if (off) document.documentElement.setAttribute('data-stage-static', '');
+    })();
+  </script>
   <div class="stage__viewport" data-stage-viewport>
     <div class="stage__poster" aria-hidden="true"></div>
     <canvas class="stage__canvas" data-stage-canvas aria-hidden="true"></canvas>
@@ -138,7 +165,7 @@ const chapters = [
     height: 100%;
     transition: opacity 1.4s var(--ease-out);
   }
-  .stage__poster {
+  :global(html:not([data-stage-static])) .stage__poster {
     background:
       url('/media/stage-poster.webp') right center / cover no-repeat,
       radial-gradient(60% 70% at 72% 55%, #18295a 0%, #070d22 70%);
@@ -160,7 +187,7 @@ const chapters = [
     background:
       linear-gradient(90deg, rgba(5, 10, 25, 0.94) 0%, rgba(5, 10, 25, 0.72) 32%, rgba(5, 10, 25, 0) 58%),
       linear-gradient(0deg, rgba(5, 10, 25, 0.85) 0%, rgba(5, 10, 25, 0) 22%),
-      linear-gradient(180deg, rgba(5, 10, 25, 0.7) 0%, rgba(5, 10, 25, 0) 20%);
+      linear-gradient(180deg, var(--scrim-top, rgba(5, 10, 25, 0.7)) 0%, rgba(5, 10, 25, 0) var(--scrim-top-end, 20%));
   }
 
   /* Labels pinned to equipment (positioned by the engine) */
@@ -408,14 +435,23 @@ const chapters = [
     box-shadow: 0 0 10px var(--c-signal);
   }
 
-  /* No WebGL / data saver: the real switchboard photo instead of the render */
+  /* No 3D (decided before paint, or the engine bailed out): the real switchboard photo */
+  :global(html[data-stage-static]) .stage,
+  .stage:global(.is-static) {
+    /* darker top band so the nav stays legible over the bright photo */
+    --scrim-top: rgba(5, 10, 25, 0.9);
+    --scrim-top-end: 30%;
+  }
+  :global(html[data-stage-static]) .stage__canvas,
   .stage:global(.is-static) .stage__canvas {
     display: none;
   }
   /* the bus readout belongs to the simulated scene, not to a photo */
+  :global(html[data-stage-static]) .stage__bottom,
   .stage:global(.is-static) .stage__bottom {
     display: none;
   }
+  :global(html[data-stage-static]) .stage__poster,
   .stage:global(.is-static) .stage__poster {
     background:
       var(--real-poster) 62% center / cover no-repeat,
@@ -426,7 +462,7 @@ const chapters = [
     .stage__scrim {
       background:
         linear-gradient(0deg, rgba(5, 10, 25, 0.98) 0%, rgba(5, 10, 25, 0.9) 44%, rgba(5, 10, 25, 0.62) 62%, rgba(5, 10, 25, 0) 80%),
-        linear-gradient(180deg, rgba(5, 10, 25, 0.8) 0%, rgba(5, 10, 25, 0) 22%);
+        linear-gradient(180deg, var(--scrim-top, rgba(5, 10, 25, 0.8)) 0%, rgba(5, 10, 25, 0) var(--scrim-top-end, 22%));
     }
     .stage__poster {
       background-position: 70% 20%;

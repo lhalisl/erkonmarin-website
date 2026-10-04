@@ -62,7 +62,8 @@
 html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
-  scroll-padding-top: calc(var(--header-h) + 16px);
+  /* sections land flush with the top, so the nav takes the destination's tone; each section's own padding clears the bar */
+  scroll-padding-top: 0;
 }
 
 @media (prefers-reduced-motion: no-preference) {

@@ -137,12 +137,14 @@ import { site, nav, whatsappLink } from '../data/site';
 
 <style>
   .site-header {
+    --tone-t: 0.2s;
     /* dark tone: over the 3D stage and dark sections */
     --nav-fg: #fff;
-    --nav-muted: rgba(255, 255, 255, 0.78);
+    --nav-muted: rgba(255, 255, 255, 0.9);
     --nav-hover: rgba(255, 255, 255, 0.1);
-    --nav-glass: rgba(255, 255, 255, 0.06);
-    --nav-glass-scrolled: rgba(8, 14, 34, 0.42);
+    /* tinted enough that links keep ≥4.5:1 over bright photos */
+    --nav-glass: rgba(8, 14, 34, 0.34);
+    --nav-glass-scrolled: rgba(8, 14, 34, 0.64);
     --nav-edge: rgba(255, 255, 255, 0.16);
     --nav-shine: rgba(255, 255, 255, 0.1);
     --nav-hull: #fff;
@@ -173,7 +175,7 @@ import { site, nav, whatsappLink } from '../data/site';
     align-items: center;
     gap: 32px;
     padding: 0 10px 0 20px;
-    margin-inline: -20px -10px;
+    margin-inline: -20px;
     border: 1px solid var(--nav-edge);
     border-radius: 14px;
     background: var(--nav-glass);
@@ -181,10 +183,10 @@ import { site, nav, whatsappLink } from '../data/site';
     -webkit-backdrop-filter: blur(18px) saturate(1.5);
     backdrop-filter: blur(18px) saturate(1.5);
     transition:
-      background-color 0.45s var(--ease-out),
-      border-color 0.45s var(--ease-out),
-      box-shadow 0.45s var(--ease-out),
-      color 0.3s;
+      background-color var(--tone-t) linear,
+      border-color var(--tone-t) linear,
+      box-shadow var(--tone-t) linear,
+      color var(--tone-t) linear;
   }
   .site-header[data-scrolled] .bar {
     background: var(--nav-glass-scrolled);
@@ -194,6 +196,11 @@ import { site, nav, whatsappLink } from '../data/site';
   }
   .site-header[data-menu-open] .bar {
     background: rgba(8, 14, 34, 0.7);
+  }
+
+  /* cyan focus ring is too faint on the light glass */
+  .site-header[data-tone='light'] :focus-visible {
+    outline-color: var(--c-navy);
   }
 
   .brand {
@@ -236,8 +243,8 @@ import { site, nav, whatsappLink } from '../data/site';
     text-decoration: none;
     color: var(--nav-muted);
     transition:
-      color 0.25s,
-      background-color 0.25s;
+      color var(--tone-t) linear,
+      background-color var(--tone-t) linear;
   }
   .nav a:hover {
     color: var(--nav-fg);
@@ -259,6 +266,7 @@ import { site, nav, whatsappLink } from '../data/site';
     font-variant-numeric: tabular-nums;
     text-decoration: none;
     color: var(--nav-fg);
+    transition: color var(--tone-t) linear;
   }
   .bar__phone :global(svg) {
     width: 18px;
@@ -282,6 +290,10 @@ import { site, nav, whatsappLink } from '../data/site';
     border: 1px solid var(--nav-edge);
     border-radius: 10px;
     cursor: pointer;
+    transition:
+      color var(--tone-t) linear,
+      background-color var(--tone-t) linear,
+      border-color var(--tone-t) linear;
   }
   .menu-toggle :global(svg) {
     width: 22px;
@@ -388,7 +400,7 @@ import { site, nav, whatsappLink } from '../data/site';
     }
     .bar {
       height: 60px;
-      margin-inline: -10px -6px;
+      margin-inline: -10px;
       padding: 0 6px 0 12px;
       border-radius: 12px;
     }
