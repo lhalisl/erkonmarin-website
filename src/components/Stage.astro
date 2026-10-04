@@ -82,13 +82,10 @@ const chapters = [
     </div>
 
     {
-      chapters.map((c, i) => (
+      chapters.map((c) => (
         <article class="step step--chapter" data-step id={c.id} aria-labelledby={`${c.id}-title`}>
           <div class="container">
             <div class="chapter">
-              <span class="chapter__n numeral" aria-hidden="true">
-                {String(i + 1).padStart(2, '0')}
-              </span>
               <h2 class="chapter__title h2" id={`${c.id}-title`}>
                 {c.title[0]} <em>{c.title[1]}</em>
               </h2>
@@ -371,14 +368,7 @@ const chapters = [
   .chapter {
     max-width: 500px;
   }
-  .chapter__n {
-    display: block;
-    font-size: clamp(56px, 6vw, 88px);
-    font-style: italic;
-    color: var(--c-signal);
-  }
   .chapter__title {
-    margin-top: 14px;
     font-size: clamp(44px, 5vw, 80px);
   }
   .chapter__title em {
@@ -444,11 +434,7 @@ const chapters = [
     .hero__actions {
       margin-top: 28px;
     }
-    .chapter__n {
-      font-size: 52px;
-    }
     .chapter__title {
-      margin-top: 8px;
       font-size: clamp(38px, 10vw, 60px);
     }
     .chapter__text {
