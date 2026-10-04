@@ -1,0 +1,574 @@
+---
+import Icon from './Icon.astro';
+import { site } from '../data/site';
+
+const chapters = [
+  {
+    id: 'sistemler',
+    kicker: 'Kontrol odası',
+    title: 'Kontrol odası',
+    text: 'Alarm ve izleme konsolundaki bir uyarı, çoğu zaman sahadaki bir arızanın ilk işaretidir. Sinyali kaynağına kadar izler, arızayı yerinde tespit ederiz.',
+    items: ['Alarm ve izleme konsolları', 'Sinyal ve kablaj takibi', 'Konsol ekipmanlarının bakımı'],
+  },
+  {
+    id: 'sistem-msb',
+    kicker: 'MSB',
+    title: 'Ana dağıtım panosu',
+    text: 'Geminin bütün enerjisi buradan geçer. Jeneratör, bara ve dağıtım hücrelerinde arıza tespiti ve bakım, enerjiyi kesintisiz tutma disipliniyle yapılır.',
+    items: ['Jeneratör ve senkronizasyon panoları', 'Hava ve kompakt devre kesiciler (ACB / MCCB)', 'Ölçü, koruma ve kontrol devreleri'],
+  },
+  {
+    id: 'sistem-otomasyon',
+    kicker: 'Otomasyon',
+    title: 'Otomasyon panoları',
+    text: 'PLC’den röleye, klemensten operatör paneline: otomasyon arızalarını şema üzerinden adım adım izler, gereken parçayı değiştirir, sistemi yeniden devreye alırız.',
+    items: ['PLC ve I/O modülleri', 'Röle, kontaktör ve starter devreleri', 'Operatör panelleri (HMI)'],
+  },
+  {
+    id: 'sistem-montaj',
+    kicker: 'Montaj · Demontaj',
+    title: 'Montaj ve demontaj',
+    text: 'Yeni panonun montajından eski sistemin sökümüne kadar işi uçtan uca üstleniriz. Her bağlantı etiketlenir, her adım kayda geçer.',
+    items: ['Pano montajı ve devreye alma', 'Kontrollü söküm ve etiketleme', 'Test ve teslim raporu'],
+  },
+];
+
+const rail = ['Giriş', ...chapters.map((c) => c.kicker)];
+const stepIds = ['giris', ...chapters.map((c) => c.id)];
+---
+
+<section class="stage" data-stage aria-labelledby="hero-title">
+  <div class="stage__viewport" data-stage-viewport>
+    <div class="stage__poster" aria-hidden="true"></div>
+    <canvas class="stage__canvas" data-stage-canvas aria-hidden="true"></canvas>
+    <div class="stage__scrim" aria-hidden="true"></div>
+    <div class="stage__annotations" data-stage-annotations aria-hidden="true"></div>
+
+    <div class="stage__bottom container">
+      <nav class="stage__rail" aria-label="Sistem bölümleri">
+        <ol role="list">
+          {
+            rail.map((label, i) => (
+              <li>
+                <a href={`#${stepIds[i]}`} data-rail-link>
+                  <span class="stage__rail-n">{String(i).padStart(2, '0')}</span>
+                  <span class="stage__rail-l">{label}</span>
+                </a>
+              </li>
+            ))
+          }
+        </ol>
+        <span class="stage__rail-track" aria-hidden="true"><span></span></span>
+      </nav>
+
+      <div class="stage__hud label" data-stage-hud aria-hidden="true">
+        <div class="hud__row hud__head">
+          <span>Ana bara</span>
+          <span class="hud__live"><span class="lamp"></span>DG1 · DG2</span>
+        </div>
+        <div class="hud__row hud__vals">
+          <span><b data-hud="v">440</b> V</span>
+          <span><b data-hud="hz">60.0</b> Hz</span>
+          <span><b data-hud="load">62</b> %</span>
+        </div>
+        <div class="hud__bar"><span data-hud="bar"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="stage__track">
+    <div class="step step--hero" data-step id="giris">
+      <div class="container">
+        <div class="hero">
+          <h1 id="hero-title">
+            <span class="hero__eyebrow label section-index">Gemi elektrik ve otomasyon servisi</span>
+            <span class="hero__title display">Ana panoda <span class="hero__accent">tahmine</span> yer yok.</span>
+          </h1>
+          <p class="lead hero__lead">
+            Kontrol odası, MSB ve tüm otomasyon panolarında arıza tespiti, bakım, montaj ve demontaj. Geminiz rıhtımda beklerken
+            her saatin değerini bilen bir ekiple.
+          </p>
+          <div class="hero__actions">
+            <a class="btn btn--signal" href="#talep">
+              <span>Servis talebi oluşturun</span>
+              <Icon name="arrow" />
+            </a>
+            <a class="btn btn--ghost hero__call" href={site.phones[0].href}>
+              <Icon name="phone" />
+              <span>{site.phones[0].display}</span>
+            </a>
+          </div>
+          <p class="hero__note label">
+            <Icon name="clock" />
+            {site.hours.label} · Mesai dışında WhatsApp’tan yazabilirsiniz
+          </p>
+        </div>
+      </div>
+    </div>
+
+    {
+      chapters.map((c, i) => (
+        <article class="step step--chapter" data-step id={c.id} aria-labelledby={`${c.id}-title`}>
+          <div class="container">
+            <div class="chapter">
+              <p class="chapter__index label">
+                <span class="chapter__n">{String(i + 1).padStart(2, '0')}</span>
+                <span class="chapter__of">/ 04</span>
+                <span class="chapter__kicker">{c.kicker}</span>
+              </p>
+              <h2 class="chapter__title" id={`${c.id}-title`}>
+                {c.title}
+              </h2>
+              <p class="chapter__text">{c.text}</p>
+              <ul class="chapter__list" role="list">
+                {c.items.map((item) => (
+                  <li>{item}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </article>
+      ))
+    }
+  </div>
+</section>
+
+<script>
+  import { initStage } from '../scripts/stage/ui';
+  initStage();
+</script>
+
+<style>
+  .stage {
+    position: relative;
+    background: #070d22;
+  }
+
+  .stage__viewport {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100svh;
+    margin-bottom: -100vh;
+    margin-bottom: -100svh;
+    overflow: hidden;
+    z-index: 0;
+  }
+
+  .stage__poster,
+  .stage__canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    transition: opacity 1.4s var(--ease-out);
+  }
+  .stage__poster {
+    background:
+      url('/media/stage-poster.webp') right center / cover no-repeat,
+      radial-gradient(60% 70% at 72% 55%, #18295a 0%, #070d22 70%);
+  }
+  .stage__canvas {
+    opacity: 0;
+  }
+  .stage__viewport:global(.is-live) .stage__canvas {
+    opacity: 1;
+  }
+  .stage__viewport:global(.is-live) .stage__poster {
+    opacity: 0;
+  }
+
+  .stage__scrim {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      linear-gradient(90deg, rgba(5, 10, 25, 0.94) 0%, rgba(5, 10, 25, 0.72) 30%, rgba(5, 10, 25, 0) 56%),
+      linear-gradient(0deg, rgba(5, 10, 25, 0.9) 0%, rgba(5, 10, 25, 0) 24%),
+      linear-gradient(180deg, rgba(5, 10, 25, 0.75) 0%, rgba(5, 10, 25, 0) 20%);
+  }
+
+  /* Annotations (positioned by the engine) */
+  .stage__annotations {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  .stage__annotations :global(.anno) {
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    will-change: transform, opacity;
+  }
+  .stage__annotations :global(.anno__dot) {
+    position: absolute;
+    left: -7px;
+    top: -7px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 1.5px solid var(--c-signal);
+    box-shadow: 0 0 14px rgba(43, 187, 229, 0.55);
+  }
+  .stage__annotations :global(.anno__dot)::after {
+    content: '';
+    position: absolute;
+    inset: 3px;
+    border-radius: 50%;
+    background: var(--c-signal);
+  }
+  .stage__annotations :global(.anno__line) {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 64px;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(43, 187, 229, 0.2), var(--c-signal));
+    transform-origin: 0 0;
+    transform: rotate(-34deg);
+  }
+  .stage__annotations :global(.anno__body) {
+    position: absolute;
+    left: 53px;
+    top: -60px;
+    display: grid;
+    gap: 2px;
+    padding: 9px 13px 10px;
+    white-space: nowrap;
+    background: rgba(5, 10, 25, 0.86);
+    border: 1px solid rgba(43, 187, 229, 0.38);
+    font-family: var(--f-mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    line-height: 1.35;
+  }
+  .stage__annotations :global(.anno__body b) {
+    color: #fff;
+    font-weight: 500;
+    font-size: 12px;
+  }
+  .stage__annotations :global(.anno__body span) {
+    color: var(--c-mist);
+  }
+  .stage__annotations :global(.anno[data-side='l'] .anno__line) {
+    transform: rotate(-146deg);
+  }
+  .stage__annotations :global(.anno[data-side='l'] .anno__body) {
+    left: auto;
+    right: 53px;
+  }
+
+  /* Bottom strip: chapter rail + HUD */
+  .stage__bottom {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 28px;
+    margin-inline: auto;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 32px;
+    pointer-events: none;
+  }
+  .stage__rail {
+    position: relative;
+    pointer-events: auto;
+  }
+  .stage__rail ol {
+    display: flex;
+    gap: 6px;
+    margin: 0;
+  }
+  .stage__rail a {
+    display: grid;
+    gap: 6px;
+    min-width: 108px;
+    padding: 12px 14px 14px 0;
+    text-decoration: none;
+    font-family: var(--f-mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--c-mist-2);
+    transition: color 0.3s;
+  }
+  .stage__rail a:hover,
+  .stage__rail a[aria-current] {
+    color: #fff;
+  }
+  .stage__rail a[aria-current] .stage__rail-n {
+    color: var(--c-signal);
+  }
+  .stage__rail-track {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: var(--c-line-dark-2);
+  }
+  .stage__rail-track span {
+    position: absolute;
+    inset: 0;
+    background: var(--c-signal);
+    transform-origin: left;
+    transform: scaleX(calc(var(--stage-p, 0) / 4));
+  }
+
+  .stage__hud {
+    width: 280px;
+    padding: 14px 16px 16px;
+    border: 1px solid var(--c-line-dark-2);
+    background: rgba(5, 10, 25, 0.72);
+    color: var(--c-mist);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+  }
+  .hud__row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .hud__live {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #fff;
+  }
+  .hud__live .lamp {
+    width: 6px;
+    height: 6px;
+  }
+  .hud__vals {
+    margin-top: 10px;
+  }
+  .hud__vals b {
+    font-size: 20px;
+    font-weight: 500;
+    letter-spacing: 0;
+    color: #fff;
+    font-variant-numeric: tabular-nums;
+  }
+  .hud__bar {
+    position: relative;
+    height: 3px;
+    margin-top: 12px;
+    background: var(--c-line-dark-2);
+    overflow: hidden;
+  }
+  .hud__bar span {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, var(--c-signal-dim), var(--c-signal));
+    transform-origin: left;
+    transform: scaleX(0.62);
+    transition: transform 0.3s linear;
+  }
+
+  /* Scrolling copy */
+  .stage__track {
+    position: relative;
+    z-index: 1;
+    pointer-events: none;
+  }
+  .step {
+    min-height: 100vh;
+    min-height: 100svh;
+    display: flex;
+    align-items: center;
+    padding-block: calc(var(--header-h) + var(--utility-h) + 24px) 140px;
+  }
+  .step > .container {
+    width: 100%;
+  }
+  .hero,
+  .chapter {
+    pointer-events: auto;
+    opacity: var(--vis, 1);
+    transform: translateY(calc((1 - var(--vis, 1)) * 26px));
+    will-change: opacity, transform;
+  }
+
+  .hero {
+    max-width: 680px;
+  }
+  .hero h1 {
+    display: grid;
+    gap: 26px;
+    font-weight: inherit;
+  }
+  .hero__eyebrow {
+    color: var(--c-signal);
+  }
+  .hero__title {
+    font-size: clamp(46px, min(6.2vw, 10vh), 108px);
+    text-wrap: balance;
+  }
+  .hero__accent {
+    color: transparent;
+    -webkit-text-stroke: 1.5px var(--c-signal);
+    font-weight: 800;
+  }
+  .hero__lead {
+    max-width: 540px;
+    margin-top: 28px;
+    color: #c9d3ea;
+  }
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 40px;
+  }
+  .hero__call {
+    font-family: var(--f-mono);
+    font-weight: 500;
+    font-stretch: 100%;
+    color: #fff;
+  }
+  .hero__note {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 22px;
+    color: var(--c-mist-2);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+  }
+  .hero__note :global(svg) {
+    width: 16px;
+    height: 16px;
+  }
+
+  .chapter {
+    max-width: 470px;
+  }
+  .chapter__index {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    color: var(--c-mist-2);
+  }
+  .chapter__n {
+    color: var(--c-signal);
+    font-size: 13px;
+  }
+  .chapter__kicker {
+    margin-left: 12px;
+    padding-left: 12px;
+    border-left: 1px solid var(--c-line-dark-2);
+    color: #fff;
+  }
+  .chapter__title {
+    margin-top: 22px;
+    font-stretch: 116%;
+    font-weight: 740;
+    font-size: clamp(40px, 4.6vw, 72px);
+    letter-spacing: -0.03em;
+    line-height: 0.98;
+    text-wrap: balance;
+  }
+  .chapter__text {
+    margin-top: 22px;
+    color: #c9d3ea;
+    font-size: 18px;
+    text-wrap: pretty;
+  }
+  .chapter__list {
+    margin-top: 28px;
+    border-top: 1px solid var(--c-line-dark-2);
+  }
+  .chapter__list li {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 13px 0;
+    border-bottom: 1px solid var(--c-line-dark);
+    font-size: 15px;
+    color: #e6ecf8;
+  }
+  .chapter__list li::before {
+    content: '';
+    width: 7px;
+    height: 7px;
+    flex: none;
+    border: 1.5px solid var(--c-signal);
+    transform: rotate(45deg);
+  }
+
+  /* No WebGL / data saver: poster only */
+  .stage:global(.is-static) .stage__canvas {
+    display: none;
+  }
+
+  @media (max-width: 1180px) {
+    .stage__rail a {
+      min-width: 0;
+    }
+    .stage__rail-l {
+      display: none;
+    }
+  }
+
+  @media (max-width: 959px) {
+    .stage__scrim {
+      background:
+        linear-gradient(0deg, rgba(5, 10, 25, 0.98) 0%, rgba(5, 10, 25, 0.9) 44%, rgba(5, 10, 25, 0.62) 62%, rgba(5, 10, 25, 0) 80%),
+        linear-gradient(180deg, rgba(5, 10, 25, 0.8) 0%, rgba(5, 10, 25, 0) 22%);
+    }
+    .stage__poster {
+      background-position: 70% 20%;
+    }
+    .step {
+      align-items: flex-end;
+      padding-bottom: 72px;
+    }
+    .hero__title {
+      font-size: clamp(42px, 11.5vw, 72px);
+    }
+    .stage__bottom {
+      display: none;
+    }
+    .stage__annotations {
+      display: none;
+    }
+    .hero__lead {
+      margin-top: 20px;
+    }
+    .hero__actions {
+      margin-top: 28px;
+    }
+    .chapter__text {
+      font-size: 16px;
+    }
+    .chapter__list li {
+      padding: 10px 0;
+      font-size: 14px;
+    }
+  }
+
+  /* the mobile dock sits over the bottom of the viewport */
+  @media (max-width: 760px) {
+    .step {
+      padding-bottom: 104px;
+    }
+    .hero__note {
+      display: none;
+    }
+  }
+
+  @media (max-width: 520px) {
+    .hero h1 {
+      gap: 18px;
+    }
+    .hero__actions .btn {
+      flex: 1 1 100%;
+    }
+    .hero__note {
+      font-size: 10px;
+    }
+  }
+</style>

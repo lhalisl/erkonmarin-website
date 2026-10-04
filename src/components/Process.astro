@@ -1,0 +1,236 @@
+---
+const steps = [
+  {
+    step: 'Bildirim',
+    what: 'Gemi adı, liman ve belirtiyi telefon, WhatsApp ya da form ile iletirsiniz.',
+    out: 'İş kaydı açılır',
+  },
+  {
+    step: 'Ön değerlendirme',
+    what: 'Belirtileri ve mevcut şemaları inceler, ekipman ve olası yedek parça ihtiyacını önceden planlarız.',
+    out: 'Müdahale planı',
+  },
+  {
+    step: 'Sahada müdahale',
+    what: 'Gemide ölçüm ve teşhis yapar; onarım, bakım, montaj ya da demontaj işini tamamlarız.',
+    out: 'Çalışır durumda sistem',
+  },
+  {
+    step: 'Test ve teslim',
+    what: 'Sistemi test eder, yapılan işi ve değişen parçaları raporlayarak teslim ederiz.',
+    out: 'Servis raporu',
+  },
+];
+---
+
+<section class="process" id="surec" aria-labelledby="process-title">
+  <div class="container process__grid">
+    <header class="process__head">
+      <p class="label section-index" data-reveal>Süreç</p>
+      <h2 class="h2" id="process-title" data-reveal style="--d:80">Her iş, seyir defteri gibi kayıtlı.</h2>
+      <p class="lead" data-reveal style="--d:160">
+        Ne zaman aradığınızı, ne bulduğumuzu, neyi değiştirdiğimizi bilirsiniz. Gemiden ayrıldığımızda elinizde sürpriz değil,
+        rapor olur.
+      </p>
+    </header>
+
+    <div class="log" data-reveal style="--d:120">
+      <div class="log__top label" aria-hidden="true">
+        <span>Servis kaydı</span>
+        <span>Erkon Marin</span>
+        <span>Sayfa 1</span>
+      </div>
+      <table class="log__table">
+        <caption class="visually-hidden">Servis süreci adımları</caption>
+        <thead>
+          <tr>
+            <th scope="col" class="label">No.</th>
+            <th scope="col" class="label">Adım</th>
+            <th scope="col" class="label">Ne yapıyoruz</th>
+            <th scope="col" class="label">Kayda geçen</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            steps.map((s, i) => (
+              <tr>
+                <td class="log__no">{String(i + 1).padStart(2, '0')}</td>
+                <th scope="row" class="log__step">
+                  {s.step}
+                </th>
+                <td class="log__what">{s.what}</td>
+                <td class="log__out">
+                  <span>{s.out}</span>
+                </td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<style>
+  .process {
+    padding-block: clamp(96px, 12vw, 180px);
+    background: var(--c-paper-hi);
+    color: var(--c-ink);
+  }
+  .process__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: clamp(40px, 6vw, 110px);
+    align-items: start;
+  }
+  .process__head {
+    position: sticky;
+    top: calc(var(--header-h) + 40px);
+  }
+  .process__head .label {
+    color: var(--c-navy);
+  }
+  .process__head .h2 {
+    margin-top: 22px;
+    font-size: clamp(36px, 4.4vw, 68px);
+  }
+  .process__head .lead {
+    margin-top: 28px;
+    color: var(--c-ink-2);
+    max-width: 440px;
+  }
+
+  /* Logbook page: ruled lines and a red margin rule */
+  .log {
+    position: relative;
+    padding: 28px 32px 36px 72px;
+    background-color: #f7f6f1;
+    background-image:
+      linear-gradient(90deg, transparent 52px, rgba(214, 69, 58, 0.45) 52px, rgba(214, 69, 58, 0.45) 53px, transparent 53px),
+      repeating-linear-gradient(180deg, transparent 0 31px, rgba(34, 57, 143, 0.12) 31px 32px);
+    box-shadow:
+      0 1px 0 rgba(10, 17, 40, 0.06),
+      0 30px 60px -30px rgba(10, 17, 40, 0.28);
+    border: 1px solid var(--c-line-light);
+  }
+  .log__top {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    padding-bottom: 18px;
+    font-size: 10.5px;
+    color: var(--c-ink-3);
+    border-bottom: 2px solid var(--c-ink);
+  }
+  .log__table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .log__table thead th {
+    padding: 16px 16px 12px 0;
+    text-align: left;
+    font-size: 10.5px;
+    font-weight: 500;
+    color: var(--c-ink-3);
+    border-bottom: 1px solid var(--c-line-light-2);
+  }
+  .log__table td,
+  .log__table tbody th {
+    padding: 26px 16px 26px 0;
+    vertical-align: top;
+    text-align: left;
+    border-bottom: 1px solid var(--c-line-light-2);
+  }
+  .log__table tbody tr {
+    transition: background-color 0.3s;
+  }
+  .log__table tbody tr:hover {
+    background: rgba(43, 187, 229, 0.07);
+  }
+  .log__no {
+    width: 48px;
+    font-family: var(--f-mono);
+    font-size: 13px;
+    color: var(--c-navy);
+  }
+  .log__step {
+    width: 22%;
+    font-stretch: 110%;
+    font-weight: 700;
+    font-size: 19px;
+    line-height: 1.2;
+  }
+  .log__what {
+    color: var(--c-ink-2);
+    font-size: 16px;
+    line-height: 1.55;
+  }
+  .log__out {
+    width: 24%;
+  }
+  .log__out span {
+    display: inline-block;
+    padding: 6px 10px;
+    border: 1.5px solid var(--c-navy);
+    color: var(--c-navy);
+    font-family: var(--f-mono);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    line-height: 1.3;
+    transform: rotate(-1.5deg);
+  }
+  .log__table tbody tr:nth-child(even) .log__out span {
+    transform: rotate(1deg);
+  }
+
+  @media (max-width: 1080px) {
+    .process__grid {
+      grid-template-columns: 1fr;
+    }
+    .process__head {
+      position: static;
+    }
+  }
+
+  @media (max-width: 680px) {
+    .log {
+      padding: 20px 18px 24px 40px;
+      background-image:
+        linear-gradient(90deg, transparent 24px, rgba(214, 69, 58, 0.45) 24px, rgba(214, 69, 58, 0.45) 25px, transparent 25px),
+        repeating-linear-gradient(180deg, transparent 0 31px, rgba(34, 57, 143, 0.12) 31px 32px);
+    }
+    .log__table thead {
+      display: none;
+    }
+    .log__table,
+    .log__table tbody,
+    .log__table tr,
+    .log__table td,
+    .log__table tbody th {
+      display: block;
+      width: auto;
+    }
+    .log__table tr {
+      position: relative;
+      padding: 22px 0 22px 40px;
+      border-bottom: 1px solid var(--c-line-light-2);
+    }
+    .log__table td,
+    .log__table tbody th {
+      padding: 0;
+      border: 0;
+    }
+    .log__no {
+      position: absolute;
+      left: 0;
+      top: 25px;
+    }
+    .log__what {
+      margin-top: 8px;
+    }
+    .log__out {
+      margin-top: 14px;
+    }
+  }
+</style>

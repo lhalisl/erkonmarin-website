@@ -1,0 +1,154 @@
+---
+const roles = [
+  {
+    who: 'Armatörler ve gemi işletmecileri',
+    need: 'Off-hire riskini azaltan, hızlı ve kayıtlı servis.',
+  },
+  {
+    who: 'Teknik müdürler ve süperintendentler',
+    need: 'Raporlanmış, izlenebilir, sürprizsiz işler. Bir sonraki sörvey için hazır kayıtlar.',
+  },
+  {
+    who: 'Baş mühendisler ve kaptanlar',
+    need: 'Makine dairesinin dilini konuşan, sahada hızlı karar veren bir ekip.',
+  },
+  {
+    who: 'Tersaneler',
+    need: 'Yeni inşa ve onarım projelerinde pano montajı, söküm ve devreye alma.',
+  },
+];
+---
+
+<section class="audience" id="kimler" aria-labelledby="audience-title">
+  <div class="container audience__grid">
+    <header class="audience__head">
+      <p class="label section-index" data-reveal>Kimler için</p>
+      <h2 class="h2" id="audience-title" data-reveal style="--d:80">Geminin sorumluluğunu taşıyanlar için.</h2>
+      <p class="lead" data-reveal style="--d:160">
+        Bir arızanın maliyetini en iyi, o maliyeti üstlenenler bilir. Çalışma şeklimizi onların beklentisine göre kurduk.
+      </p>
+    </header>
+
+    <ul class="roles" role="list">
+      {
+        roles.map((r, i) => (
+          <li class="role" data-reveal style={`--d:${i * 70}`}>
+            <span class="role__lamp" aria-hidden="true" />
+            <h3 class="role__who">{r.who}</h3>
+            <p class="role__need">{r.need}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .audience {
+    padding-block: clamp(96px, 12vw, 180px);
+    background:
+      radial-gradient(70% 60% at 100% 0%, rgba(34, 57, 143, 0.32), transparent 70%),
+      var(--c-deep);
+  }
+  .audience__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+    gap: clamp(40px, 6vw, 110px);
+    align-items: start;
+  }
+  .audience__head {
+    position: sticky;
+    top: calc(var(--header-h) + 40px);
+  }
+  .audience__head .label {
+    color: var(--c-signal);
+  }
+  .audience__head .h2 {
+    margin-top: 22px;
+    font-size: clamp(36px, 4.4vw, 68px);
+  }
+  .audience__head .lead {
+    margin-top: 28px;
+    color: #c9d3ea;
+    max-width: 440px;
+  }
+
+  .roles {
+    margin: 0;
+    border-top: 1px solid var(--c-line-dark-2);
+  }
+  .role {
+    position: relative;
+    display: grid;
+    grid-template-columns: 28px minmax(0, 1fr);
+    column-gap: 18px;
+    padding: 34px 8px 34px 0;
+    border-bottom: 1px solid var(--c-line-dark-2);
+  }
+  .role::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(90deg, rgba(43, 187, 229, 0.08), transparent 70%);
+    opacity: 0;
+    transition: opacity 0.4s var(--ease-out);
+  }
+  .role:hover::before {
+    opacity: 1;
+  }
+  .role__lamp {
+    width: 12px;
+    height: 12px;
+    margin-top: 12px;
+    border-radius: 50%;
+    border: 1.5px solid var(--c-mist-2);
+    transition:
+      background-color 0.4s,
+      border-color 0.4s,
+      box-shadow 0.4s;
+  }
+  .role:hover .role__lamp {
+    background: var(--c-signal);
+    border-color: var(--c-signal);
+    box-shadow: 0 0 16px var(--c-signal);
+  }
+  .role__who {
+    font-stretch: 114%;
+    font-weight: 720;
+    font-size: clamp(24px, 2.6vw, 38px);
+    letter-spacing: -0.025em;
+    line-height: 1.08;
+  }
+  .role__need {
+    grid-column: 2;
+    margin-top: 12px;
+    max-width: 520px;
+    color: var(--c-mist);
+    font-size: 17px;
+  }
+
+  @media (max-width: 1080px) {
+    .audience__grid {
+      grid-template-columns: 1fr;
+    }
+    .audience__head {
+      position: static;
+    }
+  }
+  @media (max-width: 520px) {
+    .role {
+      grid-template-columns: 20px minmax(0, 1fr);
+      column-gap: 12px;
+      padding: 26px 0;
+    }
+    .role__lamp {
+      width: 10px;
+      height: 10px;
+      margin-top: 9px;
+    }
+    .role__need {
+      font-size: 16px;
+    }
+  }
+</style>

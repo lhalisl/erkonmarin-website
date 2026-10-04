@@ -1,0 +1,432 @@
+---
+// Each service is drawn as a feeder on a single-line diagram: an IEC breaker
+// symbol hanging off the main bus. Breakers close (energise) as the section
+// scrolls in, and on hover.
+const services = [
+  {
+    tag: 'Q1',
+    title: 'Arıza tespiti',
+    text: 'Ölçüm, şema takibi ve sistematik eleme ile arızanın kök nedenine ineriz. Parçayı değiştirip şansımızı denemeyiz.',
+    out: 'Teşhis ve onarım raporu',
+  },
+  {
+    tag: 'Q2',
+    title: 'Bakım',
+    text: 'Periyodik ve önleyici bakımla arızayı seferin ortasında değil, sizin planladığınız günde karşılarsınız.',
+    out: 'Bakım kaydı ve öneri listesi',
+  },
+  {
+    tag: 'Q3',
+    title: 'Montaj',
+    text: 'Pano ve otomasyon ekipmanlarının montajı, kablajı, testi ve devreye alınması.',
+    out: 'Devreye alma test sonuçları',
+  },
+  {
+    tag: 'Q4',
+    title: 'Demontaj',
+    text: 'Değişecek ya da sökülecek sistemlerin etiketlenerek, belgelenerek ve güvenle sökülmesi.',
+    out: 'Söküm ve etiket dokümanı',
+  },
+];
+---
+
+<section class="services" id="hizmetler" aria-labelledby="services-title">
+  <div class="container">
+    <header class="services__head">
+      <div>
+        <p class="label section-index" data-reveal>Hizmetler</p>
+        <h2 class="h2" id="services-title" data-reveal style="--d:80">Dört iş.<br />Tek muhatap.</h2>
+      </div>
+      <p class="lead services__lead" data-reveal style="--d:160">
+        Arızayı bulan, bakımı yapan, panoyu kuran ve gerektiğinde söken aynı ekip. Sistemi baştan sona bilen tek bir muhatabınız olur;
+        bilgi el değiştirirken kaybolmaz.
+      </p>
+    </header>
+
+    <div class="sld" data-sld>
+      <div class="sld__bus" aria-hidden="true">
+        <span class="sld__bus-label label">Ana bara · 440 V · 60 Hz</span>
+        <span class="sld__bus-line"><span></span></span>
+      </div>
+      <ol class="sld__feeders" role="list">
+        {
+          services.map((s, i) => (
+            <li class="feeder" style={`--i:${i}`}>
+              <svg class="feeder__sym feeder__sym--v" viewBox="0 0 48 120" aria-hidden="true">
+                <line x1="24" y1="0" x2="24" y2="40" />
+                <path class="feeder__x" d="M18.5 34.5l11 11M29.5 34.5l-11 11" />
+                <g class="feeder__blade">
+                  <line x1="24" y1="86" x2="24" y2="40" />
+                </g>
+                <circle class="feeder__pivot" cx="24" cy="86" r="3.2" />
+                <line x1="24" y1="86" x2="24" y2="120" />
+              </svg>
+              <svg class="feeder__sym feeder__sym--h" viewBox="0 0 96 48" aria-hidden="true">
+                <line x1="0" y1="24" x2="26" y2="24" />
+                <path class="feeder__x" d="M20.5 18.5l11 11M31.5 18.5l-11 11" />
+                <g class="feeder__blade">
+                  <line x1="70" y1="24" x2="26" y2="24" />
+                </g>
+                <circle class="feeder__pivot" cx="70" cy="24" r="3.2" />
+                <line x1="70" y1="24" x2="96" y2="24" />
+              </svg>
+              <div class="feeder__body">
+                <p class="feeder__tag label">{s.tag}</p>
+                <h3 class="feeder__title">{s.title}</h3>
+                <p class="feeder__text">{s.text}</p>
+                <p class="feeder__out">
+                  <span class="label">Çıktı</span>
+                  <span>{s.out}</span>
+                </p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+
+    <dl class="titleblock label" aria-hidden="true">
+      <div><dt>Çizim</dt><dd>Hizmet şeması</dd></div>
+      <div><dt>Firma</dt><dd>Erkon Marin</dd></div>
+      <div><dt>Sayfa</dt><dd>02 / 05</dd></div>
+    </dl>
+  </div>
+</section>
+
+<script>
+  const sld = document.querySelector<HTMLElement>('[data-sld]');
+  if (sld) {
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          sld.classList.add('is-live');
+          io.disconnect();
+        }
+      },
+      { threshold: 0.35 },
+    );
+    io.observe(sld);
+  }
+</script>
+
+<style>
+  .services {
+    position: relative;
+    padding-block: clamp(96px, 12vw, 180px) clamp(64px, 7vw, 110px);
+    background-color: var(--c-paper);
+    background-image:
+      linear-gradient(rgba(10, 17, 40, 0.045) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(10, 17, 40, 0.045) 1px, transparent 1px);
+    background-size: 32px 32px;
+    color: var(--c-ink);
+  }
+
+  .services__head {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    gap: 48px;
+    align-items: end;
+  }
+  .services__head .label {
+    color: var(--c-navy);
+  }
+  .services__head .h2 {
+    margin-top: 22px;
+  }
+  .services__lead {
+    color: var(--c-ink-2);
+    max-width: 520px;
+  }
+
+  /* Single-line diagram */
+  .sld {
+    --wire-off: rgba(10, 17, 40, 0.3);
+    --wire-on: var(--c-navy);
+    margin-top: clamp(64px, 8vw, 120px);
+  }
+  .sld__bus {
+    position: relative;
+    display: block;
+  }
+  .sld__bus-label {
+    display: block;
+    margin-bottom: 14px;
+    color: var(--c-ink-3);
+    font-size: 11px;
+  }
+  .sld__bus-line {
+    position: relative;
+    display: block;
+    height: 5px;
+    background: var(--wire-off);
+    overflow: hidden;
+  }
+  .sld__bus-line span {
+    position: absolute;
+    inset: 0;
+    background: var(--wire-on);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 1.1s var(--ease-in-out);
+  }
+  .sld__bus-line::after {
+    /* current running along the bus */
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 120px;
+    background: linear-gradient(90deg, transparent, var(--c-signal), transparent);
+    opacity: 0;
+    transform: translateX(-140px);
+  }
+  .sld.is-live .sld__bus-line span {
+    transform: scaleX(1);
+  }
+
+  .sld__feeders {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 32px;
+    margin: 0;
+  }
+
+  .feeder {
+    --delay: calc(900ms + var(--i) * 260ms);
+    display: flex;
+    flex-direction: column;
+  }
+  .feeder__sym {
+    width: 48px;
+    height: 120px;
+    overflow: visible;
+  }
+  .feeder__sym--h {
+    display: none;
+  }
+  .feeder__sym--h .feeder__blade {
+    transform-origin: 70px 24px;
+    transform: rotate(30deg);
+  }
+  .feeder__sym line,
+  .feeder__x {
+    stroke: var(--wire-off);
+    stroke-width: 2.2;
+    stroke-linecap: round;
+    fill: none;
+    transition: stroke 0.5s var(--ease-out) var(--delay);
+  }
+  .feeder__pivot {
+    fill: var(--c-paper);
+    stroke: var(--wire-off);
+    stroke-width: 2;
+    transition: stroke 0.5s var(--ease-out) var(--delay);
+  }
+  .feeder__blade {
+    transform-box: view-box;
+    transform-origin: 24px 86px;
+    transform: rotate(-30deg);
+    transition: transform 0.7s cubic-bezier(0.5, 0, 0.2, 1.4) var(--delay);
+  }
+
+  .feeder__body {
+    flex: 1;
+    margin-left: 23px;
+    padding: 4px 0 8px 30px;
+    border-left: 2px solid var(--wire-off);
+    transition: border-color 0.5s var(--ease-out) calc(var(--delay) + 250ms);
+  }
+  .feeder__tag {
+    color: var(--c-ink-3);
+    transition: color 0.4s var(--ease-out) var(--delay);
+  }
+  .feeder__title {
+    margin-top: 14px;
+    font-stretch: 112%;
+    font-weight: 720;
+    font-size: clamp(24px, 2.2vw, 32px);
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+  }
+  .feeder__text {
+    margin-top: 16px;
+    color: var(--c-ink-2);
+    font-size: 16px;
+    text-wrap: pretty;
+  }
+  .feeder__out {
+    display: grid;
+    gap: 6px;
+    margin-top: 26px;
+    padding-top: 16px;
+    border-top: 1px dashed var(--c-line-light-2);
+    font-size: 14px;
+    font-weight: 560;
+  }
+  .feeder__out .label {
+    color: var(--c-ink-3);
+    font-size: 10.5px;
+  }
+
+  /* energised */
+  .sld.is-live .feeder__sym line,
+  .sld.is-live .feeder__x,
+  .sld.is-live .feeder__pivot {
+    stroke: var(--wire-on);
+  }
+  .sld.is-live .feeder__blade {
+    transform: rotate(0deg);
+  }
+  .sld.is-live .feeder__body {
+    border-color: var(--wire-on);
+  }
+  .sld.is-live .feeder__tag {
+    color: var(--c-navy);
+  }
+
+  /* hover: a quick current pulse down the feeder */
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .feeder__body {
+      position: relative;
+    }
+    .feeder__body::before {
+      content: '';
+      position: absolute;
+      left: -2px;
+      top: 0;
+      width: 2px;
+      height: 80px;
+      background: linear-gradient(180deg, transparent, var(--c-signal), transparent);
+      opacity: 0;
+    }
+    .sld.is-live .feeder:hover .feeder__body::before {
+      animation: pulse-down 1.1s var(--ease-in-out);
+    }
+    .sld.is-live .sld__bus-line::after {
+      animation: bus-run 3.6s var(--ease-in-out) 2.4s infinite;
+    }
+  }
+
+  @keyframes pulse-down {
+    0% {
+      opacity: 1;
+      transform: translateY(-40px);
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(260px);
+    }
+  }
+  @keyframes bus-run {
+    0% {
+      opacity: 1;
+      transform: translateX(-140px);
+    }
+    70%,
+    100% {
+      opacity: 0.9;
+      transform: translateX(110vw);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sld * {
+      transition: none !important;
+    }
+  }
+
+  /* Drawing title block */
+  .titleblock {
+    display: flex;
+    justify-content: flex-end;
+    margin: clamp(56px, 7vw, 96px) 0 0;
+    font-size: 10.5px;
+    color: var(--c-ink-3);
+  }
+  .titleblock div {
+    padding: 10px 16px;
+    border: 1px solid var(--c-line-light-2);
+  }
+  .titleblock div + div {
+    border-left: 0;
+  }
+  .titleblock dt {
+    opacity: 0.7;
+  }
+  .titleblock dd {
+    margin: 4px 0 0;
+    color: var(--c-ink);
+  }
+
+  @media (max-width: 760px) {
+    .services__head {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+  }
+
+  @media (max-width: 1080px) {
+    /* vertical bus, feeders branch to the right */
+    .sld {
+      position: relative;
+      margin-top: 56px;
+    }
+    .sld__bus {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 5px;
+    }
+    .sld__bus-label {
+      display: none;
+    }
+    .sld__bus-line {
+      width: 5px;
+      height: 100%;
+    }
+    .sld__bus-line span {
+      transform: scaleY(0);
+      transform-origin: top;
+    }
+    .sld.is-live .sld__bus-line span {
+      transform: scaleY(1);
+    }
+    .sld__bus-line::after {
+      display: none;
+    }
+    .sld__feeders {
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+    .feeder {
+      flex-direction: row;
+      align-items: flex-start;
+    }
+    .feeder__sym--v {
+      display: none;
+    }
+    .feeder__sym--h {
+      display: block;
+      flex: none;
+      width: 72px;
+      height: 36px;
+      margin-left: 4px;
+    }
+    .feeder__body {
+      margin-left: 10px;
+      border-left: 0;
+      padding: 4px 0 44px;
+    }
+    .feeder__title {
+      margin-top: 8px;
+    }
+    .feeder__body::before {
+      display: none;
+    }
+    .titleblock {
+      justify-content: flex-start;
+      flex-wrap: wrap;
+    }
+  }
+</style>
