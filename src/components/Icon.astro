@@ -1,6 +1,6 @@
 ---
 interface Props {
-  name: 'arrow' | 'arrow-down' | 'phone' | 'whatsapp' | 'menu' | 'close' | 'clock';
+  name: 'arrow' | 'arrow-down' | 'arrow-up-right' | 'phone' | 'whatsapp' | 'menu' | 'close' | 'clock' | 'pin' | 'mail';
   class?: string;
 }
 const { name, class: className } = Astro.props;
@@ -62,6 +62,29 @@ const cls = [name === 'arrow' ? 'arrow' : '', className].filter(Boolean).join(' 
     <svg class={cls} viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.6" />
       <path d="M12 7.5V12l3 2" stroke="currentColor" stroke-width="1.6" />
+    </svg>
+  )
+}
+{
+  name === 'arrow-up-right' && (
+    <svg class={cls} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M7 17 17 7m0 0H8.5M17 7v8.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" />
+    </svg>
+  )
+}
+{
+  name === 'pin' && (
+    <svg class={cls} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M12 21.2s-6.8-6-6.8-11.4a6.8 6.8 0 0 1 13.6 0c0 5.4-6.8 11.4-6.8 11.4Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
+      <circle cx="12" cy="9.8" r="2.4" stroke="currentColor" stroke-width="1.6" />
+    </svg>
+  )
+}
+{
+  name === 'mail' && (
+    <svg class={cls} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <rect x="3.2" y="5.2" width="17.6" height="13.6" rx="2" stroke="currentColor" stroke-width="1.6" />
+      <path d="m4 7 8 6 8-6" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
     </svg>
   )
 }

@@ -9,7 +9,13 @@ const kinds = [
   { value: 'Planlı bakım', label: 'Planlı bakım', hint: 'Takvime göre' },
   { value: 'Montaj / demontaj projesi', label: 'Montaj · söküm', hint: 'Proje' },
 ];
-const systems = ['MSB / ana pano', 'Kontrol odası', 'Otomasyon panosu', 'Diğer'];
+const systems = ['Ana makine', 'Yardımcı makine · D/G', 'Seyir sistemleri', 'MSB / ana pano', 'Kontrol odası · otomasyon', 'Diğer'];
+
+interface Props {
+  /** Leave out the phone / hours / message list (the contact page shows it above the form). */
+  compact?: boolean;
+}
+const { compact = false } = Astro.props;
 ---
 
 <section class="request" id="talep" aria-labelledby="request-title">
@@ -20,6 +26,7 @@ const systems = ['MSB / ana pano', 'Kontrol odası', 'Otomasyon panosu', 'Diğer
         Formu doldurun; talebiniz WhatsApp üzerinden doğrudan ekibimize ulaşsın. Acil durumlarda telefonla arayın.
       </p>
 
+      {!compact && (
       <dl class="lines" data-reveal style="--d:220">
         <div class="lines__row">
           <dt class="flabel">Telefon</dt>
@@ -35,7 +42,7 @@ const systems = ['MSB / ana pano', 'Kontrol odası', 'Otomasyon panosu', 'Diğer
         </div>
         <div class="lines__row">
           <dt class="flabel">Çalışma saatleri</dt>
-          <dd>Pazartesi – Cuma, 10:00 – 18:00</dd>
+          <dd>{site.hours.label}</dd>
         </div>
         <div class="lines__row">
           <dt class="flabel">WhatsApp</dt>
@@ -46,7 +53,14 @@ const systems = ['MSB / ana pano', 'Kontrol odası', 'Otomasyon panosu', 'Diğer
             </a>
           </dd>
         </div>
+        <div class="lines__row">
+          <dt class="flabel">E-posta</dt>
+          <dd>
+            <a class="lines__mail" href={`mailto:${site.email}`}>{site.email}</a>
+          </dd>
+        </div>
       </dl>
+      )}
 
       <figure class="request__photo" data-reveal style="--d:280">
         <Image
@@ -270,6 +284,15 @@ const systems = ['MSB / ana pano', 'Kontrol odası', 'Otomasyon panosu', 'Diğer
   }
   .lines__wa:hover :global(svg) {
     transform: translateX(4px);
+  }
+  .lines__mail {
+    width: fit-content;
+    text-decoration: none;
+    border-bottom: 1px solid currentColor;
+    transition: color 0.2s;
+  }
+  .lines__mail:hover {
+    color: var(--c-signal-hi);
   }
 
   .request__photo {

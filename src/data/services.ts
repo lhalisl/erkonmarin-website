@@ -28,7 +28,7 @@ export const services: Service[] = [
   {
     slug: 'yardimci-makine',
     title: 'Yardımcı Makine',
-    subtitle: 'AUX Engine / D/G',
+    subtitle: 'Aux Engine / D/G',
     paragraphs: [
       'Volvo Penta, Scania ve Dorman jeneratörlerin tüm elektrik, elektronik ve otomasyon sistemlerinin arıza tespiti, bakım ve onarımı; mevcut imkanlar ve gemideki teknik dokümanlar doğrultusunda tarafımızdan profesyonel olarak gerçekleştirilmektedir.',
       'Denizcilik sektöründe edindiğimiz 35 yıllık teknik tecrübe ile, jeneratör sistemlerinin güvenli, kararlı ve verimli şekilde çalışması için gerekli tüm müdahaleleri hızlı ve etkin çözümlerle sunmaktayız.',

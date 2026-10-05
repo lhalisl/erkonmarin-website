@@ -1,6 +1,6 @@
 ---
 import Icon from './Icon.astro';
-import { site, nav, whatsappLink } from '../data/site';
+import { site, nav, whatsappLink, mapsLink, requestHref } from '../data/site';
 import { services, serviceHref } from '../data/services';
 const year = new Date().getFullYear();
 const socials = Object.entries(site.social).filter(([, url]) => url);
@@ -16,7 +16,7 @@ const socials = Object.entries(site.social).filter(([, url]) => url);
       <p class="footer__pitch">
         Gemi elektrik ve otomasyon sistemlerinde arıza tespiti, bakım, montaj ve demontaj.
       </p>
-      <a class="btn btn--signal" href="/#talep">
+      <a class="btn btn--signal" href={requestHref(Astro.url.pathname)}>
         <span>Servis talebi</span>
         <Icon name="arrow" />
       </a>
@@ -34,12 +34,18 @@ const socials = Object.entries(site.social).filter(([, url]) => url);
         }
       </div>
       <div>
-        <p class="footer__h">Çalışma saatleri</p>
-        <p>Pazartesi – Cuma<br />10:00 – 18:00</p>
+        <p class="footer__h">Ofis</p>
+        <address class="footer__addr">
+          <a href={mapsLink} target="_blank" rel="noopener">
+            {site.address.lines.map((l) => <span>{l}</span>)}
+          </a>
+        </address>
+        <p class="footer__hours">Pazartesi – Cuma<br />10:00 – 18:00</p>
       </div>
       <div>
         <p class="footer__h">Mesaj</p>
         <a class="footer__link" href={whatsappLink()} target="_blank" rel="noopener">WhatsApp</a>
+        <a class="footer__link" href={`mailto:${site.email}`}>{site.email}</a>
         {
           socials.map(([name, url]) => (
             <a class="footer__link" href={url} target="_blank" rel="noopener">
@@ -152,6 +158,23 @@ const socials = Object.entries(site.social).filter(([, url]) => url);
   }
   .footer__grid p:not(.footer__h) {
     color: #dfe6f6;
+  }
+  .footer__addr {
+    font-style: normal;
+  }
+  .footer__addr a {
+    display: grid;
+    width: fit-content;
+    color: #dfe6f6;
+    line-height: 1.55;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .footer__addr a:hover {
+    color: var(--c-signal-hi);
+  }
+  .footer__hours {
+    margin-top: 14px;
   }
   .footer__phone {
     display: block;

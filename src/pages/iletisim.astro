@@ -1,0 +1,266 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import MobileDock from '../components/MobileDock.astro';
+import Request from '../components/Request.astro';
+import Icon from '../components/Icon.astro';
+import { site, whatsappLink, mapsLink } from '../data/site';
+---
+
+<Base
+  title="İletişim | Erkon Marin · Beylikdüzü, İstanbul"
+  description={`Erkon Marin iletişim: ${site.phones.map((p) => p.display).join(' · ')} · ${site.email} · ${site.address.street}, ${site.address.district} / ${site.address.city}.`}
+>
+  <Header />
+  <main id="main">
+    <header class="hero">
+      <div class="container hero__inner">
+        <h1 class="display hero__title">İletişim</h1>
+        <p class="hero__lead">Gemi adı, liman ve belirtiyi iletin; ekibi <span class="hl">biz planlayalım.</span></p>
+      </div>
+    </header>
+
+    <section class="info" data-nav-tone="light" aria-label="İletişim bilgileri">
+      <div class="container">
+        <ul role="list" class="cards">
+          <li class="card card--addr">
+            <svg class="chart" viewBox="0 0 400 240" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+              <path d="M-10 186c60-14 96 10 150-6s88-58 150-50 88 30 120 18" />
+              <path d="M-10 214c70-12 110 8 168-8s92-48 150-40 80 22 102 14" />
+              <path d="M-10 154c50-10 90 14 136-2s80-66 140-62 92 36 144 22" />
+              <circle cx="318" cy="70" r="34" />
+              <circle cx="318" cy="70" r="20" />
+              <path d="M318 26v88M274 70h88" />
+            </svg>
+            <span class="card__icon"><Icon name="pin" /></span>
+            <h2 class="card__h">Adres</h2>
+            <address class="card__addr">
+              {site.address.lines.map((l) => <span>{l}</span>)}
+            </address>
+            <a class="card__link" href={mapsLink} target="_blank" rel="noopener">
+              <span>Yol tarifi al</span>
+              <Icon name="arrow-up-right" />
+            </a>
+          </li>
+
+          <li class="card">
+            <span class="card__icon"><Icon name="mail" /></span>
+            <h2 class="card__h">E-posta</h2>
+            <a class="card__big" href={`mailto:${site.email}`}>{site.email}</a>
+            <p class="card__note">Teklif ve planlı bakım talepleri için.</p>
+          </li>
+
+          <li class="card">
+            <span class="card__icon"><Icon name="phone" /></span>
+            <h2 class="card__h">Telefon</h2>
+            <div class="card__phones">
+              {
+                site.phones.map((p) => (
+                  <a class="card__big" href={p.href}>
+                    {p.display}
+                  </a>
+                ))
+              }
+            </div>
+            <p class="card__note">
+              <Icon name="clock" />
+              <span>{site.hours.label}</span>
+            </p>
+            <a class="card__link" href={whatsappLink()} target="_blank" rel="noopener">
+              <Icon name="whatsapp" />
+              <span>WhatsApp’tan yazın</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <Request compact />
+  </main>
+  <Footer />
+  <MobileDock />
+</Base>
+
+<style>
+  .hero {
+    padding: calc(var(--header-h) + clamp(48px, 7vw, 112px)) 0 clamp(56px, 7vw, 104px);
+    background:
+      radial-gradient(60% 80% at 90% 0%, rgba(43, 187, 229, 0.12), transparent 62%),
+      var(--c-abyss);
+  }
+  .hero__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.8fr);
+    gap: clamp(28px, 5vw, 96px);
+    align-items: end;
+  }
+  .hero__title {
+    font-size: clamp(56px, 8.4vw, 144px);
+  }
+  .hero__lead {
+    max-width: 24ch;
+    font-family: var(--f-display);
+    font-size: clamp(22px, 2.1vw, 32px);
+    font-weight: 500;
+    line-height: 1.3;
+    letter-spacing: -0.012em;
+    color: #dfe6f6;
+    text-wrap: pretty;
+  }
+  .hl {
+    color: var(--c-signal);
+  }
+
+  .info {
+    padding-block: clamp(64px, 8vw, 120px);
+    background: var(--c-paper-hi);
+    color: var(--c-ink);
+  }
+  .cards {
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr) minmax(0, 1fr);
+    gap: 16px;
+    margin: 0;
+  }
+  .card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+    padding: clamp(26px, 2.6vw, 40px);
+    border: 1px solid var(--c-line-light);
+    border-radius: var(--r-lg);
+    background: #fff;
+    overflow: hidden;
+    isolation: isolate;
+    box-shadow: 0 30px 60px -48px rgba(10, 17, 40, 0.45);
+  }
+  .card--addr {
+    background: var(--c-ink);
+    color: #eef2fb;
+    border-color: var(--c-ink);
+  }
+  /* a hint of a sea chart behind the address */
+  .chart {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    fill: none;
+    stroke: rgba(143, 228, 251, 0.16);
+    stroke-width: 1.2;
+  }
+  .card__icon {
+    display: grid;
+    place-items: center;
+    width: 56px;
+    height: 56px;
+    margin-bottom: 6px;
+    border-radius: 50%;
+    background: rgba(43, 187, 229, 0.12);
+    color: var(--c-navy);
+  }
+  .card--addr .card__icon {
+    background: rgba(43, 187, 229, 0.16);
+    color: var(--c-signal);
+  }
+  .card__icon :global(svg) {
+    width: 24px;
+    height: 24px;
+  }
+  .card__h {
+    font-family: var(--f-display);
+    font-size: clamp(24px, 2vw, 30px);
+    font-weight: 750;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+  .card__addr {
+    display: grid;
+    font-style: normal;
+    font-size: 17px;
+    line-height: 1.6;
+    color: #dfe6f6;
+  }
+  .card__big {
+    font-family: var(--f-display);
+    font-size: clamp(19px, 1.6vw, 24px);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    font-variant-numeric: tabular-nums;
+    text-decoration: none;
+    overflow-wrap: anywhere;
+    transition: color 0.2s;
+  }
+  .card__big:hover {
+    color: var(--c-navy);
+  }
+  .card__phones {
+    display: grid;
+    gap: 2px;
+  }
+  .card__note {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--c-ink-3);
+    font-size: 15.5px;
+    line-height: 1.5;
+  }
+  .card__note :global(svg) {
+    flex: none;
+    width: 17px;
+    height: 17px;
+  }
+  .card__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: auto;
+    padding-top: 10px;
+    font-family: var(--f-display);
+    font-size: 16px;
+    font-weight: 650;
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition:
+      border-color 0.25s var(--ease-out),
+      color 0.25s var(--ease-out);
+  }
+  .card__link :global(svg) {
+    width: 18px;
+    height: 18px;
+  }
+  .card__link:hover {
+    border-color: currentColor;
+  }
+  .card--addr .card__link {
+    color: var(--c-signal-hi);
+  }
+  .card:not(.card--addr) .card__link {
+    color: var(--c-navy);
+  }
+  .card:not(.card--addr) :global(:focus-visible) {
+    outline-color: var(--c-navy);
+  }
+
+  @media (max-width: 1080px) {
+    .cards {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+    .card--addr {
+      grid-column: 1 / -1;
+    }
+  }
+  @media (max-width: 760px) {
+    .hero__inner {
+      grid-template-columns: 1fr;
+    }
+    .cards {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

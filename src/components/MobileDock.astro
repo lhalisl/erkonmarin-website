@@ -1,6 +1,6 @@
 ---
 import Icon from './Icon.astro';
-import { site, whatsappLink } from '../data/site';
+import { site, whatsappLink, requestHref } from '../data/site';
 ---
 
 <nav class="dock" aria-label="Hızlı iletişim" data-dock>
@@ -12,7 +12,7 @@ import { site, whatsappLink } from '../data/site';
     <Icon name="whatsapp" />
     <span>WhatsApp</span>
   </a>
-  <a class="dock__item dock__item--cta" href="/#talep">
+  <a class="dock__item dock__item--cta" href={requestHref(Astro.url.pathname)}>
     <span>Servis talebi</span>
     <Icon name="arrow" />
   </a>

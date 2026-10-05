@@ -1,10 +1,18 @@
 ---
 import Icon from './Icon.astro';
-import { site, nav, whatsappLink } from '../data/site';
+import { site, nav, whatsappLink, requestHref } from '../data/site';
 
 // Mark the page link (not the in-page anchors) for the page being viewed
 const trim = (path: string) => path.replace(/\/+$/, '');
-const current = (href: string) => (!href.includes('#') && trim(Astro.url.pathname) === trim(href) ? 'page' : undefined);
+const here = trim(Astro.url.pathname);
+// 'page' on the page itself, 'true' on its sub pages (e.g. Hizmetler on a service page)
+const current = (href: string) => {
+  if (href.includes('#')) return undefined;
+  const target = trim(href);
+  if (here === target) return 'page';
+  return target && here.startsWith(`${target}/`) ? 'true' : undefined;
+};
+const request = requestHref(Astro.url.pathname);
 ---
 
 <header class="site-header" data-header>
@@ -34,7 +42,7 @@ const current = (href: string) => (!href.includes('#') && trim(Astro.url.pathnam
           <Icon name="phone" />
           <span>{site.phones[0].display}</span>
         </a>
-        <a class="btn btn--signal bar__cta" href="/#talep">
+        <a class="btn btn--signal bar__cta" href={request}>
           <span>Servis talebi</span>
           <Icon name="arrow" />
         </a>
@@ -257,7 +265,7 @@ const current = (href: string) => (!href.includes('#') && trim(Astro.url.pathnam
     color: var(--nav-fg);
     background: var(--nav-hover);
   }
-  .nav a[aria-current='page'] {
+  .nav a[aria-current] {
     color: var(--nav-fg);
     background: var(--nav-hover);
   }

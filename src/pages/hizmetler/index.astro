@@ -1,0 +1,515 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import MobileDock from '../../components/MobileDock.astro';
+import Icon from '../../components/Icon.astro';
+import { services } from '../../data/services';
+import { site, whatsappLink } from '../../data/site';
+
+// All four service areas in full, as supplied by Erkon Marin (verbatim).
+const n = (i: number) => String(i + 1).padStart(2, '0');
+---
+
+<Base
+  title="Hizmetler | Erkon Marin · Ana Makine, Yardımcı Makine, Seyir Sistemleri, Romorkör ve SAR Botlar"
+  description="Ana makine, yardımcı makine (D/G), köprüüstü seyir sistemleri, romorkör ve SAR botlarda arıza tespiti, bakım, onarım ve montaj. 35 yılı aşkın saha tecrübesi."
+>
+  <Header />
+  <main id="main">
+    <header class="hero">
+      <div class="container">
+        <div class="hero__top">
+          <h1 class="display hero__title">Hizmetler</h1>
+          <p class="hero__lead">Ana makineden köprüüstüne, <span class="hl">35 yılı aşkın</span> saha tecrübesiyle dört uzmanlık alanı.</p>
+        </div>
+
+        <nav class="index" aria-label="Hizmet alanları">
+          <ol role="list">
+            {
+              services.map((s, i) => (
+                <li>
+                  <a class="index__row" href={`#${s.slug}`}>
+                    <span class="index__n numeral" aria-hidden="true">
+                      {n(i)}
+                    </span>
+                    <span class="index__name">
+                      <span class="index__title">{s.title}</span>
+                      <span class="index__sub serif">{s.subtitle}</span>
+                    </span>
+                    <Image class="index__img" src={s.photo.src} alt="" widths={[160, 320]} sizes="160px" />
+                    <Icon name="arrow-down" class="index__arrow" />
+                  </a>
+                </li>
+              ))
+            }
+          </ol>
+        </nav>
+      </div>
+    </header>
+
+    <div class="body" data-nav-tone="light">
+      <div class="container body__grid">
+        <nav class="toc" aria-label="Bu sayfada" data-toc>
+          <ol role="list">
+            {
+              services.map((s, i) => (
+                <li>
+                  <a href={`#${s.slug}`} data-toc-link={s.slug}>
+                    <span class="numeral">{n(i)}</span>
+                    {s.title}
+                  </a>
+                </li>
+              ))
+            }
+          </ol>
+          <a class="btn btn--ink toc__cta" href="/iletisim/#talep">
+            <span>Servis talebi</span>
+            <Icon name="arrow" />
+          </a>
+        </nav>
+
+        <div class="list">
+          {
+            services.map((s, i) => {
+              const [lead, ...rest] = s.paragraphs;
+              return (
+                <section class="svc" id={s.slug} aria-labelledby={`${s.slug}-title`} data-svc>
+                  <header class="svc__head">
+                    <span class="svc__n numeral" aria-hidden="true">
+                      {n(i)}
+                    </span>
+                    <h2 class="h2 svc__title" id={`${s.slug}-title`}>
+                      {s.title}{' '}
+                      <em>{s.subtitle}</em>
+                    </h2>
+                  </header>
+                  <figure class="svc__media">
+                    <Image
+                      src={s.photo.src}
+                      alt={s.photo.alt}
+                      widths={[480, 760, 1080]}
+                      sizes="(max-width: 1080px) calc(100vw - 40px), 60vw"
+                      loading={i === 0 ? 'eager' : 'lazy'}
+                    />
+                  </figure>
+                  <div class="svc__text">
+                    <p class="svc__lead">{lead}</p>
+                    {rest.map((p) => <p>{p}</p>)}
+                  </div>
+                  <div class="svc__actions">
+                    <a class="btn btn--ink" href="/iletisim/#talep">
+                      <span>Servis talebi</span>
+                      <Icon name="arrow" />
+                    </a>
+                    <a
+                      class="btn btn--line"
+                      href={whatsappLink(`Merhaba, ${s.title} için servis talebi oluşturmak istiyorum.`)}
+                      target="_blank"
+                      rel="noopener"
+                    >
+                      <Icon name="whatsapp" />
+                      <span>WhatsApp</span>
+                    </a>
+                    <a class="svc__call" href={site.phones[0].href}>
+                      <Icon name="phone" />
+                      <span>{site.phones[0].display}</span>
+                    </a>
+                  </div>
+                </section>
+              );
+            })
+          }
+        </div>
+      </div>
+    </div>
+
+    <section class="close" aria-labelledby="close-title">
+      <div class="close__axis" aria-hidden="true"><span></span></div>
+      <div class="container close__inner">
+        <h2 class="display close__title" id="close-title" data-reveal>Gemi bekliyorsa, <em>hemen</em> arayın.</h2>
+        <p class="lead close__lead" data-reveal style="--d:120">
+          Gemi adı, liman ve belirtiyi iletin; ekibi biz planlayalım. {site.hours.label}.
+        </p>
+        <div class="close__actions" data-reveal style="--d:200">
+          <a class="btn btn--signal" href="/iletisim/#talep">
+            <span>Servis talebi</span>
+            <Icon name="arrow" />
+          </a>
+          {
+            site.phones.map((p) => (
+              <a class="btn btn--ghost" href={p.href}>
+                <Icon name="phone" />
+                <span>{p.display}</span>
+              </a>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+  </main>
+  <Footer />
+  <MobileDock />
+</Base>
+
+<script>
+  // Table of contents follows the section under the reading line
+  const toc = document.querySelector<HTMLElement>('[data-toc]');
+  const sections = Array.from(document.querySelectorAll<HTMLElement>('[data-svc]'));
+  if (toc && sections.length) {
+    const links = new Map(
+      Array.from(toc.querySelectorAll<HTMLAnchorElement>('[data-toc-link]')).map((a) => [a.dataset.tocLink!, a]),
+    );
+    let ticking = false;
+    const update = () => {
+      ticking = false;
+      const line = window.innerHeight * 0.35;
+      let active: HTMLElement | null = null;
+      for (const s of sections) if (s.getBoundingClientRect().top <= line) active = s;
+      links.forEach((a, id) => {
+        if (active && id === active.id) a.setAttribute('aria-current', 'true');
+        else a.removeAttribute('aria-current');
+      });
+    };
+    const onScroll = () => {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(update);
+      }
+    };
+    update();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+  }
+</script>
+
+<style>
+  /* ---- Hero + index --------------------------------------------- */
+  .hero {
+    padding: calc(var(--header-h) + clamp(48px, 7vw, 112px)) 0 clamp(64px, 8vw, 120px);
+    background:
+      radial-gradient(60% 80% at 90% 0%, rgba(43, 187, 229, 0.12), transparent 62%),
+      var(--c-abyss);
+  }
+  .hero__top {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.8fr);
+    gap: clamp(28px, 5vw, 96px);
+    align-items: end;
+  }
+  .hero__title {
+    font-size: clamp(56px, 8.4vw, 144px);
+  }
+  .hero__lead {
+    max-width: 26ch;
+    font-family: var(--f-display);
+    font-size: clamp(22px, 2.1vw, 32px);
+    font-weight: 500;
+    line-height: 1.3;
+    letter-spacing: -0.012em;
+    color: #dfe6f6;
+    text-wrap: pretty;
+  }
+  .hl {
+    color: var(--c-signal);
+  }
+
+  .index {
+    margin-top: clamp(48px, 6vw, 96px);
+  }
+  .index ol {
+    margin: 0;
+    border-top: 1px solid var(--c-line-dark-2);
+  }
+  .index__row {
+    display: grid;
+    grid-template-columns: clamp(52px, 6vw, 96px) minmax(0, 1fr) auto auto;
+    align-items: center;
+    gap: clamp(16px, 2.4vw, 40px);
+    padding: clamp(18px, 2vw, 28px) 0;
+    border-bottom: 1px solid var(--c-line-dark-2);
+    text-decoration: none;
+    transition: background-color 0.35s var(--ease-out);
+  }
+  .index__n {
+    font-size: clamp(32px, 3.4vw, 56px);
+    font-style: italic;
+    color: var(--c-signal);
+  }
+  .index__name {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 4px 18px;
+    min-width: 0;
+  }
+  .index__title {
+    font-family: var(--f-display);
+    font-size: clamp(26px, 3vw, 50px);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+  }
+  .index__sub {
+    color: var(--c-mist);
+    font-size: clamp(16px, 1.4vw, 22px);
+  }
+  .index__row :global(.index__img) {
+    width: clamp(88px, 9vw, 150px);
+    height: clamp(56px, 5.6vw, 96px);
+    object-fit: cover;
+    border-radius: var(--r-sm);
+    opacity: 0.75;
+    filter: saturate(0.85);
+    transition:
+      opacity 0.35s var(--ease-out),
+      filter 0.35s var(--ease-out);
+  }
+  .index__row :global(.index__arrow) {
+    width: 22px;
+    height: 22px;
+    color: var(--c-mist);
+    transition:
+      transform 0.45s var(--ease-out),
+      color 0.3s var(--ease-out);
+  }
+  .index__row:hover :global(.index__img),
+  .index__row:focus-visible :global(.index__img) {
+    opacity: 1;
+    filter: none;
+  }
+  .index__row:hover :global(.index__arrow),
+  .index__row:focus-visible :global(.index__arrow) {
+    color: var(--c-signal-hi);
+    transform: translateY(4px);
+  }
+  .index__row:hover .index__title,
+  .index__row:focus-visible .index__title {
+    color: var(--c-signal-hi);
+  }
+
+  /* ---- Services in full ----------------------------------------- */
+  .body {
+    padding-block: clamp(80px, 10vw, 160px);
+    background: var(--c-paper-hi);
+    color: var(--c-ink);
+  }
+  .body__grid {
+    display: grid;
+    grid-template-columns: clamp(220px, 19vw, 300px) minmax(0, 1fr);
+    gap: clamp(40px, 6vw, 112px);
+    align-items: start;
+  }
+  .toc {
+    position: sticky;
+    top: calc(var(--header-h) + 40px);
+  }
+  .toc ol {
+    margin: 0;
+    border-left: 1px solid var(--c-line-light-2);
+  }
+  .toc ol a {
+    position: relative;
+    display: flex;
+    gap: 12px;
+    align-items: baseline;
+    padding: 10px 0 10px 20px;
+    color: var(--c-ink-3);
+    font-family: var(--f-display);
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.3;
+    text-decoration: none;
+    transition: color 0.25s var(--ease-out);
+  }
+  .toc ol a::before {
+    content: '';
+    position: absolute;
+    left: -1px;
+    top: 8px;
+    bottom: 8px;
+    width: 2px;
+    background: var(--c-signal-dim);
+    transform: scaleY(0);
+    transition: transform 0.35s var(--ease-out);
+  }
+  .toc ol a:hover,
+  .toc ol a[aria-current] {
+    color: var(--c-ink);
+  }
+  .toc ol a[aria-current]::before {
+    transform: none;
+  }
+  .toc .numeral {
+    font-size: 17px;
+    font-style: italic;
+    color: var(--c-navy);
+  }
+  .toc__cta {
+    margin-top: 28px;
+  }
+
+  .list {
+    display: grid;
+    gap: clamp(88px, 10vw, 160px);
+  }
+  .svc {
+    scroll-margin-top: calc(var(--header-h) + 24px);
+  }
+  .svc__head {
+    display: grid;
+    gap: 10px;
+  }
+  .svc__n {
+    font-size: clamp(40px, 4vw, 64px);
+    font-style: italic;
+    color: var(--c-navy);
+  }
+  .svc__title {
+    font-size: clamp(40px, 4.6vw, 80px);
+  }
+  .svc__title em {
+    display: block;
+    margin-top: 0.14em;
+    color: var(--c-navy);
+    font-size: 0.5em;
+    line-height: 1.1;
+  }
+  .svc__media {
+    margin-top: clamp(28px, 3vw, 48px);
+    overflow: hidden;
+    border-radius: var(--r-lg);
+    aspect-ratio: 16 / 8;
+    background: var(--c-night);
+  }
+  .svc__media :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .svc__text {
+    display: grid;
+    gap: 1.2em;
+    max-width: 66ch;
+    margin-top: clamp(28px, 3vw, 48px);
+    color: var(--c-ink-2);
+    font-size: clamp(17px, 1.25vw, 19.5px);
+    line-height: 1.7;
+    text-wrap: pretty;
+  }
+  .svc__text .svc__lead {
+    color: var(--c-ink);
+    font-family: var(--f-display);
+    font-size: clamp(21px, 1.75vw, 28px);
+    font-weight: 600;
+    line-height: 1.38;
+    letter-spacing: -0.012em;
+  }
+  .svc__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px 12px;
+    margin-top: clamp(28px, 3vw, 44px);
+  }
+  .btn--line {
+    --btn-bd: var(--c-line-light-2);
+  }
+  .btn--line:hover,
+  .btn--line:focus-visible {
+    --btn-bd: var(--c-ink);
+  }
+  .svc__call {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: 8px;
+    font-family: var(--f-display);
+    font-size: 17px;
+    font-weight: 650;
+    font-variant-numeric: tabular-nums;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .svc__call :global(svg) {
+    width: 18px;
+    height: 18px;
+    color: var(--c-navy);
+  }
+  .svc__call:hover {
+    color: var(--c-navy);
+  }
+  .body :global(:focus-visible) {
+    outline-color: var(--c-navy);
+  }
+
+  /* ---- Close ---------------------------------------------------- */
+  .close {
+    position: relative;
+    padding-block: clamp(96px, 12vw, 180px);
+    overflow: hidden;
+  }
+  .close__axis {
+    position: absolute;
+    top: clamp(48px, 6vw, 88px);
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, var(--c-signal) 0%, rgba(43, 187, 229, 0.25) 55%, transparent 100%);
+  }
+  .close__axis span {
+    position: absolute;
+    top: -5px;
+    left: calc(max(0px, (100% - var(--maxw)) / 2) + var(--gutter));
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background: var(--c-signal);
+    box-shadow: 0 0 0 6px rgba(43, 187, 229, 0.16);
+  }
+  .close__title {
+    max-width: 16ch;
+    font-size: clamp(42px, 5.6vw, 96px);
+  }
+  .close__title em {
+    color: var(--c-signal);
+  }
+  .close__lead {
+    max-width: 50ch;
+    margin-top: clamp(24px, 3vw, 40px);
+    color: var(--c-mist);
+  }
+  .close__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: clamp(32px, 4vw, 56px);
+  }
+
+  @media (max-width: 1080px) {
+    .body__grid {
+      grid-template-columns: 1fr;
+    }
+    .toc {
+      display: none;
+    }
+  }
+  @media (max-width: 760px) {
+    .hero__top {
+      grid-template-columns: 1fr;
+    }
+    .index__row {
+      grid-template-columns: 44px minmax(0, 1fr) auto;
+    }
+    .index__row :global(.index__img) {
+      display: none;
+    }
+    .svc__media {
+      aspect-ratio: 4 / 3;
+    }
+    .svc__call {
+      margin-left: 0;
+    }
+  }
+</style>
