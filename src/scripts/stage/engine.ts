@@ -43,7 +43,7 @@ const ANNOTATIONS: Record<'tr' | 'en', Annotation[]> = {
     { ch: 3, key: 'plc', title: 'PLC', sub: 'CPU ve I/O modülleri' },
     { ch: 3, key: 'terminals', title: 'Klemensler', sub: 'Saha bağlantıları' },
     { ch: 3, key: 'hmi', title: 'HMI', sub: 'Operatör paneli' },
-    { ch: 4, key: 'acb2', title: 'Çekmeceli kesici', sub: 'Servis konumunda' },
+    { ch: 4, key: 'acb2', title: 'Çekmeceli kesici', sub: 'Bakım için çekildi' },
   ],
   en: [
     { ch: 1, key: 'consoleScreen', title: 'Alarm & monitoring', sub: 'AMS display' },
@@ -54,7 +54,7 @@ const ANNOTATIONS: Record<'tr' | 'en', Annotation[]> = {
     { ch: 3, key: 'plc', title: 'PLC', sub: 'CPU and I/O modules' },
     { ch: 3, key: 'terminals', title: 'Terminals', sub: 'Field wiring' },
     { ch: 3, key: 'hmi', title: 'HMI', sub: 'Operator panel' },
-    { ch: 4, key: 'acb2', title: 'Draw-out breaker', sub: 'In service position' },
+    { ch: 4, key: 'acb2', title: 'Draw-out breaker', sub: 'Racked out for maintenance' },
   ],
 };
 

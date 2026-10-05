@@ -85,7 +85,7 @@ export const ui = {
       privacy: 'Gizlilik',
       top: 'Başa dön',
     },
-    dock: { label: 'Hızlı iletişim', call: 'Ara' },
+    dock: { label: 'Hızlı iletişim', call: 'Ara', request: 'Servis talebi' },
   },
   en: {
     skip: 'Skip to content',
@@ -111,6 +111,6 @@ export const ui = {
       privacy: 'Privacy',
       top: 'Back to top',
     },
-    dock: { label: 'Quick contact', call: 'Call' },
+    dock: { label: 'Quick contact', call: 'Call', request: 'Request' },
   },
 } as const;

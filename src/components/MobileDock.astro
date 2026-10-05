@@ -16,7 +16,7 @@ const t = ui[lang];
     <span>WhatsApp</span>
   </a>
   <a class="dock__item dock__item--cta" href={requestHref(Astro.url.pathname, lang)}>
-    <span>{t.request}</span>
+    <span>{t.dock.request}</span>
     <Icon name="arrow" />
   </a>
 </nav>
@@ -71,6 +71,7 @@ const t = ui[lang];
       font-size: 15px;
       font-weight: 650;
       text-decoration: none;
+      white-space: nowrap;
     }
     .dock__item :global(svg) {
       width: 18px;

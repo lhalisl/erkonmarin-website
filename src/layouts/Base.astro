@@ -24,7 +24,8 @@ interface Props {
 }
 
 const lang = langOf(Astro.currentLocale);
-const { title, description = site.description[lang], image = '/media/og.jpg', alternates } = Astro.props;
+const { title, description = site.description[lang], image = lang === 'en' ? '/media/og-en.jpg' : '/media/og.jpg', alternates } =
+  Astro.props;
 
 // Link previews (WhatsApp, Facebook, LinkedIn) need absolute URLs
 const isErrorPage = /\/404/.test(Astro.url.pathname);
@@ -77,7 +78,7 @@ const ld = {
           'Bridge navigation systems',
           'Tugs and SAR boats',
         ],
-  inLanguage: lang,
+  knowsLanguage: ['tr', 'en'],
 };
 ---
 
@@ -89,6 +90,7 @@ const ld = {
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta name="theme-color" content="#050a19" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />

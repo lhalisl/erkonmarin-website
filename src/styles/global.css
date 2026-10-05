@@ -371,3 +371,26 @@
     transform: none;
   }
 }
+
+/* ---- Print ------------------------------------------------------ */
+
+/* Browsers drop backgrounds when printing, so light-on-dark text would vanish. */
+@media print {
+  *,
+  *::before,
+  *::after {
+    color: #000 !important;
+    text-shadow: none !important;
+    box-shadow: none !important;
+  }
+  body {
+    background: #fff !important;
+  }
+  .skip-link,
+  .site-header,
+  .mobile-menu,
+  .dock,
+  canvas {
+    display: none !important;
+  }
+}

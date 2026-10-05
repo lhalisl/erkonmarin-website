@@ -5,6 +5,7 @@ import tailwindcss from '@tailwindcss/vite';
 import { createHash } from 'node:crypto';
 import { INLINE_SCRIPTS } from './src/scripts/inline.mjs';
 
+/** @param {string} code @returns {`sha256-${string}`} */
 const sha256 = (code) => `sha256-${createHash('sha256').update(code).digest('base64')}`;
 
 // Public address, used for canonical and Open Graph URLs. Set SITE_URL once the

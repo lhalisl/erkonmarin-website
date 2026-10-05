@@ -648,7 +648,8 @@ export default function ContactWithGlobe({
 
               <FormDots />
 
-              <form data-request noValidate onSubmit={onSubmit} className="flex flex-col gap-6">
+              {/* method="dialog": a submit before hydration (or without scripts) goes nowhere instead of putting the fields in the URL */}
+              <form data-request method="dialog" noValidate onSubmit={onSubmit} className="flex flex-col gap-6">
                 <fieldset className="m-0 flex flex-col gap-3 border-0 p-0">
                   <legend className={cn(labelClass, "mb-3")}>{copy.kind}</legend>
                   <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-3">

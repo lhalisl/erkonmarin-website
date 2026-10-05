@@ -150,6 +150,8 @@ const request = requestHref(Astro.url.pathname, lang);
     toggle.setAttribute('aria-expanded', String(isOpen));
     label.textContent = (isOpen ? toggle.dataset.closeLabel : toggle.dataset.openLabel) ?? '';
     header.toggleAttribute('data-menu-open', isOpen);
+    // keep keyboard and screen-reader focus inside the full-screen menu while it is open
+    for (const el of Array.from(document.body.children)) if (el !== header) (el as HTMLElement).inert = isOpen;
     document.documentElement.style.overflow = isOpen ? 'hidden' : '';
     update();
     if (isOpen) {

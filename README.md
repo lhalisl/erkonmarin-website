@@ -73,8 +73,8 @@ src/
     textures.ts             canvas painters for panel fronts, meters, screens
 public/
   media/stage-poster.webp   still of the 3D scene (shown while loading and without WebGL)
-  media/og.jpg              social share image
-  favicon.svg, apple-touch-icon.png, icon-192/512.png, site.webmanifest
+  media/og.jpg, og-en.jpg   social share images (Turkish, English)
+  favicon.svg, favicon.ico, apple-touch-icon.png, icon-192/512.png, site.webmanifest
 ```
 
 ## Security

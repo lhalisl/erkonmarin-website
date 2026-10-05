@@ -60,8 +60,8 @@ export const services: Service[] = [
       subtitle: 'Yardımcı Makine',
       paragraphs: [
         'We professionally carry out fault diagnosis, maintenance and repair of all electrical, electronic and automation systems on Volvo Penta, Scania and Dorman generators, working with the means available and the technical documentation on board.',
-        'With 35 years of technical experience in the maritime sector, we provide every intervention needed to keep generator systems running safely, stably and efficiently, with fast and effective solutions.',
-        'Having the electrical drawings, automation diagrams and relevant spare parts available on board allows the service to be completed sooner and correctly.',
+        'With 35 years of technical experience in the maritime sector, we carry out all the work needed to keep generator systems running safely, stably and efficiently, with fast and effective solutions.',
+        'Having the electrical drawings, automation diagrams and relevant spare parts available on board allows the service to be completed more quickly and correctly.',
       ],
     },
     photo: photos.jenerator,
@@ -85,7 +85,7 @@ export const services: Service[] = [
       subtitle: 'Seyir Sistemleri',
       paragraphs: [
         'With more than 35 years of experience in the sector, we professionally carry out repair, installation, fault diagnosis and removal work on bridge navigation systems.',
-        'Our expert team quickly and correctly applies the technical interventions needed to keep radar, gyro, autopilot, echo sounder, VHF, AIS and all other bridge navigation equipment running safely and without interruption.',
+        'Our expert team quickly and correctly carries out the technical work needed to keep radar, gyro, autopilot, echo sounder, VHF, AIS and all other bridge navigation equipment running safely and without interruption.',
         'Thanks to our many years of experience in marine electronics, we manage the maintenance and repair of bridge navigation systems as efficiently as possible on both merchant vessels and tugboats.',
         'Having the relevant drawings, documents and spare parts on board significantly increases the speed of our troubleshooting and the quality of our service.',
       ],
