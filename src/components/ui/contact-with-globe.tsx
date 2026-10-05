@@ -1,23 +1,22 @@
 // Adapted from the ScrollX UI "Contact with globe" block for Erkon Marin: the
 // globe faces Istanbul and marks the office, the map data is bundled instead of
 // fetched from a CDN, and the form is the service request that hands off to
-// WhatsApp or e-mail (the site has no backend).
+// WhatsApp or e-mail (the site has no backend). Entrances use the site's own
+// [data-reveal] CSS so the server-rendered markup is never hidden waiting on
+// this island's script.
 "use client";
 
 import * as React from "react";
 import { useEffect, useId, useRef, useState, useSyncExternalStore } from "react";
-import { MotionConfig, motion } from "motion/react";
 import { cn } from "@/lib/utils";
 import { ArrowRight, Clock, Mail, MapPin, MessageCircle, Phone, type LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import * as SeparatorPrimitive from "@radix-ui/react-separator";
-import { geoDistance, geoGraticule10, geoOrthographic, geoPath } from "d3";
-import { feature } from "topojson-client";
+import { geoDistance, geoGraticule, geoOrthographic, geoPath } from "d3-geo";
+import { feature, mesh } from "topojson-client";
 import type { GeometryCollection, Topology } from "topojson-specification";
-import type { Feature, FeatureCollection } from "geojson";
+import type { Feature, FeatureCollection, MultiLineString } from "geojson";
 import atlasUrl from "world-atlas/countries-110m.json?url";
-
-const smoothEase = [0.25, 0.1, 0.25, 1] as const;
 
 const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
 const subscribeToReducedMotion = (callback: () => void) => {
@@ -49,7 +48,24 @@ interface GlobeWireframeProps {
   /** world-atlas numeric id of a country to tint (792 = Türkiye). */
   highlightId?: string;
   enableInteraction?: boolean;
+  /** Stop the sway while focus is inside this element (e.g. a form being filled in). */
+  pauseWithin?: React.RefObject<HTMLElement | null>;
 }
+
+const GLOBE = {
+  sphere: "rgba(8, 17, 42, 0.72)",
+  graticule: "rgba(143, 228, 251, 0.13)",
+  land: "rgba(143, 228, 251, 0.5)",
+  highlightFill: "rgba(43, 187, 229, 0.32)",
+  highlight: "#8fe4fb",
+  rim: "rgba(143, 228, 251, 0.5)",
+  pin: "#8fe4fb",
+  label: "#eef2fb",
+  halo: "rgba(8, 17, 42, 0.9)",
+};
+// The sway moves a pixel or two per redraw at these rates; phones get fewer redraws
+const FRAME_MS = 50;
+const FRAME_MS_COARSE = 80;
 
 function GlobeWireframe({
   className,
@@ -58,9 +74,10 @@ function GlobeWireframe({
   sway = 26,
   highlightId,
   enableInteraction = true,
+  pauseWithin,
 }: GlobeWireframeProps) {
   const wrapRef = useRef<HTMLDivElement>(null);
-  const svgRef = useRef<SVGSVGElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const reduced = usePrefersReducedMotion();
   const [ready, setReady] = useState(false);
   const [cx, cy] = center;
@@ -68,84 +85,118 @@ function GlobeWireframe({
 
   useEffect(() => {
     const wrap = wrapRef.current;
-    const svg = svgRef.current;
-    if (!wrap || !svg) return;
+    const canvas = canvasRef.current;
+    const ctx = canvas?.getContext("2d");
+    if (!wrap || !canvas || !ctx) return;
 
-    const ns = "http://www.w3.org/2000/svg";
-    const add = (tag: string, cls: string, parent: Element = svg) => {
-      const node = document.createElementNS(ns, tag);
-      node.setAttribute("class", cls);
-      parent.appendChild(node);
-      return node;
-    };
-    svg.replaceChildren();
-    const sphere = add("path", "globe-sphere");
-    const grat = add("path", "globe-grat");
-    const land = add("path", "globe-land");
-    const hi = add("path", "globe-hi");
-    const rim = add("path", "globe-rim");
-    const pin = add("g", "globe-pin");
-    const pulse = add("circle", "globe-pulse", pin);
-    pulse.setAttribute("r", "5");
-    const dot = add("circle", "globe-dot", pin);
-    dot.setAttribute("r", "4.5");
-    const text = add("text", "globe-label", pin);
-    text.setAttribute("x", "12");
-    text.setAttribute("y", "4.5");
-    text.textContent = mLabel ?? "";
-
-    // One path per layer: the whole country set is drawn as a single "d" string,
-    // so a frame is a handful of attribute writes, not hundreds of nodes.
-    const projection = geoOrthographic().precision(0.4);
-    const path = geoPath(projection);
-    const graticule = geoGraticule10();
-    const sphereShape = { type: "Sphere" } as const;
-    let countries: FeatureCollection | null = null;
+    // Canvas, not SVG: d3 draws straight into the context, so a frame never builds
+    // (and the browser never parses) a 100 KB path string. Borders come from the
+    // topology mesh (each arc once, not twice per shared border) and resampling is
+    // off: 110m data is already dense enough at this size. About 3 ms a frame.
+    const projection = geoOrthographic().precision(0);
+    const path = geoPath(projection, ctx);
+    const graticule = geoGraticule().step([15, 15])();
+    const frameMs = window.matchMedia("(pointer: coarse)").matches ? FRAME_MS_COARSE : FRAME_MS;
+    const sphere = { type: "Sphere" } as const;
+    const font = `600 13px ${getComputedStyle(document.documentElement).getPropertyValue("--f-display") || "sans-serif"}`;
+    let borders: MultiLineString | null = null;
     let highlight: Feature | null = null;
 
     let size = 0;
+    let dpr = 1;
     let baseLon = -cx;
     let lat = -cy;
     let phase = 0;
     let last = 0;
+    let lastDraw = 0;
     let raf = 0;
     let visible = false;
-    let drag: { x: number; y: number; lon: number; lat: number; id: number } | null = null;
+    let paused = false;
+    let drag: { x: number; y: number; lon: number; lat: number; id: number; touch: boolean } | null = null;
 
-    const draw = () => {
+    const draw = (now: number) => {
       if (!size) return;
       const lon = baseLon + (reduced ? 0 : Math.sin(phase) * sway);
       projection.rotate([lon, lat]);
-      const sphereD = path(sphereShape) ?? "";
-      sphere.setAttribute("d", sphereD);
-      rim.setAttribute("d", sphereD);
-      grat.setAttribute("d", path(graticule) ?? "");
-      if (countries) land.setAttribute("d", path(countries) ?? "");
-      if (highlight) hi.setAttribute("d", path(highlight) ?? "");
-      if (mLon !== undefined && mLat !== undefined) {
-        const front = geoDistance([mLon, mLat], [-lon, -lat]) < Math.PI / 2 - 0.04;
-        const p = projection([mLon, mLat]);
-        if (front && p) {
-          pin.setAttribute("transform", `translate(${p[0].toFixed(1)} ${p[1].toFixed(1)})`);
-          pin.removeAttribute("display");
-        } else {
-          pin.setAttribute("display", "none");
-        }
-      } else {
-        pin.setAttribute("display", "none");
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, size, size);
+
+      ctx.beginPath();
+      path(sphere);
+      ctx.fillStyle = GLOBE.sphere;
+      ctx.fill();
+
+      ctx.beginPath();
+      path(graticule);
+      ctx.lineWidth = 0.6;
+      ctx.strokeStyle = GLOBE.graticule;
+      ctx.stroke();
+
+      if (borders) {
+        ctx.beginPath();
+        path(borders);
+        ctx.lineWidth = 0.6;
+        ctx.strokeStyle = GLOBE.land;
+        ctx.stroke();
+      }
+      if (highlight) {
+        ctx.beginPath();
+        path(highlight);
+        ctx.fillStyle = GLOBE.highlightFill;
+        ctx.fill();
+        ctx.lineWidth = 0.9;
+        ctx.strokeStyle = GLOBE.highlight;
+        ctx.stroke();
+      }
+
+      ctx.beginPath();
+      path(sphere);
+      ctx.lineWidth = 1.2;
+      ctx.strokeStyle = GLOBE.rim;
+      ctx.stroke();
+
+      if (mLon === undefined || mLat === undefined) return;
+      if (geoDistance([mLon, mLat], [-lon, -lat]) > Math.PI / 2 - 0.04) return;
+      const p = projection([mLon, mLat]);
+      if (!p) return;
+      if (!reduced) {
+        const k = (now % 1400) / 1400;
+        ctx.beginPath();
+        ctx.arc(p[0], p[1], 5 + k * 11, 0, Math.PI * 2);
+        ctx.lineWidth = 1.5;
+        ctx.strokeStyle = `rgba(143, 228, 251, ${(1 - k).toFixed(3)})`;
+        ctx.stroke();
+      }
+      ctx.beginPath();
+      ctx.arc(p[0], p[1], 4.5, 0, Math.PI * 2);
+      ctx.fillStyle = GLOBE.pin;
+      ctx.fill();
+      if (mLabel) {
+        ctx.font = font;
+        ctx.textBaseline = "middle";
+        ctx.lineJoin = "round";
+        ctx.lineWidth = 4;
+        ctx.strokeStyle = GLOBE.halo;
+        ctx.strokeText(mLabel, p[0] + 12, p[1]);
+        ctx.fillStyle = GLOBE.label;
+        ctx.fillText(mLabel, p[0] + 12, p[1]);
       }
     };
 
+    const running = () => visible && !reduced && !paused && !document.hidden;
     const frame = (t: number) => {
       raf = 0;
       const dt = last ? Math.min(64, t - last) : 16;
       last = t;
       if (!drag) phase += dt * 0.00032;
-      draw();
-      if (visible && !reduced) raf = requestAnimationFrame(frame);
+      if (drag || t - lastDraw >= frameMs) {
+        lastDraw = t;
+        draw(t);
+      }
+      if (running()) raf = requestAnimationFrame(frame);
     };
     const start = () => {
-      if (!raf && visible && !reduced) {
+      if (!raf && running()) {
         last = 0;
         raf = requestAnimationFrame(frame);
       }
@@ -158,9 +209,11 @@ function GlobeWireframe({
     const resize = () => {
       size = wrap.clientWidth;
       if (!size) return;
-      svg.setAttribute("viewBox", `0 0 ${size} ${size}`);
+      dpr = Math.min(2, window.devicePixelRatio || 1);
+      canvas.width = Math.round(size * dpr);
+      canvas.height = Math.round(size * dpr);
       projection.scale(size / 2 - 2).translate([size / 2, size / 2]);
-      draw();
+      draw(performance.now());
     };
     const ro = new ResizeObserver(resize);
     ro.observe(wrap);
@@ -175,36 +228,67 @@ function GlobeWireframe({
     const onVisibility = () => (document.hidden ? stop() : start());
     document.addEventListener("visibilitychange", onVisibility);
 
+    const holder = pauseWithin?.current ?? null;
+    const onFocusIn = () => {
+      paused = true;
+      stop();
+    };
+    const onFocusOut = (e: FocusEvent) => {
+      if (holder?.contains(e.relatedTarget as Node | null)) return;
+      paused = false;
+      start();
+    };
+    holder?.addEventListener("focusin", onFocusIn);
+    holder?.addEventListener("focusout", onFocusOut);
+
+    let dragFrame = 0;
+    const redrawSoon = () => {
+      if (raf || dragFrame) return;
+      dragFrame = requestAnimationFrame((t) => {
+        dragFrame = 0;
+        draw(t);
+      });
+    };
     const onDown = (e: PointerEvent) => {
       if (!enableInteraction || e.button !== 0) return;
-      drag = { x: e.clientX, y: e.clientY, lon: baseLon, lat, id: e.pointerId };
-      svg.setPointerCapture(e.pointerId);
+      drag = { x: e.clientX, y: e.clientY, lon: baseLon, lat, id: e.pointerId, touch: e.pointerType === "touch" };
+      canvas.setPointerCapture(e.pointerId);
     };
     const onMove = (e: PointerEvent) => {
       if (!drag || e.pointerId !== drag.id) return;
       const k = 180 / Math.max(240, size);
       baseLon = drag.lon + (e.clientX - drag.x) * k;
-      lat = Math.max(-80, Math.min(80, drag.lat - (e.clientY - drag.y) * k));
-      if (!raf) draw();
+      // vertical touch movement belongs to page scrolling (touch-action: pan-y)
+      if (!drag.touch) lat = Math.max(-80, Math.min(80, drag.lat - (e.clientY - drag.y) * k));
+      redrawSoon();
     };
     const onUp = (e: PointerEvent) => {
-      if (!drag || e.pointerId !== drag.id) return;
-      drag = null;
+      if (drag && e.pointerId === drag.id) drag = null;
     };
-    svg.addEventListener("pointerdown", onDown);
-    svg.addEventListener("pointermove", onMove);
-    svg.addEventListener("pointerup", onUp);
-    svg.addEventListener("pointercancel", onUp);
+    // the browser took the gesture for scrolling: undo whatever the first move did
+    const onCancel = (e: PointerEvent) => {
+      if (!drag || e.pointerId !== drag.id) return;
+      baseLon = drag.lon;
+      lat = drag.lat;
+      drag = null;
+      redrawSoon();
+    };
+    canvas.addEventListener("pointerdown", onDown);
+    canvas.addEventListener("pointermove", onMove);
+    canvas.addEventListener("pointerup", onUp);
+    canvas.addEventListener("pointercancel", onCancel);
 
     let alive = true;
     fetch(atlasUrl)
       .then((r) => r.json())
       .then((world: Topology<{ countries: GeometryCollection }>) => {
         if (!alive) return;
-        const fc = feature(world, world.objects.countries) as FeatureCollection;
-        countries = fc;
-        highlight = highlightId ? (fc.features.find((f) => String(f.id) === highlightId) ?? null) : null;
-        draw();
+        borders = mesh(world, world.objects.countries);
+        if (highlightId) {
+          const fc = feature(world, world.objects.countries) as FeatureCollection;
+          highlight = fc.features.find((f) => String(f.id) === highlightId) ?? null;
+        }
+        draw(performance.now());
         setReady(true);
       })
       .catch(() => alive && setReady(true));
@@ -212,15 +296,18 @@ function GlobeWireframe({
     return () => {
       alive = false;
       stop();
+      if (dragFrame) cancelAnimationFrame(dragFrame);
       ro.disconnect();
       io.disconnect();
       document.removeEventListener("visibilitychange", onVisibility);
-      svg.removeEventListener("pointerdown", onDown);
-      svg.removeEventListener("pointermove", onMove);
-      svg.removeEventListener("pointerup", onUp);
-      svg.removeEventListener("pointercancel", onUp);
+      holder?.removeEventListener("focusin", onFocusIn);
+      holder?.removeEventListener("focusout", onFocusOut);
+      canvas.removeEventListener("pointerdown", onDown);
+      canvas.removeEventListener("pointermove", onMove);
+      canvas.removeEventListener("pointerup", onUp);
+      canvas.removeEventListener("pointercancel", onCancel);
     };
-  }, [reduced, cx, cy, sway, highlightId, enableInteraction, mLon, mLat, mLabel]);
+  }, [reduced, cx, cy, sway, highlightId, enableInteraction, mLon, mLat, mLabel, pauseWithin]);
 
   return (
     <div ref={wrapRef} className={cn("relative aspect-square w-full", className)}>
@@ -228,21 +315,13 @@ function GlobeWireframe({
         aria-hidden="true"
         className="pointer-events-none absolute inset-[6%] rounded-full bg-[radial-gradient(circle_at_50%_40%,rgba(43,187,229,0.22),transparent_68%)] blur-2xl"
       />
-      <svg
-        ref={svgRef}
+      <canvas
+        ref={canvasRef}
         aria-hidden="true"
         className={cn(
-          "relative h-full w-full touch-pan-y transition-opacity duration-1000 select-none",
+          "relative block h-full w-full touch-pan-y touch-pinch-zoom transition-opacity duration-1000 select-none",
           enableInteraction && "cursor-grab active:cursor-grabbing",
-          ready ? "opacity-100" : "opacity-0",
-          "[&_.globe-sphere]:fill-[rgba(8,17,42,0.72)]",
-          "[&_.globe-grat]:fill-none [&_.globe-grat]:stroke-[rgba(143,228,251,0.13)] [&_.globe-grat]:[stroke-width:0.6]",
-          "[&_.globe-land]:fill-[rgba(43,187,229,0.05)] [&_.globe-land]:stroke-[rgba(143,228,251,0.5)] [&_.globe-land]:[stroke-width:0.6]",
-          "[&_.globe-hi]:fill-[rgba(43,187,229,0.32)] [&_.globe-hi]:stroke-signal-hi [&_.globe-hi]:[stroke-width:0.9]",
-          "[&_.globe-rim]:fill-none [&_.globe-rim]:stroke-[rgba(143,228,251,0.5)] [&_.globe-rim]:[stroke-width:1.2]",
-          "[&_.globe-dot]:fill-signal-hi",
-          "[&_.globe-pulse]:fill-none [&_.globe-pulse]:stroke-signal-hi [&_.globe-pulse]:[stroke-width:1.5] [&_.globe-pulse]:origin-center [&_.globe-pulse]:animate-ping [&_.globe-pulse]:[transform-box:fill-box] motion-reduce:[&_.globe-pulse]:hidden",
-          "[&_.globe-label]:fill-[#eef2fb] [&_.globe-label]:stroke-[rgba(8,17,42,0.9)] [&_.globe-label]:[stroke-width:4px] [&_.globe-label]:[paint-order:stroke] [&_.globe-label]:font-display [&_.globe-label]:text-[13px] [&_.globe-label]:font-semibold"
+          ready ? "opacity-100" : "opacity-0"
         )}
       />
     </div>
@@ -328,15 +407,11 @@ interface ContactWithGlobeProps {
   className?: string;
 }
 
-const reveal = (delay = 0, y = 24) => ({
-  initial: { opacity: 0, y },
-  whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, margin: "0px 0px -8% 0px" },
-  transition: { duration: 0.8, delay, ease: smoothEase },
-});
+/** Entrance via the site-wide [data-reveal] observer (Base.astro); delay in ms. */
+const reveal = (delay = 0) => ({ "data-reveal": "", style: { "--d": delay } as React.CSSProperties });
 
 const fieldClass =
-  "w-full rounded-xl border border-white/15 bg-white/[0.05] px-4 py-3 text-[15.5px] text-[#eef2fb] placeholder:text-mist/70 transition-colors duration-200 hover:border-white/25 focus:border-signal focus:bg-white/[0.07] aria-[invalid=true]:border-[#ff8f86]";
+  "w-full rounded-xl border border-white/15 bg-white/[0.05] px-4 py-3 text-[17px] text-[#eef2fb] placeholder:text-mist transition-colors duration-200 hover:border-white/25 focus:border-signal focus:bg-white/[0.07] aria-[invalid=true]:border-[#ff8f86]";
 const labelClass = "font-display text-[12px] font-semibold tracking-[0.12em] text-mist uppercase";
 
 export default function ContactWithGlobe({
@@ -365,6 +440,8 @@ export default function ContactWithGlobe({
     name: `${uid}-name`,
     phone: `${uid}-phone`,
   };
+  const sectionRef = useRef<HTMLElement>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
   const detailsRef = useRef<HTMLTextAreaElement>(null);
   const nameRef = useRef<HTMLInputElement>(null);
   const [errors, setErrors] = useState<{ details?: boolean; name?: boolean }>({});
@@ -408,9 +485,29 @@ export default function ContactWithGlobe({
 
   const clear = (key: "details" | "name") => () => errors[key] && setErrors((prev) => ({ ...prev, [key]: false }));
 
+  // Base.astro's observer reveals [data-reveal] from the server markup; if this
+  // island ever re-rendered from scratch, its fresh nodes would be missed.
+  useEffect(() => {
+    const pending = sectionRef.current?.querySelectorAll("[data-reveal]:not(.is-in)");
+    if (!pending?.length) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) {
+            e.target.classList.add("is-in");
+            io.unobserve(e.target);
+          }
+        }
+      },
+      { rootMargin: "0px 0px -8% 0px", threshold: 0.12 }
+    );
+    pending.forEach((el) => io.observe(el));
+    return () => io.disconnect();
+  }, []);
+
   return (
-    <MotionConfig reducedMotion="user">
       <section
+        ref={sectionRef}
         id={id}
         aria-labelledby={ids.title}
         className={cn(
@@ -421,27 +518,25 @@ export default function ContactWithGlobe({
       >
         <div className="relative mx-auto w-full max-w-[var(--maxw)] px-[var(--gutter)]">
           <div className="mx-auto mb-[clamp(48px,6vw,88px)] flex max-w-3xl flex-col items-center gap-6 text-center">
-            <motion.h2
-              {...reveal(0, 14)}
-              data-motion
+            <h2
+              {...reveal(0)}
               id={ids.title}
               className="font-display text-[clamp(40px,5.4vw,84px)] leading-[0.96] font-extrabold tracking-[-0.035em] text-balance [&_em]:pr-[0.04em] [&_em]:font-serif [&_em]:text-[1.06em] [&_em]:font-normal [&_em]:tracking-[-0.02em] [&_em]:text-signal-hi [&_em]:[font-variation-settings:'opsz'_144]"
             >
               {title} {titleEmphasis ? <em>{titleEmphasis}</em> : null} {titleEnd}
-            </motion.h2>
+            </h2>
             {description ? (
-              <motion.p
-                {...reveal(0.15, 14)}
-                data-motion
+              <p
+                {...reveal(120)}
                 className="max-w-[46ch] text-[clamp(17px,1.35vw,20px)] leading-[1.6] text-[#d7e0f5] text-pretty"
               >
                 {description}
-              </motion.p>
+              </p>
             ) : null}
           </div>
 
           <div className="mx-auto grid max-w-6xl grid-cols-1 items-start gap-[clamp(40px,5vw,72px)] lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
-            <motion.div {...reveal(0.1, 28)} data-motion className="flex flex-col gap-7">
+            <div {...reveal(80)} className="flex flex-col gap-7">
               <div className="flex flex-col gap-2">
                 <h3 className="font-display text-[clamp(24px,2vw,30px)] font-bold tracking-[-0.02em]">{infoTitle}</h3>
                 {infoText ? <p className="max-w-[34ch] text-[16px] leading-[1.6] text-[#c9d4ef]">{infoText}</p> : null}
@@ -460,7 +555,7 @@ export default function ContactWithGlobe({
                       </>
                     );
                     return (
-                      <motion.li key={`${icon}-${label}`} {...reveal(0.2 + i * 0.08, 0)} data-motion className="list-none">
+                      <li key={`${icon}-${label}`} {...reveal(160 + i * 70)} className="list-none">
                         {href ? (
                           <a
                             href={href}
@@ -472,21 +567,21 @@ export default function ContactWithGlobe({
                         ) : (
                           <span className="group flex w-fit items-center gap-3 font-display text-[16px] font-semibold text-[#eef2fb]">{inner}</span>
                         )}
-                      </motion.li>
+                      </li>
                     );
                   })}
                 </ul>
               ) : null}
 
               <div className="relative mx-auto aspect-[1/0.82] w-full max-w-[460px] overflow-hidden [mask-image:linear-gradient(to_bottom,#000_62%,transparent)] lg:mx-0">
-                <GlobeWireframe className="absolute inset-x-0 top-0" marker={marker} center={center} highlightId="792" />
+                <GlobeWireframe className="absolute inset-x-0 top-0" marker={marker} center={center} highlightId="792" pauseWithin={cardRef} />
               </div>
-            </motion.div>
+            </div>
 
-            <motion.div
-              {...reveal(0.25, 28)}
-              data-motion
-              className="flex flex-col gap-6 rounded-[var(--r-lg)] border border-white/12 bg-[rgba(8,17,42,0.55)] p-[clamp(22px,3vw,40px)] shadow-[0_40px_80px_-48px_rgba(0,0,0,0.8)] backdrop-blur-xl"
+            <div
+              ref={cardRef}
+              {...reveal(200)}
+              className="order-first flex flex-col gap-6 rounded-[var(--r-lg)] border lg:order-none border-white/12 bg-[rgba(8,17,42,0.55)] p-[clamp(22px,3vw,40px)] shadow-[0_40px_80px_-48px_rgba(0,0,0,0.8)] backdrop-blur-xl"
             >
               <div className="flex flex-col gap-1.5">
                 <h3 className="font-display text-[clamp(22px,1.8vw,28px)] font-bold tracking-[-0.02em]">Servis talebi</h3>
@@ -506,7 +601,7 @@ export default function ContactWithGlobe({
                         key={k.value}
                         className="group relative flex cursor-pointer items-start gap-3 rounded-xl border border-white/15 bg-white/[0.04] px-4 py-3 transition-colors duration-200 hover:border-white/30 has-checked:border-signal has-checked:bg-signal/10 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-signal-hi has-focus-visible:outline-solid"
                       >
-                        <input type="radio" name="kind" value={k.value} defaultChecked={i === 0} className="sr-only" />
+                        <input type="radio" name="kind" value={k.value} defaultChecked={i === 0} className="absolute inset-0 m-0 size-full cursor-pointer appearance-none opacity-0" />
                         <span
                           aria-hidden="true"
                           className={cn(
@@ -533,7 +628,7 @@ export default function ContactWithGlobe({
                         key={s}
                         className="group relative flex cursor-pointer items-center gap-2.5 rounded-full border border-white/15 bg-white/[0.04] px-4 py-2 transition-colors duration-200 hover:border-white/30 has-checked:border-signal has-checked:bg-signal/10 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-signal-hi has-focus-visible:outline-solid"
                       >
-                        <input type="checkbox" name="system" value={s} className="sr-only" />
+                        <input type="checkbox" name="system" value={s} className="absolute inset-0 m-0 size-full cursor-pointer appearance-none opacity-0" />
                         <span aria-hidden="true" className="size-1.5 rounded-full bg-white/25 transition-colors group-has-checked:bg-lamp" />
                         <span className="font-display text-[14px] font-semibold">{s}</span>
                       </label>
@@ -636,10 +731,9 @@ export default function ContactWithGlobe({
                   {status}
                 </p>
               </form>
-            </motion.div>
+            </div>
           </div>
         </div>
       </section>
-    </MotionConfig>
   );
 }
