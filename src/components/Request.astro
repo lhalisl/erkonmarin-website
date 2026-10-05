@@ -165,7 +165,8 @@ const { compact = false } = Astro.props;
       const el = form.elements.namedItem(name) as HTMLInputElement | HTMLTextAreaElement;
       const err = document.getElementById(`rq-${name}-err`);
       const ok = el.value.trim().length > 0;
-      el.toggleAttribute('aria-invalid', !ok);
+      if (ok) el.removeAttribute('aria-invalid');
+      else el.setAttribute('aria-invalid', 'true');
       if (err) err.hidden = ok;
       return ok;
     };
@@ -487,10 +488,21 @@ const { compact = false } = Astro.props;
   }
 
   @media (max-width: 1080px) {
+    /* one column: heading and lead, then the form, then the contact list */
     .request__grid {
       grid-template-columns: 1fr;
+      row-gap: 0;
     }
-    /* keep the form close to the heading on narrow screens */
+    .request__intro {
+      display: contents;
+    }
+    .rq {
+      order: 1;
+      margin-top: 40px;
+    }
+    .lines {
+      order: 2;
+    }
     .request__photo {
       display: none;
     }

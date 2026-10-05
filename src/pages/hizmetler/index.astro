@@ -36,7 +36,7 @@ const n = (i: number) => String(i + 1).padStart(2, '0');
                     </span>
                     <span class="index__name">
                       <span class="index__title">{s.title}</span>
-                      <span class="index__sub serif">{s.subtitle}</span>
+                      <span class="index__sub serif" lang="en">{s.subtitle}</span>
                     </span>
                     <Image class="index__img" src={s.photo.src} alt="" widths={[160, 320]} sizes="160px" />
                     <Icon name="arrow-down" class="index__arrow" />
@@ -82,7 +82,7 @@ const n = (i: number) => String(i + 1).padStart(2, '0');
                     </span>
                     <h2 class="h2 svc__title" id={`${s.slug}-title`}>
                       {s.title}{' '}
-                      <em>{s.subtitle}</em>
+                      <em lang="en">{s.subtitle}</em>
                     </h2>
                   </header>
                   <figure class="svc__media">
@@ -315,7 +315,7 @@ const n = (i: number) => String(i + 1).padStart(2, '0');
     gap: 12px;
     align-items: baseline;
     padding: 10px 0 10px 20px;
-    color: var(--c-ink-3);
+    color: var(--c-ink-2);
     font-family: var(--f-display);
     font-size: 16px;
     font-weight: 600;

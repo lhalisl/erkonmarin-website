@@ -22,6 +22,7 @@ const items = services.map((s) => ({
   id: s.slug,
   title: s.title,
   subtitle: s.subtitle,
+  subtitleLang: 'en',
   content: s.paragraphs[0],
   href: serviceHref(s),
 }));

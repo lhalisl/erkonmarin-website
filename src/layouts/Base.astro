@@ -96,6 +96,21 @@ const ld = {
     <LogoSprite />
     <slot />
     <script>
+      // Keyboard focus that lands partly under the fixed header (the browser leaves
+      // partly visible elements where they are) is nudged just below it. The
+      // timeline island places its own focus.
+      document.addEventListener('focusin', (e) => {
+        const el = e.target;
+        if (!(el instanceof HTMLElement) || !el.matches(':focus-visible')) return;
+        if (el.closest('[data-header], [data-tl-item], [data-tl-outro]')) return;
+        const bar = document.querySelector('[data-header] .bar');
+        if (!bar) return;
+        const limit = bar.getBoundingClientRect().bottom + 12;
+        const r = el.getBoundingClientRect();
+        if (r.top < limit && r.bottom > 0) window.scrollBy({ top: r.top - limit, behavior: 'instant' });
+      });
+    </script>
+    <script>
       // Reveal-on-scroll for [data-reveal]
       const els = document.querySelectorAll<HTMLElement>('[data-reveal]');
       if ('IntersectionObserver' in window) {

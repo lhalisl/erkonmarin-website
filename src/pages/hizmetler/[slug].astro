@@ -38,7 +38,7 @@ const message = `Merhaba, ${service.title} için servis talebi oluşturmak istiy
             </a>
             <h1 class="display hero__title" id="svc-title">
               {service.title}{' '}
-              <em>{service.subtitle}</em>
+              <em lang="en">{service.subtitle}</em>
             </h1>
           </div>
           <figure class="hero__media">
@@ -100,7 +100,7 @@ const message = `Merhaba, ${service.title} için servis talebi oluşturmak istiy
                   <Image class="card__img" src={s.photo.src} alt="" widths={[360, 640]} sizes="(max-width: 900px) 40vw, 160px" />
                   <span class="card__text">
                     <span class="card__title">{s.title}</span>
-                    <span class="card__sub serif">{s.subtitle}</span>
+                    <span class="card__sub serif" lang="en">{s.subtitle}</span>
                   </span>
                   <Icon name="arrow" />
                 </a>

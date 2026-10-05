@@ -61,6 +61,8 @@ export type TimelineItem = {
   id: string;
   title: string;
   subtitle?: string;
+  /** Language of the subtitle when it differs from the page (e.g. "en"). */
+  subtitleLang?: string;
   content: string;
   href?: string;
 };
@@ -489,6 +491,7 @@ export default function Timeline({
                     {item.subtitle ? (
                       <p
                         data-tl-sub
+                        lang={item.subtitleLang}
                         className="shrink-0 font-serif text-[16px] leading-[1.25] italic min-[900px]:text-[clamp(15px,1.15vw,20px)]"
                         style={{ color: activeColor }}
                       >

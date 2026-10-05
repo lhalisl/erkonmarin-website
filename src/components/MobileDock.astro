@@ -21,7 +21,7 @@ import { site, whatsappLink, requestHref } from '../data/site';
 <script>
   // Hide the dock while the request form itself is on screen
   const dock = document.querySelector<HTMLElement>('[data-dock]');
-  const target = document.getElementById('talep');
+  const target = document.querySelector<HTMLElement>('[data-request]') ?? document.getElementById('talep');
   if (dock && target) {
     new IntersectionObserver(([e]) => dock.toggleAttribute('data-hidden', e.isIntersecting), { threshold: 0.15 }).observe(target);
   }

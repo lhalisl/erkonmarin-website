@@ -78,6 +78,11 @@
     }
   }
 
+  /* focus scrolled into view stops below the fixed header (sections keep landing flush) */
+  :where(a[href], button, input, select, textarea, summary, [tabindex]:not([tabindex='-1'])) {
+    scroll-margin-top: calc(var(--header-h) + 16px);
+  }
+
   /* keep keyboard focus clear of the fixed contact dock on phones */
   @media (max-width: 760px) {
     html {
