@@ -8,6 +8,19 @@
 
 @source '../components/ui';
 
+/* The slice of Tailwind's preflight that shadcn/ui components count on, kept
+   to the React islands so the Astro components' own styles stay untouched. */
+@layer base {
+  astro-island *,
+  astro-island ::before,
+  astro-island ::after {
+    border: 0 solid;
+  }
+  astro-island button {
+    background-color: transparent;
+  }
+}
+
 /* Site tokens exposed as utilities: font-display, text-signal, rounded-card … */
 @theme inline {
   --font-sans: var(--f-sans);
@@ -19,6 +32,25 @@
   --color-signal: var(--c-signal);
   --color-signal-hi: var(--c-signal-hi);
   --color-mist: var(--c-mist);
+  --color-amber: var(--c-amber);
+  --color-lamp: var(--c-lamp-green);
   --radius-card: var(--r-lg);
   --radius-card-sm: var(--r-md);
+
+  /* shadcn/ui semantic tokens, mapped to the brand (components sit on the dark navy sections) */
+  --color-background: var(--c-abyss);
+  --color-foreground: #eef2fb;
+  --color-primary: var(--c-signal);
+  --color-primary-foreground: var(--c-abyss);
+  --color-secondary: rgba(255, 255, 255, 0.08);
+  --color-secondary-foreground: #eef2fb;
+  --color-accent: rgba(43, 187, 229, 0.12);
+  --color-accent-foreground: var(--c-signal-hi);
+  --color-muted: rgba(255, 255, 255, 0.06);
+  --color-muted-foreground: var(--c-mist);
+  --color-destructive: var(--c-lamp-red);
+  --color-destructive-foreground: #fff;
+  --color-border: rgba(255, 255, 255, 0.14);
+  --color-input: rgba(255, 255, 255, 0.18);
+  --color-ring: var(--c-signal-hi);
 }

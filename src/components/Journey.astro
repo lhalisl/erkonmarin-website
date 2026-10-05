@@ -1,0 +1,422 @@
+---
+// "Mesleki yolculuğumuz": the career rail from /hakkimizda/. With `intro`, it
+// opens with the About lead and team photo (the home page's about block) and
+// the headings step down a level under its h2.
+import Icon from './Icon.astro';
+import TeamPhoto from './TeamPhoto.astro';
+import { about } from '../data/about';
+import { services, serviceHref } from '../data/services';
+
+interface Props {
+  id?: string;
+  intro?: boolean;
+}
+const { id, intro = false } = Astro.props;
+const Title = intro ? 'h3' : 'h2';
+const Stop = intro ? 'h4' : 'h3';
+const link = (slug: string) => serviceHref(services.find((s) => s.slug === slug)!);
+---
+
+<section class="story" id={id} data-nav-tone="light" aria-labelledby={intro ? 'about-title' : 'story-title'}>
+  <div class="container">
+    {
+      intro && (
+        <div class="intro">
+          <div class="intro__text">
+            <h2 class="h2 intro__title" id="about-title" data-reveal>
+              Hakkımızda
+            </h2>
+            <p class="intro__lead" data-reveal style="--d:120">
+              Erkon Marin olarak, <span class="hl">35 yılı aşkın</span> denizcilik elektroniği, seyir cihazları ve gemi otomasyon sistemleri
+              deneyimimizi ticari gemilere ve romorkörlere profesyonel çözümler sunmak için kullanıyoruz.
+            </p>
+            <a class="btn btn--ink intro__more" href="/hakkimizda/" data-reveal style="--d:200">
+              <span>Hakkımızda sayfası</span>
+              <Icon name="arrow" />
+            </a>
+          </div>
+          <TeamPhoto class="intro__photo" sizes="(max-width: 900px) calc(100vw - 40px), 34vw" />
+        </div>
+      )
+    }
+    <Title class="h2 story__title" id="story-title" data-reveal>Mesleki <em>yolculuğumuz</em></Title>
+
+    <div class="journey" data-journey>
+      <div class="journey__rail" aria-hidden="true"><span data-journey-fill></span></div>
+      <ol role="list" class="journey__list">
+        <li class="stop" data-stop>
+          <span class="stop__dot" aria-hidden="true"></span>
+          <p class="stop__mark numeral">1988</p>
+          <div class="stop__body">
+            <Stop class="h3 stop__title">D.B. Deniz Nakliyat T.A.Ş.</Stop>
+            <p>
+              Mesleki yolculuğumuz 1988 yılında, Türkiye’nin en köklü denizcilik kurumlarından biri olan D.B. Deniz Nakliyat T.A.Ş.’nin
+              elektronik tamir ekibinde başladı.
+            </p>
+            <p>
+              Bu dönemde birçok seyir ve haberleşme sisteminin tamir, bakım ve montaj/demontaj işlemlerini gerçekleştirdik. Bunlar arasında:
+            </p>
+            <p class="stop__key">
+              <strong>Raytheon, Kelvin Hughes, Sperry, Decca, Furuno, Sailor, JRC, Gylot</strong> gibi markaların{' '}
+              <a href={link('seyir-sistemleri')}>radar, gyro, autopilot, VHF telsiz ve çeşitli köprüüstü (bridge) cihazları</a> yer alıyordu.
+            </p>
+            <ul class="brands" aria-hidden="true">
+              {about.brands.map((b) => <li>{b}</li>)}
+            </ul>
+          </div>
+        </li>
+
+        <li class="stop" data-stop>
+          <span class="stop__dot" aria-hidden="true"></span>
+          <p class="stop__mark numeral">Ardından</p>
+          <div class="stop__body">
+            <Stop class="h3 stop__title">Kıyı Emniyeti Genel Müdürlüğü</Stop>
+            <p>
+              Edindiğimiz bu geniş tecrübeyle, daha sonra Kıyı Emniyet Genel Müdürlüğü bünyesinde ilk Elektrik-Elektronik Tamir Ekibini kurduk.
+            </p>
+            <p>
+              Bu ekip ile <a href={link('romorkor-ve-sar-botlar')}>romorkör, SAR Boat</a> ve kurum bünyesindeki tüm yüzer araçların elektrik,
+              elektronik, hidrolik, pnömatik ve otomasyon sistemlerinin arıza tespiti ve bakım çalışmalarını yürüttük.
+            </p>
+            <p>
+              Ayrıca <a href={link('ana-makine')}>Ana Makine</a> ve <a href={link('yardimci-makine')}>Yardımcı Makinelerin (Jeneratör/DG)</a> arıza
+              tespitlerini ve bakımlarını da gerçekleştirdik.
+            </p>
+            <ul class="annunciator" aria-hidden="true">
+              {
+                about.systems.map((s, i) => (
+                  <li style={`--i:${i}`}>
+                    <span class="lamp" />
+                    {s}
+                  </li>
+                ))
+              }
+            </ul>
+          </div>
+        </li>
+
+        <li class="stop" data-stop>
+          <span class="stop__dot" aria-hidden="true"></span>
+          <p class="stop__mark numeral">Bugün</p>
+          <div class="stop__body">
+            <Stop class="h3 stop__title">Erkon Marin</Stop>
+            <p>Günümüzde Erkon Marin olarak sunduğumuz hizmetler:</p>
+            <ul role="list" class="offer">
+              {
+                about.today.map((t, i) => (
+                  <li>
+                    <span class="offer__n numeral" aria-hidden="true">
+                      {String(i + 1).padStart(2, '0')}
+                    </span>
+                    <span>{t}</span>
+                  </li>
+                ))
+              }
+            </ul>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<script>
+  // The rail fills as the story scrolls past the reading line; each stop's dot
+  // lights once the fill reaches it.
+  const journey = document.querySelector<HTMLElement>('[data-journey]');
+  const fill = journey?.querySelector<HTMLElement>('[data-journey-fill]');
+  if (journey && fill) {
+    const stops = Array.from(journey.querySelectorAll<HTMLElement>('[data-stop]'));
+    let ticking = false;
+    const update = () => {
+      ticking = false;
+      const line = window.innerHeight * 0.62;
+      const r = journey.getBoundingClientRect();
+      const p = Math.min(1, Math.max(0, (line - r.top) / r.height));
+      fill.style.transform = `scaleY(${p.toFixed(4)})`;
+      for (const s of stops) {
+        const dot = s.querySelector<HTMLElement>('.stop__dot')!;
+        s.toggleAttribute('data-lit', dot.getBoundingClientRect().top < line);
+      }
+    };
+    const onScroll = () => {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(update);
+      }
+    };
+    update();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+  }
+</script>
+
+<style>
+  /* ---- Intro (home page) ---------------------------------------- */
+  .intro {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: clamp(40px, 6vw, 112px);
+    align-items: center;
+    margin-bottom: clamp(88px, 10vw, 160px);
+  }
+  .intro__title {
+    font-size: clamp(42px, 5.2vw, 88px);
+  }
+  .intro__lead {
+    max-width: 30ch;
+    margin-top: clamp(24px, 2.6vw, 40px);
+    font-family: var(--f-display);
+    font-size: clamp(22px, 2.1vw, 32px);
+    font-weight: 500;
+    line-height: 1.32;
+    letter-spacing: -0.012em;
+    color: var(--c-ink);
+    text-wrap: pretty;
+  }
+  .hl {
+    color: var(--c-navy);
+  }
+  .intro__more {
+    margin-top: clamp(28px, 3vw, 44px);
+  }
+  .intro :global(.intro__photo) {
+    justify-self: end;
+  }
+
+  /* ---- Story --------------------------------------------------- */
+  .story {
+    padding-block: clamp(88px, 11vw, 168px);
+    background: var(--c-paper-hi);
+    color: var(--c-ink);
+  }
+  .story__title {
+    font-size: clamp(42px, 5.2vw, 88px);
+  }
+  .story__title em {
+    color: var(--c-navy);
+  }
+  .journey {
+    --jp: clamp(36px, 4vw, 64px);
+    --dot: 14px;
+    position: relative;
+    margin-top: clamp(48px, 6vw, 96px);
+    padding-left: var(--jp);
+  }
+  .journey__rail {
+    position: absolute;
+    top: 0.9em;
+    bottom: 0;
+    left: calc(var(--dot) / 2);
+    width: 1px;
+    background: var(--c-line-light-2);
+  }
+  .journey__rail span {
+    position: absolute;
+    inset: 0;
+    background: var(--c-signal-dim);
+    transform-origin: top;
+  }
+  :global(.js) .journey__rail span {
+    transform: scaleY(0);
+  }
+  .journey__list {
+    display: grid;
+    gap: clamp(64px, 8vw, 128px);
+    margin: 0;
+  }
+  .stop {
+    position: relative;
+    display: grid;
+    grid-template-columns: clamp(200px, 21vw, 340px) minmax(0, 1fr);
+    gap: clamp(20px, 3vw, 56px);
+  }
+  .stop__dot {
+    position: absolute;
+    top: 0.9em;
+    left: calc(-1 * var(--jp));
+    width: var(--dot);
+    height: var(--dot);
+    margin-top: calc(var(--dot) / -2);
+    border-radius: 50%;
+    border: 1px solid var(--c-line-light-2);
+    background: var(--c-paper-hi);
+    transition:
+      background-color 0.4s var(--ease-out),
+      border-color 0.4s var(--ease-out),
+      box-shadow 0.4s var(--ease-out);
+  }
+  .stop[data-lit] .stop__dot,
+  :global(html:not(.js)) .stop__dot {
+    border-color: var(--c-signal-dim);
+    background: var(--c-signal);
+    box-shadow: 0 0 0 5px rgba(43, 187, 229, 0.18);
+  }
+  .stop__mark {
+    font-size: clamp(44px, 4.4vw, 76px);
+    font-style: italic;
+    line-height: 0.9;
+    color: var(--c-navy);
+  }
+  .stop__body {
+    display: grid;
+    gap: 1.1em;
+    max-width: 64ch;
+    color: var(--c-ink-2);
+    font-size: clamp(17px, 1.25vw, 19.5px);
+    line-height: 1.7;
+    text-wrap: pretty;
+  }
+  .stop__title {
+    margin-bottom: 0.1em;
+    font-size: clamp(26px, 2.4vw, 38px);
+    color: var(--c-ink);
+  }
+  .stop__body strong {
+    color: var(--c-ink);
+    font-weight: 650;
+  }
+  .stop__body a {
+    color: var(--c-navy);
+    text-decoration-color: color-mix(in srgb, var(--c-navy) 35%, transparent);
+    text-underline-offset: 0.18em;
+    transition: text-decoration-color 0.25s var(--ease-out);
+  }
+  .stop__body a:hover {
+    text-decoration-color: currentColor;
+  }
+  .story :global(:focus-visible) {
+    outline-color: var(--c-navy);
+  }
+
+  /* brand names as a grid of nameplates */
+  .brands {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    margin: 0.4em 0 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid var(--c-line-light-2);
+  }
+  .brands li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 12px 16px 0;
+    border-bottom: 1px solid var(--c-line-light-2);
+    font-family: var(--f-serif);
+    font-style: italic;
+    font-size: clamp(21px, 1.9vw, 30px);
+    font-variation-settings: 'opsz' 72;
+    line-height: 1.1;
+    color: var(--c-ink);
+  }
+  .brands li::before {
+    content: '';
+    flex: none;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--c-signal);
+  }
+
+  /* systems as a lit alarm panel */
+  .annunciator {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 1px;
+    margin: 0.4em 0 0;
+    padding: 0;
+    list-style: none;
+    overflow: hidden;
+    border: 1px solid var(--c-ink);
+    border-radius: var(--r-md);
+    background: rgba(143, 180, 255, 0.16);
+  }
+  .annunciator li {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 16px 14px 14px;
+    background: var(--c-ink);
+    color: #dfe6f6;
+    font-family: var(--f-display);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .annunciator .lamp {
+    --lamp: #6b7488;
+    box-shadow: 0 0 0 2px rgba(107, 116, 136, 0.25);
+    transition:
+      background-color 0.3s linear,
+      box-shadow 0.3s linear;
+    transition-delay: calc(var(--i) * 140ms + 300ms);
+  }
+  .stop[data-lit] .annunciator .lamp,
+  :global(html:not(.js)) .annunciator .lamp {
+    --lamp: var(--c-lamp-green);
+    box-shadow:
+      0 0 0 2px color-mix(in srgb, var(--lamp) 22%, transparent),
+      0 0 12px var(--lamp);
+  }
+
+  .offer {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin: 0.2em 0 0;
+  }
+  .offer li {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 14px;
+    align-items: baseline;
+    padding: 20px 22px;
+    border: 1px solid var(--c-line-light);
+    border-radius: var(--r-md);
+    background: #fff;
+    color: var(--c-ink);
+    font-size: 16.5px;
+    line-height: 1.45;
+  }
+  .offer__n {
+    font-size: 22px;
+    font-style: italic;
+    color: var(--c-navy);
+  }
+
+  @media (max-width: 1080px) {
+    .stop {
+      grid-template-columns: 1fr;
+      gap: 18px;
+    }
+    .offer {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (max-width: 900px) {
+    .intro {
+      grid-template-columns: 1fr;
+    }
+    .intro :global(.intro__photo) {
+      justify-self: start;
+    }
+  }
+  @media (max-width: 640px) {
+    .brands {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .annunciator {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .annunciator li:last-child {
+      grid-column: 1 / -1;
+    }
+    .offer li {
+      padding: 18px;
+    }
+  }
+</style>

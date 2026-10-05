@@ -356,6 +356,12 @@
 }
 
 /* ---- Reveal on scroll ------------------------------------------ */
+/* React islands animate with motion; without scripts, show their content as is */
+html:not(.js) [data-motion] {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .js [data-reveal] {
     opacity: 0;

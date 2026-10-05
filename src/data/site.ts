@@ -48,7 +48,6 @@ export const requestHref = (pathname: string) => {
 export const nav = [
   { label: 'Sistemler', href: '/#sistemler' },
   { label: 'Hizmetler', href: '/hizmetler/' },
-  { label: 'Süreç', href: '/#surec' },
   { label: 'Kimler için', href: '/#kimler' },
   { label: 'Hakkımızda', href: '/hakkimizda/' },
   { label: 'İletişim', href: '/iletisim/' },

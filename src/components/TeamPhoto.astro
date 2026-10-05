@@ -1,0 +1,89 @@
+---
+// The team photo with its "35+ yıl" badge (About page hero and the home about block).
+import { Image } from 'astro:assets';
+import team from '../assets/hakkimizda/erkon-marin-ekip.jpg';
+
+interface Props {
+  eager?: boolean;
+  sizes?: string;
+  class?: string;
+}
+const { eager = false, sizes = '(max-width: 900px) calc(100vw - 40px), 36vw', class: className } = Astro.props;
+---
+
+<figure class:list={['photo', className]}>
+  <Image
+    src={team}
+    alt="Erkon Marin ekibinden iki kişi; arkalarında İstanbul Boğazı"
+    widths={[420, 640, 900, 1070]}
+    sizes={sizes}
+    loading={eager ? 'eager' : 'lazy'}
+    fetchpriority={eager ? 'high' : 'auto'}
+  />
+  <figcaption class="stat">
+    <span class="stat__n numeral">35<span class="stat__plus">+</span></span>
+    <span class="stat__l">yıl denizcilik elektroniği deneyimi</span>
+  </figcaption>
+</figure>
+
+<style>
+  .photo {
+    position: relative;
+    width: min(100%, 520px);
+  }
+  .photo :global(img) {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    border-radius: var(--r-xl);
+    /* the source is a small, upscaled snapshot; a gentle grade keeps it in the site's palette */
+    filter: saturate(0.9) contrast(1.04);
+  }
+  .stat {
+    position: absolute;
+    left: clamp(-56px, -3.2vw, -20px);
+    bottom: clamp(28px, 3vw, 44px);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 22px 14px 18px;
+    border: 1px solid var(--c-line-dark-2);
+    border-radius: var(--r-lg);
+    background: rgba(8, 17, 42, 0.78);
+    -webkit-backdrop-filter: blur(14px) saturate(1.4);
+    backdrop-filter: blur(14px) saturate(1.4);
+    box-shadow: 0 24px 50px -28px rgba(0, 0, 0, 0.8);
+  }
+  .stat__n {
+    font-size: clamp(44px, 4vw, 60px);
+    font-style: italic;
+    color: var(--c-signal);
+  }
+  /* the serif italic plus is a hairline; set it in the display face */
+  .stat__plus {
+    margin-left: 0.04em;
+    font-family: var(--f-display);
+    font-size: 0.56em;
+    font-style: normal;
+    font-weight: 700;
+    vertical-align: 0.62em;
+  }
+  .stat__l {
+    max-width: 13ch;
+    font-family: var(--f-display);
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.25;
+    color: #eef2fb;
+  }
+  @media (max-width: 900px) {
+    .photo {
+      width: min(100%, 480px);
+    }
+    .stat {
+      left: 16px;
+      bottom: 16px;
+    }
+  }
+</style>
