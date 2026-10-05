@@ -30,5 +30,6 @@ export const nav = [
   { label: 'Hizmetler', href: '/#hizmetler' },
   { label: 'Süreç', href: '/#surec' },
   { label: 'Kimler için', href: '/#kimler' },
+  { label: 'Hakkımızda', href: '/hakkimizda/' },
   { label: 'İletişim', href: '/#talep' },
 ];
