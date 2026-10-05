@@ -1,0 +1,38 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Stage from '../components/Stage.astro';
+import WhatWeDo from '../components/WhatWeDo.astro';
+import Services from '../components/Services.astro';
+import FieldPhotos from '../components/FieldPhotos.astro';
+import Statement from '../components/Statement.astro';
+import Journey from '../components/Journey.astro';
+import Audience from '../components/Audience.astro';
+import Contact from '../components/Contact.astro';
+import Footer from '../components/Footer.astro';
+import MobileDock from '../components/MobileDock.astro';
+import { alternatesOf, anchors, langOf } from '../i18n';
+
+const lang = langOf(Astro.currentLocale);
+const alternates = alternatesOf('home');
+const title = {
+  tr: 'Erkon Marin · Gemi Elektrik ve Otomasyon Servisi | MSB, Kontrol Odası, Otomasyon Panoları',
+  en: 'Erkon Marin · Marine Electrical and Automation Service | MSB, Control Rooms, Automation Panels',
+}[lang];
+---
+
+<Base title={title} alternates={alternates}>
+  <Header alternates={alternates} />
+  <main id="main">
+    <Stage />
+    <WhatWeDo />
+    <Services />
+    <FieldPhotos />
+    <Statement />
+    <Journey id={anchors.about[lang]} intro />
+    <Audience />
+    <Contact />
+  </main>
+  <Footer />
+  <MobileDock />
+</Base>

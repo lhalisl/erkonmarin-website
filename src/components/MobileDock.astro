@@ -1,19 +1,22 @@
 ---
 import Icon from './Icon.astro';
-import { site, whatsappLink, requestHref } from '../data/site';
+import { site, whatsappLink } from '../data/site';
+import { langOf, requestHref, ui } from '../i18n';
+const lang = langOf(Astro.currentLocale);
+const t = ui[lang];
 ---
 
-<nav class="dock" aria-label="Hızlı iletişim" data-dock>
+<nav class="dock" aria-label={t.dock.label} data-dock>
   <a class="dock__item" href={site.phones[0].href}>
     <Icon name="phone" />
-    <span>Ara</span>
+    <span>{t.dock.call}</span>
   </a>
   <a class="dock__item" href={whatsappLink()} target="_blank" rel="noopener">
     <Icon name="whatsapp" />
     <span>WhatsApp</span>
   </a>
-  <a class="dock__item dock__item--cta" href={requestHref(Astro.url.pathname)}>
-    <span>Servis talebi</span>
+  <a class="dock__item dock__item--cta" href={requestHref(Astro.url.pathname, lang)}>
+    <span>{t.request}</span>
     <Icon name="arrow" />
   </a>
 </nav>
@@ -21,7 +24,7 @@ import { site, whatsappLink, requestHref } from '../data/site';
 <script>
   // Hide the dock while the request form itself is on screen
   const dock = document.querySelector<HTMLElement>('[data-dock]');
-  const target = document.querySelector<HTMLElement>('[data-request]') ?? document.getElementById('talep');
+  const target = document.querySelector<HTMLElement>('[data-request]');
   if (dock && target) {
     new IntersectionObserver(([e]) => dock.toggleAttribute('data-hidden', e.isIntersecting), { threshold: 0.15 }).observe(target);
   }

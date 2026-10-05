@@ -1,6 +1,19 @@
 ---
 import { Image } from 'astro:assets';
 import { galleryRows } from '../data/photos';
+import { anchors, langOf } from '../i18n';
+
+const lang = langOf(Astro.currentLocale);
+const copy = {
+  tr: {
+    title: ['Sahadan,', 'gerçek', 'işler.'],
+    lead: 'Ana panodan makine dairesine, köprüüstüne kadar gemide çalıştığımız sistemlerden kareler.',
+  },
+  en: {
+    title: ['Real work,', 'from the', 'field.'],
+    lead: 'Shots of the shipboard systems we work on, from the main switchboard to the engine room and the bridge.',
+  },
+}[lang];
 
 // Justified rows: each photo's flex-grow and aspect-ratio are its own
 // width/height, so photos in a row share one height and are never cropped.
@@ -19,14 +32,14 @@ const sizesFor = (share: number) =>
 
 {
   galleryRows.length > 0 && (
-    <section class="sahadan" id="sahadan" aria-labelledby="field-title">
+    <section class="sahadan" id={anchors.field[lang]} aria-labelledby="field-title">
       <div class="container">
         <header class="sahadan__head">
           <h2 class="h2" id="field-title" data-reveal>
-            Sahadan, <em>gerçek</em> işler.
+            {copy.title[0]} <em>{copy.title[1]}</em> {copy.title[2]}
           </h2>
           <p class="sahadan__lead" data-reveal style="--d:120">
-            Ana panodan makine dairesine, köprüüstüne kadar gemide çalıştığımız sistemlerden kareler.
+            {copy.lead}
           </p>
         </header>
 
@@ -40,7 +53,7 @@ const sizesFor = (share: number) =>
                   <figure class="sahadan__item" style={`--ar:${ar};--d:${(r * 2 + i) * 80}`} data-reveal>
                     <Image
                       src={p.src}
-                      alt={p.alt}
+                      alt={p.alt[lang]}
                       widths={[480, 800, 1200, 1600, 2000].filter((w) => w <= p.src.width)}
                       sizes={sizesFor(share)}
                       format="webp"
@@ -48,7 +61,7 @@ const sizesFor = (share: number) =>
                       loading="lazy"
                       decoding="async"
                     />
-                    {p.caption && <figcaption>{p.caption}</figcaption>}
+                    {p.caption && <figcaption>{p.caption[lang]}</figcaption>}
                   </figure>
                 );
               })}

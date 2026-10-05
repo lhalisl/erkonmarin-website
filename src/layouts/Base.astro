@@ -12,25 +12,32 @@ import archivoLatin from '@fontsource-variable/archivo/files/archivo-latin-wdth-
 import displayLatin from '@fontsource-variable/urbanist/files/urbanist-latin-wght-normal.woff2?url';
 import LogoSprite from '../components/LogoSprite.astro';
 import { site } from '../data/site';
+import { langOf, ui, type Alternates } from '../i18n';
+import { JS_CLASS } from '../scripts/inline.mjs';
 
 interface Props {
   title: string;
   description?: string;
   image?: string;
+  /** The same page in each language (hreflang, and the header's language switch). */
+  alternates?: Alternates;
 }
 
-const { title, description = site.description, image = '/media/og.jpg' } = Astro.props;
+const lang = langOf(Astro.currentLocale);
+const { title, description = site.description[lang], image = '/media/og.jpg', alternates } = Astro.props;
 
 // Link previews (WhatsApp, Facebook, LinkedIn) need absolute URLs
 const isErrorPage = /\/404/.test(Astro.url.pathname);
-const canonical = Astro.site && !isErrorPage ? new URL(Astro.url.pathname, Astro.site).href : undefined;
-const ogImage = Astro.site ? new URL(image, Astro.site).href : image;
+const abs = (path: string) => (Astro.site ? new URL(path, Astro.site).href : undefined);
+const canonical = !isErrorPage ? abs(Astro.url.pathname) : undefined;
+const ogImage = abs(image) ?? image;
+const hreflang = Astro.site && alternates && !isErrorPage ? alternates : undefined;
 
 const ld = {
   '@context': 'https://schema.org',
   '@type': 'ProfessionalService',
   name: site.name,
-  description: site.description,
+  description: site.description[lang],
   telephone: site.phones.map((p) => p.e164),
   email: site.email,
   address: {
@@ -48,21 +55,34 @@ const ld = {
       closes: '18:00',
     },
   ],
-  knowsAbout: [
-    'Gemi elektrik sistemleri',
-    'Ana dağıtım panosu (MSB)',
-    'Makine kontrol odası',
-    'Gemi otomasyon panoları',
-    'Ana makine sistemleri',
-    'Jeneratör (D/G) otomasyonu',
-    'Köprüüstü seyir sistemleri',
-    'Romorkör ve SAR botlar',
-  ],
+  knowsAbout:
+    lang === 'tr'
+      ? [
+          'Gemi elektrik sistemleri',
+          'Ana dağıtım panosu (MSB)',
+          'Makine kontrol odası',
+          'Gemi otomasyon panoları',
+          'Ana makine sistemleri',
+          'Jeneratör (D/G) otomasyonu',
+          'Köprüüstü seyir sistemleri',
+          'Romorkör ve SAR botlar',
+        ]
+      : [
+          'Marine electrical systems',
+          'Main switchboards (MSB)',
+          'Engine control rooms',
+          'Ship automation panels',
+          'Main engine systems',
+          'Generator (D/G) automation',
+          'Bridge navigation systems',
+          'Tugs and SAR boats',
+        ],
+  inLanguage: lang,
 };
 ---
 
 <!doctype html>
-<html lang="tr">
+<html lang={lang}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
@@ -70,14 +90,26 @@ const ld = {
     <meta name="description" content={description} />
     <meta name="theme-color" content="#050a19" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
     <link rel="preload" href={archivoLatin} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={displayLatin} as="font" type="font/woff2" crossorigin />
 
     {canonical && <link rel="canonical" href={canonical} />}
+    {
+      hreflang && (
+        <>
+          <link rel="alternate" hreflang="tr" href={abs(hreflang.tr)} />
+          <link rel="alternate" hreflang="en" href={abs(hreflang.en)} />
+          <link rel="alternate" hreflang="x-default" href={abs(hreflang.tr)} />
+        </>
+      )
+    }
 
     <meta property="og:type" content="website" />
     {canonical && <meta property="og:url" content={canonical} />}
-    <meta property="og:locale" content="tr_TR" />
+    <meta property="og:locale" content={lang === 'tr' ? 'tr_TR' : 'en_GB'} />
+    <meta property="og:locale:alternate" content={lang === 'tr' ? 'en_GB' : 'tr_TR'} />
     <meta property="og:site_name" content={site.name} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
@@ -86,13 +118,11 @@ const ld = {
     <meta property="og:image:height" content="630" />
     <meta name="twitter:card" content="summary_large_image" />
 
-    <script is:inline>
-      document.documentElement.classList.add('js');
-    </script>
-    <script type="application/ld+json" set:html={JSON.stringify(ld)} />
+    <script is:inline set:html={JS_CLASS} />
+    <script type="application/ld+json" set:html={JSON.stringify(ld).replace(/</g, '\\u003c')} />
   </head>
   <body>
-    <a class="skip-link" href="#main">İçeriğe geç</a>
+    <a class="skip-link" href="#main">{ui[lang].skip}</a>
     <LogoSprite />
     <slot />
     <script>

@@ -1,0 +1,165 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import MobileDock from '../components/MobileDock.astro';
+import { site } from '../data/site';
+import { alternatesOf, langOf } from '../i18n';
+
+// confirm: a plain description of what this site does with data. Have it
+// reviewed against KVKK (Law No. 6698) before relying on it as the formal notice.
+const lang = langOf(Astro.currentLocale);
+const alternates = alternatesOf('privacy');
+const address = site.address.lines[lang].join(', ');
+
+const copy = {
+  tr: {
+    title: 'Gizlilik | Erkon Marin',
+    description: 'Bu site çerez kullanmaz, ziyaretçi takibi yapmaz ve formlara girdiğiniz bilgileri saklamaz.',
+    h1: 'Gizlilik',
+    updated: 'Son güncelleme: 5 Ekim 2026',
+    sections: [
+      {
+        h: 'Kısaca',
+        p: [
+          'Bu site çerez kullanmaz; ziyaretçi takibi, reklam ya da analiz aracı içermez ve formlara girdiğiniz bilgileri herhangi bir sunucuda saklamaz.',
+        ],
+      },
+      {
+        h: 'Servis talep formu',
+        p: [
+          'Formu gönderdiğinizde yazdıklarınız tarayıcınızda bir mesaja dönüştürülür ve seçiminize göre WhatsApp’ta ya da e-posta uygulamanızda açılır. Mesaj, siz gönder’e basana kadar hiçbir yere iletilmez.',
+          'Gönderdiğiniz mesaj, WhatsApp’ın ya da e-posta sağlayıcınızın kendi koşullarına tabidir.',
+        ],
+      },
+      {
+        h: 'Bize ilettiğiniz bilgiler',
+        p: [
+          'Telefon, WhatsApp ya da e-posta ile ilettiğiniz ad, telefon numarası, gemi ve arıza bilgilerini talebinizi değerlendirmek, size dönüş yapmak ve servisi yürütmek için kullanırız.',
+        ],
+      },
+      {
+        h: 'Barındırma',
+        p: [
+          'Site Vercel üzerinde barındırılır. Barındırma altyapısı, güvenlik ve işletim amacıyla IP adresi, tarih ve saat, istenen sayfa gibi teknik erişim kayıtları tutabilir.',
+        ],
+      },
+      {
+        h: 'Haklarınız ve iletişim',
+        p: [
+          `6698 sayılı Kişisel Verilerin Korunması Kanunu kapsamındaki haklarınızla ilgili talepleriniz için ${site.email} adresine yazabilirsiniz.`,
+          `Veri sorumlusu: Erkon Marin, ${address}.`,
+        ],
+      },
+    ],
+  },
+  en: {
+    title: 'Privacy | Erkon Marin',
+    description: 'This site uses no cookies, does not track visitors and does not store what you type into its forms.',
+    h1: 'Privacy',
+    updated: 'Last updated: 5 October 2026',
+    sections: [
+      {
+        h: 'In short',
+        p: [
+          'This site uses no cookies, contains no tracking, advertising or analytics tools, and does not store what you type into its forms on any server.',
+        ],
+      },
+      {
+        h: 'The service request form',
+        p: [
+          'When you send the form, what you wrote is turned into a message in your browser and opened in WhatsApp or your e-mail app, whichever you choose. Nothing is sent anywhere until you press send there.',
+          'The message you send is subject to the terms of WhatsApp or your e-mail provider.',
+        ],
+      },
+      {
+        h: 'Information you send us',
+        p: [
+          'We use the name, phone number, ship and fault details you send us by phone, WhatsApp or e-mail to assess your request, get back to you and carry out the service.',
+        ],
+      },
+      {
+        h: 'Hosting',
+        p: [
+          'The site is hosted on Vercel. For security and operation, the hosting infrastructure may keep technical access logs such as IP address, date and time, and the page requested.',
+        ],
+      },
+      {
+        h: 'Your rights and contact',
+        p: [
+          `For requests about your rights under Türkiye’s Personal Data Protection Law (KVKK, Law No. 6698), write to ${site.email}.`,
+          `Data controller: Erkon Marin, ${address}.`,
+        ],
+      },
+    ],
+  },
+}[lang];
+---
+
+<Base title={copy.title} description={copy.description} alternates={alternates}>
+  <Header alternates={alternates} />
+  <main id="main">
+    <header class="hero">
+      <div class="container">
+        <h1 class="display hero__title">{copy.h1}</h1>
+        <p class="hero__updated">{copy.updated}</p>
+      </div>
+    </header>
+    <div class="body" data-nav-tone="light">
+      <div class="container body__inner">
+        {
+          copy.sections.map((s) => (
+            <section class="block">
+              <h2 class="h3 block__title">{s.h}</h2>
+              {s.p.map((p) => (
+                <p>{p}</p>
+              ))}
+            </section>
+          ))
+        }
+      </div>
+    </div>
+  </main>
+  <Footer />
+  <MobileDock />
+</Base>
+
+<style>
+  .hero {
+    padding: calc(var(--header-h) + clamp(48px, 7vw, 112px)) 0 clamp(48px, 6vw, 88px);
+    background:
+      radial-gradient(60% 80% at 90% 0%, rgba(43, 187, 229, 0.12), transparent 62%),
+      var(--c-abyss);
+  }
+  .hero__title {
+    font-size: clamp(52px, 7.4vw, 128px);
+  }
+  .hero__updated {
+    margin-top: 20px;
+    color: var(--c-mist);
+    font-size: 15px;
+  }
+  .body {
+    padding-block: clamp(64px, 8vw, 120px);
+    background: var(--c-paper-hi);
+    color: var(--c-ink);
+  }
+  .body__inner {
+    display: grid;
+    gap: clamp(36px, 4vw, 56px);
+    max-width: calc(68ch + 2 * var(--gutter));
+    margin-inline: 0;
+  }
+  .block {
+    display: grid;
+    gap: 0.9em;
+    color: var(--c-ink-2);
+    font-size: clamp(17px, 1.2vw, 19px);
+    line-height: 1.7;
+    text-wrap: pretty;
+  }
+  .block__title {
+    font-size: clamp(24px, 2vw, 30px);
+    color: var(--c-ink);
+  }
+</style>

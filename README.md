@@ -18,33 +18,82 @@ is generated in code.
 | `npm run preview` | Serve the built site locally                  |
 | `npm run check`   | Type-check `.astro` and `.ts` files           |
 
+## Languages
+
+Turkish lives at the site root and English under `/en/` (Astro i18n, `astro.config.mjs`).
+Each page is a view in `src/views/` rendered by a thin route file per language
+(`src/pages/…` and `src/pages/en/…`). Components read the page language from
+`Astro.currentLocale`; shared interface text, routes, section ids and the nav are in
+`src/i18n/index.ts`, content in `src/data/` carries both languages. Every page links its
+counterpart with `hreflang`, and the header's TR / EN switch goes to the same page in the
+other language.
+
+| Turkish | English |
+| --- | --- |
+| `/` | `/en/` |
+| `/hizmetler/` and `/hizmetler/<slug>/` | `/en/services/` and `/en/services/<slug>/` |
+| `/hakkimizda/` | `/en/about/` |
+| `/iletisim/` | `/en/contact/` |
+| `/gizlilik/` | `/en/privacy/` |
+
+The Turkish service and About copy is Erkon Marin's own and is used verbatim; the English is a
+translation of it.
+
 ## Structure
 
 ```
 src/
-  data/site.ts              company facts: phones, hours, WhatsApp, social links, nav
-  layouts/Base.astro        <head>, fonts, JSON-LD, logo sprite, reveal-on-scroll
+  i18n/index.ts             languages, routes, section ids, nav, shared interface text
+  data/                     site facts (phones, e-mail, address, hours), services, about, photos
+  views/                    page bodies shared by both languages
+  pages/                    route files (Turkish), pages/en/ (English), sitemap.xml, robots.txt
+  layouts/Base.astro        <head>, fonts, hreflang, JSON-LD, logo sprite, reveal-on-scroll
   styles/global.css         design tokens, type system (display + serif accent), buttons
+  styles/tailwind.css       Tailwind v4 for the React islands (no preflight, scoped scan)
   styles/fonts.css          @font-face slots for the licensed Grift and Commune files
+  scripts/inline.mjs        pre-paint inline scripts (hashed into the CSP)
   components/
     LogoSprite.astro        vector logo mark (traced from the supplied PNG)
-    Header.astro            nav bar (floats as a rounded pill on scroll) + mobile menu
+    Header.astro            nav bar, language switch, mobile menu
     Stage.astro             hero + four scroll chapters over the 3D scene
-    Services.astro          services drawn as a single-line diagram (breakers close on scroll)
+    WhatWeDo.astro          the four service areas on a horizontal scroll timeline
+    Services.astro          types of work drawn as a single-line diagram
+    FieldPhotos.astro       justified gallery of the supplied photos
     Statement.astro         "why it matters" band on an oscilloscope trace
-    Process.astro           the four service steps, numbered
+    Journey.astro           career rail (About page; home page with the About lead)
+    TeamPhoto.astro         team photo with the 35+ badge
     Audience.astro          who the service is for
-    Request.astro           service request form → pre-filled WhatsApp message
+    Contact.astro           request section: globe, contact list, WhatsApp / e-mail form
     Footer.astro, MobileDock.astro
+    ui/                     shadcn-style React components (timeline, contact-with-globe, button)
   scripts/stage/
     ui.ts                   scroll → chapter progress, lazy-loads the engine
     engine.ts               renderer, bloom, camera path, annotations, HUD, adaptive quality
     scene.ts                procedural switchboard / console / automation cabinets
     textures.ts             canvas painters for panel fronts, meters, screens
-public/media/
-  stage-poster.webp         still of the 3D scene (shown while loading and without WebGL)
-  og.jpg                    social share image
+public/
+  media/stage-poster.webp   still of the 3D scene (shown while loading and without WebGL)
+  media/og.jpg              social share image
+  favicon.svg, apple-touch-icon.png, icon-192/512.png, site.webmanifest
 ```
+
+## Security
+
+- Content Security Policy from Astro (`security.csp` in `astro.config.mjs`): every script and
+  style Astro emits is hashed, the two hand-written pre-paint scripts are hashed from
+  `src/scripts/inline.mjs`, and nothing is loaded from another origin (the globe's map data is
+  bundled). Inline style attributes stay allowed.
+- Headers in `vercel.json`: `frame-ancestors 'none'` / `X-Frame-Options`, `nosniff`,
+  `Referrer-Policy`, `Permissions-Policy`, `Cross-Origin-Opener-Policy`. Vercel adds HSTS.
+- No backend, no cookies, no analytics: the request form builds a message in the browser and
+  hands it to WhatsApp or the visitor's e-mail app.
+
+## Deploying (Vercel)
+
+- Framework preset: Astro. Build `npm run build`, output `dist`. Node 22.
+- Set `SITE_URL` (e.g. `https://erkonmarin.com`) once the domain is attached; until then the
+  production `*.vercel.app` domain is used for canonical, `hreflang`, Open Graph and the sitemap.
+- `trailingSlash: true` in `vercel.json` keeps one URL per page.
 
 ## Typography
 
@@ -75,13 +124,13 @@ fall back to Urbanist (for Grift) and Fraunces (for Commune). To switch over:
 The brief supplied only the name, the logo, the service line and the contact details from the
 old site. Everything below was written for this build and needs sign-off:
 
-- All marketing copy (hero, chapters, services, process, audience). It describes the stated
-  service scope and promises a report at the end of each job; nothing claims years in business,
-  vessel counts, certifications, class approvals or client names.
+- Marketing copy written for this build (hero, chapters, work types, statement, audience),
+  in both languages. The service and About texts are Erkon Marin's own.
+- The English translation as a whole, ideally read by someone at Erkon Marin.
+- The privacy page (`src/views/PrivacyPage.astro`) against KVKK requirements.
 - Which number answers WhatsApp (`src/data/site.ts`, currently +90 549 574 24 24).
 - Instagram / Facebook URLs (empty entries are hidden).
-- Domain, for canonical and absolute Open Graph URLs.
-- An English version, if international ship managers are a target.
+- Domain, for canonical and absolute Open Graph URLs (`SITE_URL`).
 - Real project photography for the coming Galeri page.
 - Licensed Grift and Commune webfont files (see Typography).
 

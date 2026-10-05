@@ -3,66 +3,87 @@ import { getImage } from 'astro:assets';
 import Icon from './Icon.astro';
 import { site } from '../data/site';
 import { photos } from '../data/photos';
+import { anchors, langOf, ui } from '../i18n';
+import { STAGE_CHECK } from '../scripts/inline.mjs';
 
 // Shown instead of the 3D render when the scene can't run (no WebGL, software GPU, Data Saver)
 const realPoster = await getImage({ src: photos.msb.src, width: 2000, format: 'webp', quality: 78 });
 
-const chapters = [
-  {
-    id: 'sistemler',
-    title: ['Kontrol', 'odası'],
-    text: 'Alarm ve izleme konsolundaki bir uyarı, çoğu zaman sahadaki bir arızanın ilk işaretidir. Sinyali kaynağına kadar izler, arızayı yerinde tespit ederiz.',
-    items: ['Alarm ve izleme konsolları', 'Sinyal ve kablaj takibi', 'Konsol ekipmanlarının bakımı'],
+const lang = langOf(Astro.currentLocale);
+
+const copy = {
+  tr: {
+    hidden: 'Erkon Marin, gemi elektrik ve otomasyon servisi. ',
+    title: ['Ana panoda', 'tahmine', 'yer yok.'],
+    lead: 'Kontrol odası, MSB ve tüm otomasyon panolarında arıza tespiti, bakım, montaj ve demontaj. Geminiz rıhtımda beklerken her saatin değerini bilen bir ekiple.',
+    bus: 'Ana bara',
   },
-  {
-    id: 'sistem-msb',
-    title: ['Ana dağıtım', 'panosu'],
-    text: 'Geminin bütün enerjisi buradan geçer. Jeneratör, bara ve dağıtım hücrelerinde arıza tespiti ve bakım, enerjiyi kesintisiz tutma disipliniyle yapılır.',
-    items: ['Jeneratör ve senkronizasyon panoları', 'Hava ve kompakt devre kesiciler (ACB / MCCB)', 'Ölçü, koruma ve kontrol devreleri'],
+  en: {
+    hidden: 'Erkon Marin, marine electrical and automation service. ',
+    title: ['On the MSB,', 'guesswork', 'has no place.'],
+    lead: 'Fault diagnosis, maintenance, installation and removal across the control room, the MSB and every automation panel, by a team that knows what each hour at the quay costs while your ship waits.',
+    bus: 'Main bus',
   },
-  {
-    id: 'sistem-otomasyon',
-    title: ['Otomasyon', 'panoları'],
-    text: 'PLC’den röleye, klemensten operatör paneline: otomasyon arızalarını şema üzerinden adım adım izler, gereken parçayı değiştirir, sistemi yeniden devreye alırız.',
-    items: ['PLC ve I/O modülleri', 'Röle, kontaktör ve starter devreleri', 'Operatör panelleri (HMI)'],
-  },
-  {
-    id: 'sistem-montaj',
-    title: ['Montaj ve', 'demontaj'],
-    text: 'Yeni panonun montajından eski sistemin sökümüne kadar işi uçtan uca üstleniriz. Her bağlantı etiketlenir, her adım kayda geçer.',
-    items: ['Pano montajı ve devreye alma', 'Kontrollü söküm ve etiketleme', 'Test ve teslim raporu'],
-  },
-];
+}[lang];
+
+const chapters = {
+  tr: [
+    {
+      id: anchors.systems.tr,
+      title: ['Kontrol', 'odası'],
+      text: 'Alarm ve izleme konsolundaki bir uyarı, çoğu zaman sahadaki bir arızanın ilk işaretidir. Sinyali kaynağına kadar izler, arızayı yerinde tespit ederiz.',
+      items: ['Alarm ve izleme konsolları', 'Sinyal ve kablaj takibi', 'Konsol ekipmanlarının bakımı'],
+    },
+    {
+      id: 'sistem-msb',
+      title: ['Ana dağıtım', 'panosu'],
+      text: 'Geminin bütün enerjisi buradan geçer. Jeneratör, bara ve dağıtım hücrelerinde arıza tespiti ve bakım, enerjiyi kesintisiz tutma disipliniyle yapılır.',
+      items: ['Jeneratör ve senkronizasyon panoları', 'Hava ve kompakt devre kesiciler (ACB / MCCB)', 'Ölçü, koruma ve kontrol devreleri'],
+    },
+    {
+      id: 'sistem-otomasyon',
+      title: ['Otomasyon', 'panoları'],
+      text: 'PLC’den röleye, klemensten operatör paneline: otomasyon arızalarını şema üzerinden adım adım izler, gereken parçayı değiştirir, sistemi yeniden devreye alırız.',
+      items: ['PLC ve I/O modülleri', 'Röle, kontaktör ve starter devreleri', 'Operatör panelleri (HMI)'],
+    },
+    {
+      id: 'sistem-montaj',
+      title: ['Montaj ve', 'demontaj'],
+      text: 'Yeni panonun montajından eski sistemin sökümüne kadar işi uçtan uca üstleniriz. Her bağlantı etiketlenir, her adım kayda geçer.',
+      items: ['Pano montajı ve devreye alma', 'Kontrollü söküm ve etiketleme', 'Test ve teslim raporu'],
+    },
+  ],
+  en: [
+    {
+      id: anchors.systems.en,
+      title: ['Control', 'room'],
+      text: 'An alert on the alarm and monitoring console is often the first sign of a fault out in the plant. We trace the signal back to its source and pinpoint the fault on site.',
+      items: ['Alarm and monitoring consoles', 'Signal and wiring tracing', 'Maintenance of console equipment'],
+    },
+    {
+      id: 'system-msb',
+      title: ['Main', 'switchboard'],
+      text: 'All of the ship’s power passes through here. Fault diagnosis and maintenance on generator, busbar and distribution sections are done with the discipline of keeping the power on.',
+      items: ['Generator and synchronising panels', 'Air and moulded-case circuit breakers (ACB / MCCB)', 'Metering, protection and control circuits'],
+    },
+    {
+      id: 'system-automation',
+      title: ['Automation', 'panels'],
+      text: 'From PLC to relay, from terminal block to operator panel: we trace automation faults step by step on the drawings, replace the part that needs replacing and bring the system back into service.',
+      items: ['PLC and I/O modules', 'Relay, contactor and starter circuits', 'Operator panels (HMI)'],
+    },
+    {
+      id: 'system-installation',
+      title: ['Installation and', 'removal'],
+      text: 'From fitting a new panel to removing an old system, we take on the job end to end. Every connection is labelled and every step is recorded.',
+      items: ['Panel installation and commissioning', 'Controlled removal and labelling', 'Test and handover report'],
+    },
+  ],
+}[lang];
 ---
 
 <section class="stage" data-stage aria-labelledby="hero-title" style={`--real-poster:url(${realPoster.src})`}>
-  <script is:inline>
-    // Decide before first paint whether the 3D scene can run, so fallback visitors get the
-    // real photo straight away (and download only that). ?force3d skips the check.
-    (function () {
-      var off = false;
-      try {
-        if (!/[?&]force3d\b/.test(location.search)) {
-          var conn = navigator.connection;
-          if (conn && conn.saveData) off = true;
-          if (!off) {
-            var gl = document.createElement('canvas').getContext('webgl2');
-            if (!gl) off = true;
-            else {
-              var info = gl.getExtension('WEBGL_debug_renderer_info');
-              var r = String(gl.getParameter(info ? info.UNMASKED_RENDERER_WEBGL : gl.RENDERER));
-              if (/swiftshader|llvmpipe|softpipe|software|basic render/i.test(r)) off = true;
-              var lose = gl.getExtension('WEBGL_lose_context');
-              if (lose) lose.loseContext();
-            }
-          }
-        }
-      } catch (e) {
-        off = true;
-      }
-      if (off) document.documentElement.setAttribute('data-stage-static', '');
-    })();
-  </script>
+  <script is:inline set:html={STAGE_CHECK} />
   <div class="stage__viewport" data-stage-viewport>
     <div class="stage__poster" aria-hidden="true"></div>
     <canvas class="stage__canvas" data-stage-canvas aria-hidden="true"></canvas>
@@ -72,7 +93,7 @@ const chapters = [
     <div class="stage__bottom container" aria-hidden="true">
       <div class="hud" data-stage-hud>
         <div class="hud__head">
-          <span>Ana bara</span>
+          <span>{copy.bus}</span>
           <span class="hud__live"><span class="lamp"></span>DG1 · DG2</span>
         </div>
         <div class="hud__vals">
@@ -86,22 +107,19 @@ const chapters = [
   </div>
 
   <div class="stage__track">
-    <div class="step step--hero" data-step id="giris">
+    <div class="step step--hero" data-step id={anchors.intro[lang]}>
       <div class="container">
         <div class="hero">
           <h1 class="hero__title display" id="hero-title">
-            <span class="visually-hidden">Erkon Marin, gemi elektrik ve otomasyon servisi. </span>
-            <span class="hero__line">Ana panoda</span>
-            <em class="hero__line">tahmine</em>
-            <span class="hero__line">yer yok.</span>
+            <span class="visually-hidden">{copy.hidden}</span>
+            <span class="hero__line">{copy.title[0]}</span>
+            <em class="hero__line">{copy.title[1]}</em>
+            <span class="hero__line">{copy.title[2]}</span>
           </h1>
-          <p class="hero__lead">
-            Kontrol odası, MSB ve tüm otomasyon panolarında arıza tespiti, bakım, montaj ve demontaj. Geminiz rıhtımda beklerken
-            her saatin değerini bilen bir ekiple.
-          </p>
+          <p class="hero__lead">{copy.lead}</p>
           <div class="hero__actions">
-            <a class="btn btn--signal" href="#talep">
-              <span>Servis talebi oluşturun</span>
+            <a class="btn btn--signal" href={`#${anchors.request[lang]}`}>
+              <span>{ui[lang].requestLong}</span>
               <Icon name="arrow" />
             </a>
             <a class="btn btn--ghost hero__call" href={site.phones[0].href}>

@@ -33,17 +33,30 @@ interface Annotation {
   sub: string;
 }
 
-const ANNOTATIONS: Annotation[] = [
-  { ch: 1, key: 'consoleScreen', title: 'Alarm & izleme', sub: 'AMS ekranı' },
-  { ch: 1, key: 'consoleButtons', title: 'Kumanda devreleri', sub: 'Konsol I/O' },
-  { ch: 2, key: 'acb1', title: 'ACB', sub: 'Hava devre kesici' },
-  { ch: 2, key: 'synchro', title: 'Senkronoskop', sub: 'Paralel çalışma' },
-  { ch: 2, key: 'mimic', title: 'Bara mimiği', sub: '440 V ana bara' },
-  { ch: 3, key: 'plc', title: 'PLC', sub: 'CPU ve I/O modülleri' },
-  { ch: 3, key: 'terminals', title: 'Klemensler', sub: 'Saha bağlantıları' },
-  { ch: 3, key: 'hmi', title: 'HMI', sub: 'Operatör paneli' },
-  { ch: 4, key: 'acb2', title: 'Çekmeceli kesici', sub: 'Servis konumunda' },
-];
+const ANNOTATIONS: Record<'tr' | 'en', Annotation[]> = {
+  tr: [
+    { ch: 1, key: 'consoleScreen', title: 'Alarm & izleme', sub: 'AMS ekranı' },
+    { ch: 1, key: 'consoleButtons', title: 'Kumanda devreleri', sub: 'Konsol I/O' },
+    { ch: 2, key: 'acb1', title: 'ACB', sub: 'Hava devre kesici' },
+    { ch: 2, key: 'synchro', title: 'Senkronoskop', sub: 'Paralel çalışma' },
+    { ch: 2, key: 'mimic', title: 'Bara mimiği', sub: '440 V ana bara' },
+    { ch: 3, key: 'plc', title: 'PLC', sub: 'CPU ve I/O modülleri' },
+    { ch: 3, key: 'terminals', title: 'Klemensler', sub: 'Saha bağlantıları' },
+    { ch: 3, key: 'hmi', title: 'HMI', sub: 'Operatör paneli' },
+    { ch: 4, key: 'acb2', title: 'Çekmeceli kesici', sub: 'Servis konumunda' },
+  ],
+  en: [
+    { ch: 1, key: 'consoleScreen', title: 'Alarm & monitoring', sub: 'AMS display' },
+    { ch: 1, key: 'consoleButtons', title: 'Control circuits', sub: 'Console I/O' },
+    { ch: 2, key: 'acb1', title: 'ACB', sub: 'Air circuit breaker' },
+    { ch: 2, key: 'synchro', title: 'Synchroscope', sub: 'Parallel running' },
+    { ch: 2, key: 'mimic', title: 'Busbar mimic', sub: '440 V main bus' },
+    { ch: 3, key: 'plc', title: 'PLC', sub: 'CPU and I/O modules' },
+    { ch: 3, key: 'terminals', title: 'Terminals', sub: 'Field wiring' },
+    { ch: 3, key: 'hmi', title: 'HMI', sub: 'Operator panel' },
+    { ch: 4, key: 'acb2', title: 'Draw-out breaker', sub: 'In service position' },
+  ],
+};
 
 const smooth = (a: number, b: number, x: number) => {
   const t = Math.min(1, Math.max(0, (x - a) / (b - a)));
@@ -177,7 +190,8 @@ export async function createStage(o: StageOptions): Promise<StageHandle> {
   if (!o.reduced) window.addEventListener('pointermove', onPointer, { passive: true });
 
   /* ---------------- annotations ---------------- */
-  const annos = ANNOTATIONS.filter((a) => built.anchors[a.key]).map((a) => {
+  const lang = document.documentElement.lang === 'en' ? 'en' : 'tr';
+  const annos = ANNOTATIONS[lang].filter((a) => built.anchors[a.key]).map((a) => {
     const el = document.createElement('div');
     el.className = 'anno';
     el.innerHTML = `<i class="anno__dot"></i><span class="anno__line"></span><span class="anno__body"><b></b><span></span></span>`;

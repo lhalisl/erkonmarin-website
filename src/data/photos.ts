@@ -1,4 +1,5 @@
 import type { ImageMetadata } from 'astro';
+import type { Lang } from '../i18n';
 import msb from '../assets/sahadan/msb-ana-dagitim-panosu.jpg';
 import sevk from '../assets/sahadan/sevk-ve-itici-kontrol-paneli.jpg';
 import koprustu from '../assets/sahadan/koprustu-konsollari.jpg';
@@ -12,44 +13,83 @@ import jenerator from '../assets/sahadan/jenerator-dairesi.jpg';
 
 export interface Photo {
   src: ImageMetadata;
-  alt: string;
-  caption?: string;
+  alt: Record<Lang, string>;
+  caption?: Record<Lang, string>;
 }
 
 export const photos = {
   msb: {
     src: msb,
-    alt: 'Gemi ana dağıtım panosu: hava devre kesicili hücreler, ölçü aletleri ve sinyal lambaları',
-    caption: 'Ana dağıtım panosu (MSB)',
+    alt: {
+      tr: 'Gemi ana dağıtım panosu: hava devre kesicili hücreler, ölçü aletleri ve sinyal lambaları',
+      en: 'Ship’s main switchboard: air circuit breaker sections, meters and indicator lamps',
+    },
+    caption: {
+      tr: 'Ana dağıtım panosu (MSB)',
+      en: 'Main switchboard (MSB)',
+    },
   },
   sevk: {
     src: sevk,
-    alt: 'Köprüüstü sevk ve itici kontrol paneli: kumanda kolları, itici kontrolleri ve dijital göstergeler',
-    caption: 'Sevk ve itici kontrol paneli',
+    alt: {
+      tr: 'Köprüüstü sevk ve itici kontrol paneli: kumanda kolları, itici kontrolleri ve dijital göstergeler',
+      en: 'Bridge propulsion and thruster control panel: control levers, thruster controls and digital displays',
+    },
+    caption: {
+      tr: 'Sevk ve itici kontrol paneli',
+      en: 'Propulsion and thruster control panel',
+    },
   },
   koprustu: {
     src: koprustu,
-    alt: 'Gemi köprüüstü: seyir ve kumanda konsolları, pencerelerin ardında deniz',
-    caption: 'Köprüüstü konsolları',
+    alt: {
+      tr: 'Gemi köprüüstü: seyir ve kumanda konsolları, pencerelerin ardında deniz',
+      en: 'Ship’s bridge: navigation and control consoles, with the sea beyond the windows',
+    },
+    caption: {
+      tr: 'Köprüüstü konsolları',
+      en: 'Bridge consoles',
+    },
   },
   gmdss: {
     src: gmdss,
-    alt: 'Köprüüstünde GMDSS haberleşme istasyonu: telsiz cihazları, mesaj terminalleri ve ahize',
-    caption: 'GMDSS haberleşme istasyonu',
+    alt: {
+      tr: 'Köprüüstünde GMDSS haberleşme istasyonu: telsiz cihazları, mesaj terminalleri ve ahize',
+      en: 'GMDSS communication station on the bridge: radio sets, message terminals and handset',
+    },
+    caption: {
+      tr: 'GMDSS haberleşme istasyonu',
+      en: 'GMDSS communication station',
+    },
   },
   kontrolOdasi: {
     src: kontrolOdasi,
-    alt: 'Makine kontrol odası konsolu: yanan sinyal butonları, alarm ekranları ve acil durum telefonu',
-    caption: 'Makine kontrol odası konsolu',
+    alt: {
+      tr: 'Makine kontrol odası konsolu: yanan sinyal butonları, alarm ekranları ve acil durum telefonu',
+      en: 'Engine control room console: lit signal buttons, alarm screens and emergency telephone',
+    },
+    caption: {
+      tr: 'Makine kontrol odası konsolu',
+      en: 'Engine control room console',
+    },
   },
   jenerator: {
     src: jenerator,
-    alt: 'Jeneratör dairesinde iki dizel jeneratör ve yerel kontrol panosu',
-    caption: 'Jeneratör dairesi',
+    alt: {
+      tr: 'Jeneratör dairesinde iki dizel jeneratör ve yerel kontrol panosu',
+      en: 'Two diesel generators and their local control panel in the generator room',
+    },
+    caption: {
+      tr: 'Jeneratör dairesi',
+      en: 'Generator room',
+    },
   },
   gemi: {
     src: gemi,
-    alt: 'Denizde seyir halindeki kırmızı-beyaz arama kurtarma gemisi',
+    alt: {
+      tr: 'Denizde seyir halindeki kırmızı-beyaz arama kurtarma gemisi',
+      en: 'Red and white search and rescue vessel under way at sea',
+    },
   },
 } satisfies Record<string, Photo>;
 

@@ -2,38 +2,73 @@
 // Each service is drawn as a feeder on a single-line diagram: an IEC breaker
 // symbol hanging off the main bus. Breakers close (energise) as the section
 // scrolls in, and on hover.
-const services = [
-  {
-    title: 'Arıza tespiti',
-    text: 'Ölçüm, şema takibi ve sistematik eleme ile arızanın kök nedenine ineriz. Parçayı değiştirip şansımızı denemeyiz.',
-    out: 'Teşhis ve onarım raporu',
+import { anchors, langOf } from '../i18n';
+const lang = langOf(Astro.currentLocale);
+
+const copy = {
+  tr: {
+    title: ['Dört iş.', 'Tek muhatap.'],
+    lead: 'Arızayı bulan, bakımı yapan, panoyu kuran ve gerektiğinde söken aynı ekip. Sistemi baştan sona bilen tek bir muhatabınız olur; bilgi el değiştirirken kaybolmaz.',
+    out: 'Teslim:',
+    items: [
+      {
+        title: 'Arıza tespiti',
+        text: 'Ölçüm, şema takibi ve sistematik eleme ile arızanın kök nedenine ineriz. Parçayı değiştirip şansımızı denemeyiz.',
+        out: 'Teşhis ve onarım raporu',
+      },
+      {
+        title: 'Bakım',
+        text: 'Periyodik ve önleyici bakımla arızayı seferin ortasında değil, sizin planladığınız günde karşılarsınız.',
+        out: 'Bakım kaydı ve öneri listesi',
+      },
+      {
+        title: 'Montaj',
+        text: 'Pano ve otomasyon ekipmanlarının montajı, kablajı, testi ve devreye alınması.',
+        out: 'Devreye alma test sonuçları',
+      },
+      {
+        title: 'Demontaj',
+        text: 'Değişecek ya da sökülecek sistemlerin etiketlenerek, belgelenerek ve güvenle sökülmesi.',
+        out: 'Söküm ve etiket dokümanı',
+      },
+    ],
   },
-  {
-    title: 'Bakım',
-    text: 'Periyodik ve önleyici bakımla arızayı seferin ortasında değil, sizin planladığınız günde karşılarsınız.',
-    out: 'Bakım kaydı ve öneri listesi',
+  en: {
+    title: ['Four jobs.', 'One contact.'],
+    lead: 'The same team finds the fault, carries out the maintenance, installs the panel and removes it when the time comes. You deal with one contact who knows the system end to end, so nothing gets lost in handovers.',
+    out: 'Delivered:',
+    items: [
+      {
+        title: 'Fault diagnosis',
+        text: 'We get to the root cause through measurement, tracing the drawings and systematic elimination. We don’t swap parts and hope for the best.',
+        out: 'Diagnosis and repair report',
+      },
+      {
+        title: 'Maintenance',
+        text: 'With periodic and preventive maintenance, you meet faults on a day you planned, not in the middle of a voyage.',
+        out: 'Maintenance record and recommendations',
+      },
+      {
+        title: 'Installation',
+        text: 'Installation, wiring, testing and commissioning of switchboard and automation equipment.',
+        out: 'Commissioning test results',
+      },
+      {
+        title: 'Removal',
+        text: 'Systems due for replacement or removal are labelled, documented and taken out safely.',
+        out: 'Removal and labelling documentation',
+      },
+    ],
   },
-  {
-    title: 'Montaj',
-    text: 'Pano ve otomasyon ekipmanlarının montajı, kablajı, testi ve devreye alınması.',
-    out: 'Devreye alma test sonuçları',
-  },
-  {
-    title: 'Demontaj',
-    text: 'Değişecek ya da sökülecek sistemlerin etiketlenerek, belgelenerek ve güvenle sökülmesi.',
-    out: 'Söküm ve etiket dokümanı',
-  },
-];
+}[lang];
+const services = copy.items;
 ---
 
-<section class="services" data-nav-tone="light" id="kapsam" aria-labelledby="services-title">
+<section class="services" data-nav-tone="light" id={anchors.scope[lang]} aria-labelledby="services-title">
   <div class="container">
     <header class="services__head">
-      <h2 class="h2" id="services-title" data-reveal>Dört iş.<br /><em>Tek muhatap.</em></h2>
-      <p class="lead services__lead" data-reveal style="--d:160">
-        Arızayı bulan, bakımı yapan, panoyu kuran ve gerektiğinde söken aynı ekip. Sistemi baştan sona bilen tek bir muhatabınız olur;
-        bilgi el değiştirirken kaybolmaz.
-      </p>
+      <h2 class="h2" id="services-title" data-reveal>{copy.title[0]}<br /><em>{copy.title[1]}</em></h2>
+      <p class="lead services__lead" data-reveal style="--d:160">{copy.lead}</p>
     </header>
 
     <div class="sld" data-sld>
@@ -69,7 +104,7 @@ const services = [
                 <h3 class="feeder__title h3">{s.title}</h3>
                 <p class="feeder__text">{s.text}</p>
                 <p class="feeder__out">
-                  Teslim: <em class="serif">{s.out}</em>
+                  {copy.out} <em class="serif">{s.out}</em>
                 </p>
               </div>
             </li>

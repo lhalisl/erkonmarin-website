@@ -191,7 +191,7 @@ export function panelFront(spec: PanelSpec) {
     ctx.fillText('ϟ', tx, cy + h * 0.06);
     ctx.textAlign = 'left';
     ctx.font = `700 ${Math.round(h * 0.3)}px ${SANS}`;
-    ctx.fillText('DİKKAT', x0 + h + 2, cy - h * 0.15);
+    ctx.fillText(document.documentElement.lang === 'en' ? 'DANGER' : 'DİKKAT', x0 + h + 2, cy - h * 0.15);
     ctx.font = `500 ${Math.round(h * 0.22)}px ${MONO}`;
     ctx.fillText('440 V AC', x0 + h + 2, cy + h * 0.2);
   }

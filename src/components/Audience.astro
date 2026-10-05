@@ -1,31 +1,37 @@
 ---
-const roles = [
-  {
-    who: 'Armatörler ve gemi işletmecileri',
-    need: 'Off-hire riskini azaltan, hızlı ve kayıtlı servis.',
+import { anchors, langOf } from '../i18n';
+const lang = langOf(Astro.currentLocale);
+
+const copy = {
+  tr: {
+    title: ['Geminin sorumluluğunu', 'taşıyanlar', 'için.'],
+    lead: 'Bir arızanın maliyetini en iyi, o maliyeti üstlenenler bilir. Çalışma şeklimizi onların beklentisine göre kurduk.',
+    roles: [
+      { who: 'Armatörler ve gemi işletmecileri', need: 'Off-hire riskini azaltan, hızlı ve kayıtlı servis.' },
+      { who: 'Teknik müdürler ve süperintendentler', need: 'Raporlanmış, izlenebilir, sürprizsiz işler. Bir sonraki sörvey için hazır kayıtlar.' },
+      { who: 'Baş mühendisler ve kaptanlar', need: 'Makine dairesinin dilini konuşan, sahada hızlı karar veren bir ekip.' },
+      { who: 'Tersaneler', need: 'Yeni inşa ve onarım projelerinde pano montajı, söküm ve devreye alma.' },
+    ],
   },
-  {
-    who: 'Teknik müdürler ve süperintendentler',
-    need: 'Raporlanmış, izlenebilir, sürprizsiz işler. Bir sonraki sörvey için hazır kayıtlar.',
+  en: {
+    title: ['For the people', 'responsible', 'for the ship.'],
+    lead: 'Those who carry the cost of a fault understand it best. We built the way we work around what they expect.',
+    roles: [
+      { who: 'Shipowners and ship operators', need: 'Fast, documented service that cuts the risk of off-hire.' },
+      { who: 'Technical managers and superintendents', need: 'Reported, traceable work with no surprises. Records ready for the next survey.' },
+      { who: 'Chief engineers and masters', need: 'A team that speaks the engine room’s language and makes quick decisions on site.' },
+      { who: 'Shipyards', need: 'Panel installation, removal and commissioning on newbuilding and repair projects.' },
+    ],
   },
-  {
-    who: 'Baş mühendisler ve kaptanlar',
-    need: 'Makine dairesinin dilini konuşan, sahada hızlı karar veren bir ekip.',
-  },
-  {
-    who: 'Tersaneler',
-    need: 'Yeni inşa ve onarım projelerinde pano montajı, söküm ve devreye alma.',
-  },
-];
+}[lang];
+const roles = copy.roles;
 ---
 
-<section class="audience" id="kimler" aria-labelledby="audience-title">
+<section class="audience" id={anchors.audience[lang]} aria-labelledby="audience-title">
   <div class="container audience__grid">
     <header class="audience__head">
-      <h2 class="h2" id="audience-title" data-reveal>Geminin sorumluluğunu <em>taşıyanlar</em> için.</h2>
-      <p class="lead" data-reveal style="--d:120">
-        Bir arızanın maliyetini en iyi, o maliyeti üstlenenler bilir. Çalışma şeklimizi onların beklentisine göre kurduk.
-      </p>
+      <h2 class="h2" id="audience-title" data-reveal>{copy.title[0]} <em>{copy.title[1]}</em> {copy.title[2]}</h2>
+      <p class="lead" data-reveal style="--d:120">{copy.lead}</p>
     </header>
 
     <ul class="roles" role="list">

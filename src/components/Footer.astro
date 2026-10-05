@@ -1,7 +1,10 @@
 ---
 import Icon from './Icon.astro';
-import { site, nav, whatsappLink, mapsLink, requestHref } from '../data/site';
+import { site, whatsappLink, mapsLink } from '../data/site';
 import { services, serviceHref } from '../data/services';
+import { langOf, nav, requestHref, routes, ui } from '../i18n';
+const lang = langOf(Astro.currentLocale);
+const t = ui[lang].footer;
 const year = new Date().getFullYear();
 const socials = Object.entries(site.social).filter(([, url]) => url);
 ---
@@ -9,22 +12,20 @@ const socials = Object.entries(site.social).filter(([, url]) => url);
 <footer class="footer">
   <div class="container">
     <div class="footer__top">
-      <a class="footer__brand" href="/" aria-label="Erkon Marin, ana sayfa">
+      <a class="footer__brand" href={routes.home[lang]} aria-label={ui[lang].homeLabel}>
         <svg class="footer__mark" aria-hidden="true"><use href="#erkon-mark"></use></svg>
         <span class="footer__word" aria-hidden="true"><span>ERKON</span> MARİN</span>
       </a>
-      <p class="footer__pitch">
-        Gemi elektrik ve otomasyon sistemlerinde arıza tespiti, bakım, montaj ve demontaj.
-      </p>
-      <a class="btn btn--signal" href={requestHref(Astro.url.pathname)}>
-        <span>Servis talebi</span>
+      <p class="footer__pitch">{t.pitch}</p>
+      <a class="btn btn--signal" href={requestHref(Astro.url.pathname, lang)}>
+        <span>{ui[lang].request}</span>
         <Icon name="arrow" />
       </a>
     </div>
 
     <div class="footer__grid">
       <div>
-        <p class="footer__h">Telefon</p>
+        <p class="footer__h">{t.phone}</p>
         {
           site.phones.map((p) => (
             <a class="footer__phone" href={p.href}>
@@ -34,16 +35,16 @@ const socials = Object.entries(site.social).filter(([, url]) => url);
         }
       </div>
       <div>
-        <p class="footer__h">Ofis</p>
+        <p class="footer__h">{t.office}</p>
         <address class="footer__addr">
           <a href={mapsLink} target="_blank" rel="noopener">
-            {site.address.lines.map((l) => <span>{l}</span>)}
+            {site.address.lines[lang].map((l) => <span>{l}</span>)}
           </a>
         </address>
-        <p class="footer__hours">Pazartesi – Cuma<br />10:00 – 18:00</p>
+        <p class="footer__hours">{t.hours[0]}<br />{t.hours[1]}</p>
       </div>
       <div>
-        <p class="footer__h">Mesaj</p>
+        <p class="footer__h">{t.message}</p>
         <a class="footer__link" href={whatsappLink()} target="_blank" rel="noopener">WhatsApp</a>
         <a class="footer__link" href={`mailto:${site.email}`}>{site.email}</a>
         {
@@ -54,25 +55,25 @@ const socials = Object.entries(site.social).filter(([, url]) => url);
           ))
         }
       </div>
-      <nav aria-label="Hizmetler">
-        <p class="footer__h">Hizmetler</p>
+      <nav aria-label={t.services}>
+        <p class="footer__h">{t.services}</p>
         <ul role="list">
           {
             services.map((s) => (
               <li>
-                <a class="footer__link" href={serviceHref(s)}>
-                  {s.title}
+                <a class="footer__link" href={serviceHref(s, lang)}>
+                  {s[lang].title}
                 </a>
               </li>
             ))
           }
         </ul>
       </nav>
-      <nav aria-label="Alt menü">
-        <p class="footer__h">Sayfa</p>
+      <nav aria-label={t.pagesNav}>
+        <p class="footer__h">{t.pages}</p>
         <ul role="list">
           {
-            nav.map((n) => (
+            nav(lang).map((n) => (
               <li>
                 <a class="footer__link" href={n.href}>
                   {n.label}
@@ -86,8 +87,9 @@ const socials = Object.entries(site.social).filter(([, url]) => url);
 
     <div class="footer__base">
       <span>© {year} Erkon Marin</span>
-      <span>Gemi elektrik ve otomasyon servisi</span>
-      <a href="#top">Başa dön ↑</a>
+      <span>{t.tagline}</span>
+      <a href={routes.privacy[lang]}>{t.privacy}</a>
+      <a href="#top">{t.top} ↑</a>
     </div>
   </div>
 

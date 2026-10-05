@@ -5,17 +5,23 @@ import Footer from '../components/Footer.astro';
 import Icon from '../components/Icon.astro';
 ---
 
-<Base title="Sayfa bulunamadı · Erkon Marin">
+<Base title="Sayfa bulunamadı · Page not found · Erkon Marin">
   <Header />
   <main id="main" class="nf">
     <div class="container nf__inner">
       <p class="nf__code numeral" aria-hidden="true">404</p>
       <h1 class="display nf__title">Bu hatta <em>akım</em> yok.</h1>
       <p class="lead nf__lead">Aradığınız sayfa taşınmış ya da hiç var olmamış olabilir. Ana sayfadan devam edebilirsiniz.</p>
-      <a class="btn btn--signal" href="/">
-        <span>Ana sayfaya dön</span>
-        <Icon name="arrow" />
-      </a>
+      <p class="lead nf__lead nf__lead--en" lang="en">There’s no current on this line. The page you’re looking for may have moved or never existed.</p>
+      <div class="nf__actions">
+        <a class="btn btn--signal" href="/">
+          <span>Ana sayfaya dön</span>
+          <Icon name="arrow" />
+        </a>
+        <a class="btn btn--ghost" href="/en/" lang="en" hreflang="en">
+          <span>English site</span>
+        </a>
+      </div>
     </div>
   </main>
   <Footer />
@@ -32,6 +38,15 @@ import Icon from '../components/Icon.astro';
   }
   .nf__inner {
     padding-block: 180px 120px;
+  }
+  .nf__lead--en {
+    margin-top: -16px;
+    color: var(--c-mist);
+  }
+  .nf__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
   }
   .nf__code {
     font-size: clamp(64px, 8vw, 120px);

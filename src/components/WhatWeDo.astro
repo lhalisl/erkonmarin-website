@@ -5,7 +5,26 @@ import { getImage } from 'astro:assets';
 import Timeline from './ui/timeline';
 import { services, serviceHref } from '../data/services';
 import { photos } from '../data/photos';
+import { anchors, langOf, ui } from '../i18n';
 import '../styles/tailwind.css';
+
+const lang = langOf(Astro.currentLocale);
+const copy = {
+  tr: {
+    title: 'Neler',
+    emphasis: 'yapıyoruz?',
+    label: 'Ana makineden köprüüstüne, 35 yılı aşkın saha tecrübesiyle dört uzmanlık alanı.',
+    more: 'Devamını oku',
+    note: 'Gemi adı, liman ve belirtiyi iletin; ekibi biz planlayalım.',
+  },
+  en: {
+    title: 'What we',
+    emphasis: 'do',
+    label: 'From the main engine to the bridge: four areas of expertise, backed by more than 35 years in the field.',
+    more: 'Read more',
+    note: 'Send us the ship’s name, port and symptoms; we’ll plan the team.',
+  },
+}[lang];
 
 const photo = photos.kontrolOdasi;
 // Portrait crop to match the card (about 0.6 : 1 at every breakpoint)
@@ -19,22 +38,22 @@ const poster = await getImage({
 });
 
 const items = services.map((s) => ({
-  id: s.slug,
-  title: s.title,
-  subtitle: s.subtitle,
-  subtitleLang: 'en',
-  content: s.paragraphs[0],
-  href: serviceHref(s),
+  id: s.key,
+  title: s[lang].title,
+  subtitle: s[lang].subtitle,
+  subtitleLang: lang === 'tr' ? 'en' : 'tr',
+  content: s[lang].paragraphs[0],
+  href: serviceHref(s, lang),
 }));
 ---
 
 <Timeline
   client:visible={{ rootMargin: '1200px' }}
-  id="hizmetler"
+  id={anchors.services[lang]}
   items={items}
-  title="Neler"
-  titleEmphasis="yapıyoruz?"
-  periodLabel="Ana makineden köprüüstüne, 35 yılı aşkın saha tecrübesiyle dört uzmanlık alanı."
+  title={copy.title}
+  titleEmphasis={copy.emphasis}
+  periodLabel={copy.label}
   textColor="#eef2fb"
   mutedTextColor="var(--c-mist)"
   activeColor="var(--c-signal)"
@@ -44,8 +63,8 @@ const items = services.map((s) => ({
   imageSizes="(min-width: 900px) 27vw, 78vw"
   imageWidth={Number(poster.attributes.width)}
   imageHeight={Number(poster.attributes.height)}
-  imageAlt={photo.alt}
-  linkLabel="Devamını oku"
-  cta={{ label: 'Servis talebi', href: '/#talep', note: 'Gemi adı, liman ve belirtiyi iletin; ekibi biz planlayalım.' }}
+  imageAlt={photo.alt[lang]}
+  linkLabel={copy.more}
+  cta={{ label: ui[lang].request, href: `#${anchors.request[lang]}`, note: copy.note }}
   duration={1.2}
 />

@@ -1,4 +1,5 @@
 ---
+import { langOf } from '../i18n';
 // A sine trace on an oscilloscope graticule: AC waveform and sea swell in one line.
 const W = 1200;
 const H = 240;
@@ -10,6 +11,28 @@ for (let i = 0; i <= 480; i++) {
   pts.push(`${x.toFixed(1)},${y.toFixed(1)}`);
 }
 const wave = `M${pts.join(' L')}`;
+
+const lang = langOf(Astro.currentLocale);
+const copy = {
+  tr: {
+    title: ['Rıhtımda geçen her saatin bir', 'bedeli', 'var.'],
+    lead: 'Bu yüzden arızaya ölçü aletiyle gireriz, tahminle değil. Ne bulduğumuzu gösterir, ne yaptığımızı raporlarız. Geminiz planladığınız saatte yola çıkar.',
+    principles: [
+      ['Ölç', 'Varsayım değil, ölçüm.'],
+      ['Bul', 'Kök nedene kadar in.'],
+      ['Belgele', 'Her adımı kayda geçir.'],
+    ],
+  },
+  en: {
+    title: ['Every hour at the quay comes at a', 'cost', '.'],
+    lead: 'That’s why we approach a fault with a meter, not a guess. We show you what we found and report what we did. Your ship sails at the hour you planned.',
+    principles: [
+      ['Measure', 'Measurement, not assumption.'],
+      ['Find', 'Get down to the root cause.'],
+      ['Document', 'Record every step.'],
+    ],
+  },
+}[lang];
 ---
 
 <section class="statement" aria-labelledby="statement-title">
@@ -25,29 +48,20 @@ const wave = `M${pts.join(' L')}`;
 
   <div class="container statement__inner">
     <h2 class="statement__big display" id="statement-title" data-reveal>
-      Rıhtımda geçen her saatin bir <em>bedeli</em> var.
+      {copy.title[0]} <em>{copy.title[1]}</em>{lang === 'tr' ? ' ' : ''}{copy.title[2]}
     </h2>
     <div class="statement__cols">
-      <p class="lead" data-reveal style="--d:120">
-        Bu yüzden arızaya ölçü aletiyle gireriz, tahminle değil. Ne bulduğumuzu gösterir, ne yaptığımızı raporlarız. Geminiz
-        planladığınız saatte yola çıkar.
-      </p>
+      <p class="lead" data-reveal style="--d:120">{copy.lead}</p>
       <ol class="principles" role="list">
-        <li data-reveal style="--d:160">
-          <span class="numeral">01</span>
-          <b>Ölç</b>
-          <span>Varsayım değil, ölçüm.</span>
-        </li>
-        <li data-reveal style="--d:240">
-          <span class="numeral">02</span>
-          <b>Bul</b>
-          <span>Kök nedene kadar in.</span>
-        </li>
-        <li data-reveal style="--d:320">
-          <span class="numeral">03</span>
-          <b>Belgele</b>
-          <span>Her adımı kayda geçir.</span>
-        </li>
+        {
+          copy.principles.map(([word, line], i) => (
+            <li data-reveal style={`--d:${160 + i * 80}`}>
+              <span class="numeral">{String(i + 1).padStart(2, '0')}</span>
+              <b>{word}</b>
+              <span>{line}</span>
+            </li>
+          ))
+        }
       </ol>
     </div>
   </div>

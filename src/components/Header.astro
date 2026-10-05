@@ -1,6 +1,17 @@
 ---
 import Icon from './Icon.astro';
-import { site, nav, whatsappLink, requestHref } from '../data/site';
+import { site, whatsappLink } from '../data/site';
+import { langOf, otherLang, nav, requestHref, routes, ui, type Alternates } from '../i18n';
+
+interface Props {
+  /** The same page in the other language, for the language switch. */
+  alternates?: Alternates;
+}
+const lang = langOf(Astro.currentLocale);
+const other = otherLang(lang);
+const t = ui[lang];
+const links = nav(lang);
+const switchHref = Astro.props.alternates?.[other] ?? routes.home[other];
 
 // Mark the page link (not the in-page anchors) for the page being viewed
 const trim = (path: string) => path.replace(/\/+$/, '');
@@ -12,21 +23,21 @@ const current = (href: string) => {
   if (here === target) return 'page';
   return target && here.startsWith(`${target}/`) ? 'true' : undefined;
 };
-const request = requestHref(Astro.url.pathname);
+const request = requestHref(Astro.url.pathname, lang);
 ---
 
 <header class="site-header" data-header>
   <div class="container">
     <div class="bar">
-      <a class="brand" href="/" aria-label="Erkon Marin, ana sayfa">
+      <a class="brand" href={routes.home[lang]} aria-label={t.homeLabel}>
         <svg class="brand__mark" aria-hidden="true"><use href="#erkon-mark"></use></svg>
         <span class="brand__word" aria-hidden="true"><span class="brand__a">ERKON</span><span class="brand__b">MARİN</span></span>
       </a>
 
-      <nav class="nav" aria-label="Ana menü">
+      <nav class="nav" aria-label={t.mainNav}>
         <ul role="list">
           {
-            nav.map((item) => (
+            links.map((item) => (
               <li>
                 <a href={item.href} aria-current={current(item.href)}>
                   {item.label}
@@ -42,12 +53,24 @@ const request = requestHref(Astro.url.pathname);
           <Icon name="phone" />
           <span>{site.phones[0].display}</span>
         </a>
+        <a class="lang-switch" href={switchHref} hreflang={other} lang={other}>
+          <span aria-hidden="true">{t.switchTo.short}</span>
+          <span class="visually-hidden">{t.switchTo.label}</span>
+        </a>
         <a class="btn btn--signal bar__cta" href={request}>
-          <span>Servis talebi</span>
+          <span>{t.request}</span>
           <Icon name="arrow" />
         </a>
-        <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-menu" data-menu-toggle>
-          <span class="visually-hidden" data-menu-label>Menüyü aç</span>
+        <button
+          class="menu-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="mobile-menu"
+          data-menu-toggle
+          data-open-label={t.menuOpen}
+          data-close-label={t.menuClose}
+        >
+          <span class="visually-hidden" data-menu-label>{t.menuOpen}</span>
           <Icon name="menu" class="menu-toggle__open" />
           <Icon name="close" class="menu-toggle__close" />
         </button>
@@ -56,10 +79,10 @@ const request = requestHref(Astro.url.pathname);
   </div>
 
   <div class="mobile-menu" id="mobile-menu" data-menu hidden>
-    <nav class="container mobile-menu__inner" aria-label="Mobil menü">
+    <nav class="container mobile-menu__inner" aria-label={t.mobileNav}>
       <ol role="list" class="mobile-menu__list">
         {
-          nav.map((item, i) => (
+          links.map((item, i) => (
             <li style={`--i:${i}`}>
               <a href={item.href} data-menu-link aria-current={current(item.href)}>
                 <span class="numeral">{String(i + 1).padStart(2, '0')}</span>
@@ -77,10 +100,10 @@ const request = requestHref(Astro.url.pathname);
             </a>
           ))
         }
-        <p>{site.hours.label}</p>
+        <p>{site.hours[lang]}</p>
         <a class="btn btn--ghost" href={whatsappLink()} target="_blank" rel="noopener">
           <Icon name="whatsapp" />
-          <span>WhatsApp’tan yazın</span>
+          <span>{t.whatsappWrite}</span>
         </a>
       </div>
     </nav>
@@ -125,7 +148,7 @@ const request = requestHref(Astro.url.pathname);
   const label = header.querySelector<HTMLElement>('[data-menu-label]')!;
   const setMenu = (isOpen: boolean) => {
     toggle.setAttribute('aria-expanded', String(isOpen));
-    label.textContent = isOpen ? 'Menüyü kapat' : 'Menüyü aç';
+    label.textContent = (isOpen ? toggle.dataset.closeLabel : toggle.dataset.openLabel) ?? '';
     header.toggleAttribute('data-menu-open', isOpen);
     document.documentElement.style.overflow = isOpen ? 'hidden' : '';
     update();
@@ -275,6 +298,30 @@ const request = requestHref(Astro.url.pathname);
     align-items: center;
     gap: 18px;
   }
+  /* language switch: a small pill beside the call-to-action */
+  .lang-switch {
+    display: inline-grid;
+    place-items: center;
+    min-width: 44px;
+    height: 36px;
+    padding: 0 10px;
+    border: 1px solid color-mix(in srgb, var(--nav-fg) 28%, transparent);
+    border-radius: var(--r-pill);
+    font-family: var(--f-display);
+    font-size: 13.5px;
+    font-weight: 650;
+    letter-spacing: 0.06em;
+    text-decoration: none;
+    color: var(--nav-fg);
+    transition:
+      color var(--tone-t) linear,
+      border-color 0.25s var(--ease-out),
+      background-color 0.25s var(--ease-out);
+  }
+  .lang-switch:hover {
+    border-color: var(--nav-fg);
+    background: var(--nav-hover);
+  }
   .bar__phone {
     display: inline-flex;
     align-items: center;
@@ -401,7 +448,31 @@ const request = requestHref(Astro.url.pathname);
   }
 
   @media (max-width: 1300px) {
-    .bar__phone {
+    /* language switch: a small pill beside the call-to-action */
+  .lang-switch {
+    display: inline-grid;
+    place-items: center;
+    min-width: 44px;
+    height: 36px;
+    padding: 0 10px;
+    border: 1px solid color-mix(in srgb, var(--nav-fg) 28%, transparent);
+    border-radius: var(--r-pill);
+    font-family: var(--f-display);
+    font-size: 13.5px;
+    font-weight: 650;
+    letter-spacing: 0.06em;
+    text-decoration: none;
+    color: var(--nav-fg);
+    transition:
+      color var(--tone-t) linear,
+      border-color 0.25s var(--ease-out),
+      background-color 0.25s var(--ease-out);
+  }
+  .lang-switch:hover {
+    border-color: var(--nav-fg);
+    background: var(--nav-hover);
+  }
+  .bar__phone {
       display: none;
     }
   }

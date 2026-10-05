@@ -387,6 +387,62 @@ export type ContactLink = {
 
 export type RequestKind = { value: string; label: string; hint?: string; urgent?: boolean };
 
+/** Every piece of text the form shows or composes, so the section can run in any language. */
+export type ContactCopy = {
+  formTitle: string;
+  formIntro: string;
+  kind: string;
+  system: string;
+  vessel: string;
+  vesselPlaceholder: string;
+  port: string;
+  portPlaceholder: string;
+  details: string;
+  detailsPlaceholder: string;
+  detailsError: string;
+  name: string;
+  nameError: string;
+  phone: string;
+  sendWhatsApp: string;
+  sendEmail: string;
+  sentWhatsApp: string;
+  sentEmail: string;
+  /** Lines of the composed message */
+  msgTitle: string;
+  msgSubject: string;
+  msgKind: string;
+  msgSystem: string;
+  msgVessel: string;
+  msgPort: string;
+};
+
+const TR_COPY: ContactCopy = {
+  formTitle: "Servis talebi",
+  formIntro: "Gemi adı, liman ve belirtiyi yazın; talebiniz yazılmış olarak açılır, gönder’e basmanız yeterli.",
+  kind: "Talep türü",
+  system: "İlgili sistem",
+  vessel: "Gemi adı",
+  vesselPlaceholder: "Örn. M/V …",
+  port: "Liman / konum",
+  portPlaceholder: "Geminin bulunduğu yer",
+  details: "Kısa açıklama",
+  detailsPlaceholder: "Belirti, alarm kodu, etkilenen ekipman…",
+  detailsError: "Lütfen arızayı ya da ihtiyacı kısaca yazın.",
+  name: "Ad soyad",
+  nameError: "Size nasıl hitap edelim?",
+  phone: "Telefon",
+  sendWhatsApp: "WhatsApp ile gönder",
+  sendEmail: "E-posta ile gönder",
+  sentWhatsApp: "WhatsApp açıldı. Mesajı göndermeyi unutmayın; açılmadıysa bizi telefonla arayın.",
+  sentEmail: "E-posta uygulamanız talebiniz yazılmış olarak açıldı. Göndermeyi unutmayın; açılmadıysa bizi telefonla arayın.",
+  msgTitle: "*Servis talebi · erkonmarin*",
+  msgSubject: "Servis talebi",
+  msgKind: "Talep türü",
+  msgSystem: "Sistem",
+  msgVessel: "Gemi",
+  msgPort: "Liman / konum",
+};
+
 interface ContactWithGlobeProps {
   id?: string;
   title?: string;
@@ -404,6 +460,7 @@ interface ContactWithGlobeProps {
   systems: string[];
   marker?: GlobeMarker;
   center?: [number, number];
+  copy?: ContactCopy;
   className?: string;
 }
 
@@ -429,6 +486,7 @@ export default function ContactWithGlobe({
   systems,
   marker,
   center,
+  copy = TR_COPY,
   className,
 }: ContactWithGlobeProps) {
   const uid = useId().replace(/:/g, "");
@@ -461,10 +519,10 @@ export default function ContactWithGlobe({
     }
     const picked = d.getAll("system").map(String);
     const lines = [
-      `Talep türü: ${val("kind")}`,
-      picked.length ? `Sistem: ${picked.join(", ")}` : null,
-      val("vessel") ? `Gemi: ${val("vessel")}` : null,
-      val("port") ? `Liman / konum: ${val("port")}` : null,
+      `${copy.msgKind}: ${val("kind")}`,
+      picked.length ? `${copy.msgSystem}: ${picked.join(", ")}` : null,
+      val("vessel") ? `${copy.msgVessel}: ${val("vessel")}` : null,
+      val("port") ? `${copy.msgPort}: ${val("port")}` : null,
       "",
       val("details"),
       "",
@@ -473,13 +531,13 @@ export default function ContactWithGlobe({
 
     const submitter = e.nativeEvent.submitter as HTMLButtonElement | null;
     if (submitter?.value === "email") {
-      const subject = `Servis talebi · ${val("kind")}${val("vessel") ? ` · ${val("vessel")}` : ""}`;
+      const subject = `${copy.msgSubject} · ${val("kind")}${val("vessel") ? ` · ${val("vessel")}` : ""}`;
       window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines.join("\n"))}`;
-      setStatus("E-posta uygulamanız talebiniz yazılmış olarak açıldı. Göndermeyi unutmayın; açılmadıysa bizi telefonla arayın.");
+      setStatus(copy.sentEmail);
     } else {
-      const text = ["*Servis talebi · erkonmarin*", ...lines].join("\n");
+      const text = [copy.msgTitle, ...lines].join("\n");
       window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(text)}`, "_blank", "noopener");
-      setStatus("WhatsApp açıldı. Mesajı göndermeyi unutmayın; açılmadıysa bizi telefonla arayın.");
+      setStatus(copy.sentWhatsApp);
     }
   };
 
@@ -584,17 +642,15 @@ export default function ContactWithGlobe({
               className="order-first flex flex-col gap-6 rounded-[var(--r-lg)] border lg:order-none border-white/12 bg-[rgba(8,17,42,0.55)] p-[clamp(22px,3vw,40px)] shadow-[0_40px_80px_-48px_rgba(0,0,0,0.8)] backdrop-blur-xl"
             >
               <div className="flex flex-col gap-1.5">
-                <h3 className="font-display text-[clamp(22px,1.8vw,28px)] font-bold tracking-[-0.02em]">Servis talebi</h3>
-                <p className="text-[15px] leading-[1.55] text-[#c9d4ef]">
-                  Gemi adı, liman ve belirtiyi yazın; talebiniz yazılmış olarak açılır, gönder’e basmanız yeterli.
-                </p>
+                <h3 className="font-display text-[clamp(22px,1.8vw,28px)] font-bold tracking-[-0.02em]">{copy.formTitle}</h3>
+                <p className="text-[15px] leading-[1.55] text-[#c9d4ef]">{copy.formIntro}</p>
               </div>
 
               <FormDots />
 
               <form data-request noValidate onSubmit={onSubmit} className="flex flex-col gap-6">
                 <fieldset className="m-0 flex flex-col gap-3 border-0 p-0">
-                  <legend className={cn(labelClass, "mb-3")}>Talep türü</legend>
+                  <legend className={cn(labelClass, "mb-3")}>{copy.kind}</legend>
                   <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-3">
                     {kinds.map((k, i) => (
                       <label
@@ -621,7 +677,7 @@ export default function ContactWithGlobe({
                 </fieldset>
 
                 <fieldset className="m-0 flex flex-col gap-3 border-0 p-0">
-                  <legend className={cn(labelClass, "mb-3")}>İlgili sistem</legend>
+                  <legend className={cn(labelClass, "mb-3")}>{copy.system}</legend>
                   <div className="flex flex-wrap gap-2">
                     {systems.map((s) => (
                       <label
@@ -639,21 +695,21 @@ export default function ContactWithGlobe({
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <div className="flex flex-col gap-2">
                     <label htmlFor={ids.vessel} className={labelClass}>
-                      Gemi adı
+                      {copy.vessel}
                     </label>
-                    <input id={ids.vessel} name="vessel" type="text" autoComplete="off" placeholder="Örn. M/V …" className={fieldClass} />
+                    <input id={ids.vessel} name="vessel" type="text" autoComplete="off" placeholder={copy.vesselPlaceholder} className={fieldClass} />
                   </div>
                   <div className="flex flex-col gap-2">
                     <label htmlFor={ids.port} className={labelClass}>
-                      Liman / konum
+                      {copy.port}
                     </label>
-                    <input id={ids.port} name="port" type="text" autoComplete="off" placeholder="Geminin bulunduğu yer" className={fieldClass} />
+                    <input id={ids.port} name="port" type="text" autoComplete="off" placeholder={copy.portPlaceholder} className={fieldClass} />
                   </div>
                 </div>
 
                 <div className="flex flex-col gap-2">
                   <label htmlFor={ids.details} className={labelClass}>
-                    Kısa açıklama <span aria-hidden="true">*</span>
+                    {copy.details} <span aria-hidden="true">*</span>
                   </label>
                   <textarea
                     ref={detailsRef}
@@ -664,12 +720,12 @@ export default function ContactWithGlobe({
                     aria-invalid={errors.details ? true : undefined}
                     aria-describedby={errors.details ? `${ids.details}-err` : undefined}
                     onInput={clear("details")}
-                    placeholder="Belirti, alarm kodu, etkilenen ekipman…"
+                    placeholder={copy.detailsPlaceholder}
                     className={cn(fieldClass, "resize-y")}
                   />
                   {errors.details ? (
                     <p id={`${ids.details}-err`} className="text-[13.5px] text-[#ffb0a9]">
-                      Lütfen arızayı ya da ihtiyacı kısaca yazın.
+                      {copy.detailsError}
                     </p>
                   ) : null}
                 </div>
@@ -677,7 +733,7 @@ export default function ContactWithGlobe({
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <div className="flex flex-col gap-2">
                     <label htmlFor={ids.name} className={labelClass}>
-                      Ad soyad <span aria-hidden="true">*</span>
+                      {copy.name} <span aria-hidden="true">*</span>
                     </label>
                     <input
                       ref={nameRef}
@@ -693,13 +749,13 @@ export default function ContactWithGlobe({
                     />
                     {errors.name ? (
                       <p id={`${ids.name}-err`} className="text-[13.5px] text-[#ffb0a9]">
-                        Size nasıl hitap edelim?
+                        {copy.nameError}
                       </p>
                     ) : null}
                   </div>
                   <div className="flex flex-col gap-2">
                     <label htmlFor={ids.phone} className={labelClass}>
-                      Telefon
+                      {copy.phone}
                     </label>
                     <input id={ids.phone} name="phone" type="tel" autoComplete="tel" inputMode="tel" className={fieldClass} />
                   </div>
@@ -713,7 +769,7 @@ export default function ContactWithGlobe({
                     className="group h-14 gap-3 rounded-full px-7 font-display text-[16px] font-semibold hover:bg-signal-hi focus-visible:ring-0 focus-visible:ring-offset-0"
                   >
                     <MessageCircle aria-hidden="true" className="size-[18px]" />
-                    WhatsApp ile gönder
+                    {copy.sendWhatsApp}
                     <ArrowRight aria-hidden="true" className="size-4 transition-transform duration-200 group-hover:translate-x-1" />
                   </Button>
                   <Button
@@ -724,7 +780,7 @@ export default function ContactWithGlobe({
                     className="h-14 gap-3 rounded-full border-white/25 bg-transparent px-7 font-display text-[16px] font-semibold text-[#eef2fb] hover:border-signal hover:bg-white/[0.05] hover:text-signal-hi focus-visible:ring-0 focus-visible:ring-offset-0"
                   >
                     <Mail aria-hidden="true" className="size-[18px]" />
-                    E-posta ile gönder
+                    {copy.sendEmail}
                   </Button>
                 </div>
                 <p role="status" aria-live="polite" className="min-h-[1.5em] text-[14.5px] text-[#c9d4ef] empty:min-h-0">

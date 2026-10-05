@@ -1,20 +1,45 @@
 ---
-// "Mesleki yolculuğumuz": the career rail from /hakkimizda/. With `intro`, it
-// opens with the About lead and team photo (the home page's about block) and
-// the headings step down a level under its h2.
+// "Mesleki yolculuğumuz": the career rail from /hakkimizda/ (and /en/about/).
+// With `intro`, it opens with the About lead and team photo (the home page's
+// about block) and the headings step down a level under its h2.
 import Icon from './Icon.astro';
 import TeamPhoto from './TeamPhoto.astro';
 import { about } from '../data/about';
 import { services, serviceHref } from '../data/services';
+import { langOf, routes } from '../i18n';
 
 interface Props {
   id?: string;
   intro?: boolean;
 }
 const { id, intro = false } = Astro.props;
+const lang = langOf(Astro.currentLocale);
+const a = about[lang];
 const Title = intro ? 'h3' : 'h2';
 const Stop = intro ? 'h4' : 'h3';
-const link = (slug: string) => serviceHref(services.find((s) => s.slug === slug)!);
+const link = (key: string) => serviceHref(services.find((s) => s.key === key)!, lang);
+const copy = {
+  tr: {
+    about: 'Hakkımızda',
+    leadBefore: 'Erkon Marin olarak,',
+    leadHl: '35 yılı aşkın',
+    leadAfter: 'denizcilik elektroniği, seyir cihazları ve gemi otomasyon sistemleri deneyimimizi ticari gemilere ve romorkörlere profesyonel çözümler sunmak için kullanıyoruz.',
+    more: 'Hakkımızda sayfası',
+    story: ['Mesleki', 'yolculuğumuz'],
+    marks: ['1988', 'Ardından', 'Bugün'],
+    stops: ['D.B. Deniz Nakliyat T.A.Ş.', 'Kıyı Emniyeti Genel Müdürlüğü', 'Erkon Marin'],
+  },
+  en: {
+    about: 'About us',
+    leadBefore: 'At Erkon Marin, we put',
+    leadHl: 'more than 35 years',
+    leadAfter: 'of experience in marine electronics, navigation equipment and ship automation systems to work, delivering professional solutions for merchant vessels and tugboats.',
+    more: 'More about us',
+    story: ['Our professional', 'journey'],
+    marks: ['1988', 'Then', 'Today'],
+    stops: ['D.B. Deniz Nakliyat T.A.Ş.', 'Directorate General of Coastal Safety', 'Erkon Marin'],
+  },
+}[lang];
 ---
 
 <section class="story" id={id} data-nav-tone="light" aria-labelledby={intro ? 'about-title' : 'story-title'}>
@@ -24,14 +49,13 @@ const link = (slug: string) => serviceHref(services.find((s) => s.slug === slug)
         <div class="intro">
           <div class="intro__text">
             <h2 class="h2 intro__title" id="about-title" data-reveal>
-              Hakkımızda
+              {copy.about}
             </h2>
             <p class="intro__lead" data-reveal style="--d:120">
-              Erkon Marin olarak, <span class="hl">35 yılı aşkın</span> denizcilik elektroniği, seyir cihazları ve gemi otomasyon sistemleri
-              deneyimimizi ticari gemilere ve romorkörlere profesyonel çözümler sunmak için kullanıyoruz.
+              {copy.leadBefore} <span class="hl">{copy.leadHl}</span> {copy.leadAfter}
             </p>
-            <a class="btn btn--ink intro__more" href="/hakkimizda/" data-reveal style="--d:200">
-              <span>Hakkımızda sayfası</span>
+            <a class="btn btn--ink intro__more" href={routes.about[lang]} data-reveal style="--d:200">
+              <span>{copy.more}</span>
               <Icon name="arrow" />
             </a>
           </div>
@@ -39,52 +63,100 @@ const link = (slug: string) => serviceHref(services.find((s) => s.slug === slug)
         </div>
       )
     }
-    <Title class="h2 story__title" id="story-title" data-reveal>Mesleki <em>yolculuğumuz</em></Title>
+    <Title class="h2 story__title" id="story-title" data-reveal>{copy.story[0]} <em>{copy.story[1]}</em></Title>
 
     <div class="journey" data-journey>
       <div class="journey__rail" aria-hidden="true"><span data-journey-fill></span></div>
       <ol role="list" class="journey__list">
         <li class="stop" data-stop>
           <span class="stop__dot" aria-hidden="true"></span>
-          <p class="stop__mark numeral">1988</p>
+          <p class="stop__mark numeral">{copy.marks[0]}</p>
           <div class="stop__body">
-            <Stop class="h3 stop__title">D.B. Deniz Nakliyat T.A.Ş.</Stop>
-            <p>
-              Mesleki yolculuğumuz 1988 yılında, Türkiye’nin en köklü denizcilik kurumlarından biri olan D.B. Deniz Nakliyat T.A.Ş.’nin
-              elektronik tamir ekibinde başladı.
-            </p>
-            <p>
-              Bu dönemde birçok seyir ve haberleşme sisteminin tamir, bakım ve montaj/demontaj işlemlerini gerçekleştirdik. Bunlar arasında:
-            </p>
-            <p class="stop__key">
-              <strong>Raytheon, Kelvin Hughes, Sperry, Decca, Furuno, Sailor, JRC, Gylot</strong> gibi markaların{' '}
-              <a href={link('seyir-sistemleri')}>radar, gyro, autopilot, VHF telsiz ve çeşitli köprüüstü (bridge) cihazları</a> yer alıyordu.
-            </p>
+            <Stop class="h3 stop__title">{copy.stops[0]}</Stop>
+            {
+              lang === 'tr' ? (
+                <>
+                  <p>
+                    Mesleki yolculuğumuz 1988 yılında, Türkiye’nin en köklü denizcilik kurumlarından biri olan D.B. Deniz Nakliyat
+                    T.A.Ş.’nin elektronik tamir ekibinde başladı.
+                  </p>
+                  <p>
+                    Bu dönemde birçok seyir ve haberleşme sisteminin tamir, bakım ve montaj/demontaj işlemlerini gerçekleştirdik.
+                    Bunlar arasında:
+                  </p>
+                  <p class="stop__key">
+                    <strong>Raytheon, Kelvin Hughes, Sperry, Decca, Furuno, Sailor, JRC, Gylot</strong> gibi markaların{' '}
+                    <a href={link('seyir-sistemleri')}>radar, gyro, autopilot, VHF telsiz ve çeşitli köprüüstü (bridge) cihazları</a>{' '}
+                    yer alıyordu.
+                  </p>
+                </>
+              ) : (
+                <>
+                  <p>
+                    Our professional journey began in 1988 in the electronics repair team of D.B. Deniz Nakliyat T.A.Ş., one of
+                    Türkiye’s most established maritime institutions.
+                  </p>
+                  <p>
+                    During this period, we repaired, maintained, installed and removed a wide range of navigation and communication
+                    systems. These included:
+                  </p>
+                  <p class="stop__key">
+                    <a href={link('seyir-sistemleri')}>radar, gyro, autopilot, VHF radio and various bridge equipment</a> from brands
+                    such as <strong>Raytheon, Kelvin Hughes, Sperry, Decca, Furuno, Sailor, JRC and Gylot</strong>.
+                  </p>
+                </>
+              )
+            }
             <ul class="brands" aria-hidden="true">
-              {about.brands.map((b) => <li>{b}</li>)}
+              {a.brands.map((b) => <li>{b}</li>)}
             </ul>
           </div>
         </li>
 
         <li class="stop" data-stop>
           <span class="stop__dot" aria-hidden="true"></span>
-          <p class="stop__mark numeral">Ardından</p>
+          <p class="stop__mark numeral">{copy.marks[1]}</p>
           <div class="stop__body">
-            <Stop class="h3 stop__title">Kıyı Emniyeti Genel Müdürlüğü</Stop>
-            <p>
-              Edindiğimiz bu geniş tecrübeyle, daha sonra Kıyı Emniyet Genel Müdürlüğü bünyesinde ilk Elektrik-Elektronik Tamir Ekibini kurduk.
-            </p>
-            <p>
-              Bu ekip ile <a href={link('romorkor-ve-sar-botlar')}>romorkör, SAR Boat</a> ve kurum bünyesindeki tüm yüzer araçların elektrik,
-              elektronik, hidrolik, pnömatik ve otomasyon sistemlerinin arıza tespiti ve bakım çalışmalarını yürüttük.
-            </p>
-            <p>
-              Ayrıca <a href={link('ana-makine')}>Ana Makine</a> ve <a href={link('yardimci-makine')}>Yardımcı Makinelerin (Jeneratör/DG)</a> arıza
-              tespitlerini ve bakımlarını da gerçekleştirdik.
-            </p>
+            <Stop class="h3 stop__title">{copy.stops[1]}</Stop>
+            {
+              lang === 'tr' ? (
+                <>
+                  <p>
+                    Edindiğimiz bu geniş tecrübeyle, daha sonra Kıyı Emniyet Genel Müdürlüğü bünyesinde ilk Elektrik-Elektronik Tamir
+                    Ekibini kurduk.
+                  </p>
+                  <p>
+                    Bu ekip ile <a href={link('romorkor-ve-sar-botlar')}>romorkör, SAR Boat</a> ve kurum bünyesindeki tüm yüzer
+                    araçların elektrik, elektronik, hidrolik, pnömatik ve otomasyon sistemlerinin arıza tespiti ve bakım
+                    çalışmalarını yürüttük.
+                  </p>
+                  <p>
+                    Ayrıca <a href={link('ana-makine')}>Ana Makine</a> ve{' '}
+                    <a href={link('yardimci-makine')}>Yardımcı Makinelerin (Jeneratör/DG)</a> arıza tespitlerini ve bakımlarını da
+                    gerçekleştirdik.
+                  </p>
+                </>
+              ) : (
+                <>
+                  <p>
+                    Building on this broad experience, we later set up the first Electrical-Electronic Repair Team within the
+                    Directorate General of Coastal Safety.
+                  </p>
+                  <p>
+                    With this team, we carried out fault diagnosis and maintenance on the electrical, electronic, hydraulic,
+                    pneumatic and automation systems of <a href={link('romorkor-ve-sar-botlar')}>tugboats, SAR boats</a> and every
+                    other vessel in the institution’s fleet.
+                  </p>
+                  <p>
+                    We also handled fault diagnosis and maintenance of <a href={link('ana-makine')}>main engines</a> and{' '}
+                    <a href={link('yardimci-makine')}>auxiliary engines (generators/DG)</a>.
+                  </p>
+                </>
+              )
+            }
             <ul class="annunciator" aria-hidden="true">
               {
-                about.systems.map((s, i) => (
+                a.systems.map((s, i) => (
                   <li style={`--i:${i}`}>
                     <span class="lamp" />
                     {s}
@@ -97,13 +169,13 @@ const link = (slug: string) => serviceHref(services.find((s) => s.slug === slug)
 
         <li class="stop" data-stop>
           <span class="stop__dot" aria-hidden="true"></span>
-          <p class="stop__mark numeral">Bugün</p>
+          <p class="stop__mark numeral">{copy.marks[2]}</p>
           <div class="stop__body">
-            <Stop class="h3 stop__title">Erkon Marin</Stop>
-            <p>Günümüzde Erkon Marin olarak sunduğumuz hizmetler:</p>
+            <Stop class="h3 stop__title">{copy.stops[2]}</Stop>
+            <p>{lang === 'tr' ? 'Günümüzde Erkon Marin olarak sunduğumuz hizmetler:' : 'Services Erkon Marin offers today:'}</p>
             <ul role="list" class="offer">
               {
-                about.today.map((t, i) => (
+                a.today.map((t, i) => (
                   <li>
                     <span class="offer__n numeral" aria-hidden="true">
                       {String(i + 1).padStart(2, '0')}

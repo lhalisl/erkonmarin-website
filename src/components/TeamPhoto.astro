@@ -2,6 +2,7 @@
 // The team photo with its "35+ yıl" badge (About page hero and the home about block).
 import { Image } from 'astro:assets';
 import team from '../assets/hakkimizda/erkon-marin-ekip.jpg';
+import { langOf } from '../i18n';
 
 interface Props {
   eager?: boolean;
@@ -9,12 +10,17 @@ interface Props {
   class?: string;
 }
 const { eager = false, sizes = '(max-width: 900px) calc(100vw - 40px), 36vw', class: className } = Astro.props;
+const lang = langOf(Astro.currentLocale);
+const copy = {
+  tr: { alt: 'Erkon Marin ekibinden iki kişi; arkalarında İstanbul Boğazı', years: 'yıl denizcilik elektroniği deneyimi' },
+  en: { alt: 'Two members of the Erkon Marin team with the Bosphorus behind them', years: 'years in marine electronics' },
+}[lang];
 ---
 
 <figure class:list={['photo', className]}>
   <Image
     src={team}
-    alt="Erkon Marin ekibinden iki kişi; arkalarında İstanbul Boğazı"
+    alt={copy.alt}
     widths={[420, 640, 900, 1070]}
     sizes={sizes}
     loading={eager ? 'eager' : 'lazy'}
@@ -22,7 +28,7 @@ const { eager = false, sizes = '(max-width: 900px) calc(100vw - 40px), 36vw', cl
   />
   <figcaption class="stat">
     <span class="stat__n numeral">35<span class="stat__plus">+</span></span>
-    <span class="stat__l">yıl denizcilik elektroniği deneyimi</span>
+    <span class="stat__l">{copy.years}</span>
   </figcaption>
 </figure>
 

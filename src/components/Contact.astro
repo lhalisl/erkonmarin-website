@@ -1,8 +1,9 @@
 ---
-// Service request section (#talep): the globe contact block from
+// Service request section: the globe contact block from
 // src/components/ui/contact-with-globe.tsx, filled with Erkon Marin's details.
-import ContactWithGlobe, { type ContactLink } from './ui/contact-with-globe';
+import ContactWithGlobe, { type ContactCopy, type ContactLink } from './ui/contact-with-globe';
 import { site, whatsappLink, mapsLink } from '../data/site';
+import { anchors, langOf, ui } from '../i18n';
 import '../styles/tailwind.css';
 
 interface Props {
@@ -10,39 +11,92 @@ interface Props {
   compact?: boolean;
 }
 const { compact = false } = Astro.props;
+const lang = langOf(Astro.currentLocale);
 
-const office: ContactLink = { icon: 'pin', label: `${site.address.district} / ${site.address.city}`, href: mapsLink, external: true };
+const text = {
+  tr: {
+    title: 'Arızayı anlatın,',
+    emphasis: 'gerisini',
+    end: 'bize bırakın.',
+    description: 'Formu doldurun; talebiniz WhatsApp ya da e-posta ile doğrudan ekibimize ulaşsın. Acil durumlarda telefonla arayın.',
+    infoTitle: compact ? 'Ofisimiz' : 'Bize ulaşın',
+    kinds: [
+      { value: 'Acil arıza · gemi bekliyor', label: 'Acil arıza', hint: 'Gemi bekliyor', urgent: true },
+      { value: 'Planlı bakım', label: 'Planlı bakım', hint: 'Takvime göre' },
+      { value: 'Montaj / demontaj projesi', label: 'Montaj · söküm', hint: 'Proje' },
+    ],
+    systems: ['Ana makine', 'Yardımcı makine · D/G', 'Seyir sistemleri', 'MSB / ana pano', 'Kontrol odası · otomasyon', 'Diğer'],
+    marker: 'İstanbul',
+    copy: undefined as ContactCopy | undefined,
+  },
+  en: {
+    title: 'Tell us about the fault,',
+    emphasis: 'we’ll take it',
+    end: 'from there.',
+    description: 'Fill in the form and your request goes straight to our team by WhatsApp or e-mail. In an emergency, call us.',
+    infoTitle: compact ? 'Our office' : 'Get in touch',
+    kinds: [
+      { value: 'Urgent fault · ship waiting', label: 'Urgent fault', hint: 'Ship is waiting', urgent: true },
+      { value: 'Planned maintenance', label: 'Planned maintenance', hint: 'On your schedule' },
+      { value: 'Installation / removal project', label: 'Installation · removal', hint: 'Project' },
+    ],
+    systems: ['Main engine', 'Auxiliary engine · D/G', 'Navigation systems', 'MSB / main switchboard', 'Control room · automation', 'Other'],
+    marker: 'Istanbul',
+    copy: {
+      formTitle: 'Service request',
+      formIntro: 'Write the ship’s name, the port and the symptoms; your request opens ready to send, you only press send.',
+      kind: 'Request type',
+      system: 'System concerned',
+      vessel: 'Ship’s name',
+      vesselPlaceholder: 'e.g. M/V …',
+      port: 'Port / location',
+      portPlaceholder: 'Where the ship is',
+      details: 'Short description',
+      detailsPlaceholder: 'Symptoms, alarm code, equipment affected…',
+      detailsError: 'Please describe the fault or what you need in a few words.',
+      name: 'Full name',
+      nameError: 'How should we address you?',
+      phone: 'Phone',
+      sendWhatsApp: 'Send via WhatsApp',
+      sendEmail: 'Send by e-mail',
+      sentWhatsApp: 'WhatsApp has opened. Don’t forget to send the message; if it didn’t open, please call us.',
+      sentEmail: 'Your e-mail app has opened with the request filled in. Don’t forget to send it; if it didn’t open, please call us.',
+      msgTitle: '*Service request · erkonmarin*',
+      msgSubject: 'Service request',
+      msgKind: 'Request type',
+      msgSystem: 'System',
+      msgVessel: 'Ship',
+      msgPort: 'Port / location',
+    } satisfies ContactCopy,
+  },
+}[lang];
+
+const office: ContactLink = { icon: 'pin', label: site.address.short[lang], href: mapsLink, external: true };
 const links: ContactLink[] = compact
-  ? [office, { icon: 'clock', label: site.hours.label }]
+  ? [office, { icon: 'clock', label: site.hours[lang] }]
   : [
       ...site.phones.map((p): ContactLink => ({ icon: 'phone', label: p.display, href: p.href })),
-      { icon: 'whatsapp', label: 'WhatsApp’tan yazın', href: whatsappLink(), external: true },
+      { icon: 'whatsapp', label: ui[lang].whatsappWrite, href: whatsappLink(), external: true },
       { icon: 'mail', label: site.email, href: `mailto:${site.email}` },
       office,
     ];
-
-const kinds = [
-  { value: 'Acil arıza · gemi bekliyor', label: 'Acil arıza', hint: 'Gemi bekliyor', urgent: true },
-  { value: 'Planlı bakım', label: 'Planlı bakım', hint: 'Takvime göre' },
-  { value: 'Montaj / demontaj projesi', label: 'Montaj · söküm', hint: 'Proje' },
-];
-const systems = ['Ana makine', 'Yardımcı makine · D/G', 'Seyir sistemleri', 'MSB / ana pano', 'Kontrol odası · otomasyon', 'Diğer'];
 ---
 
 <ContactWithGlobe
   client:visible={{ rootMargin: '600px' }}
-  id="talep"
-  title="Arızayı anlatın,"
-  titleEmphasis="gerisini"
-  titleEnd="bize bırakın."
-  description="Formu doldurun; talebiniz WhatsApp ya da e-posta ile doğrudan ekibimize ulaşsın. Acil durumlarda telefonla arayın."
-  infoTitle={compact ? 'Ofisimiz' : 'Bize ulaşın'}
-  infoText={compact ? site.address.lines.join(', ') : `${site.hours.label}.`}
+  id={anchors.request[lang]}
+  title={text.title}
+  titleEmphasis={text.emphasis}
+  titleEnd={text.end}
+  description={text.description}
+  infoTitle={text.infoTitle}
+  infoText={compact ? site.address.lines[lang].join(', ') : `${site.hours[lang]}.`}
   links={links}
   whatsappNumber={site.whatsapp}
   email={site.email}
-  kinds={kinds}
-  systems={systems}
-  marker={{ lon: 28.64, lat: 41.0, label: 'İstanbul' }}
+  kinds={text.kinds}
+  systems={text.systems}
+  marker={{ lon: 28.64, lat: 41.0, label: text.marker }}
   center={[30, 33]}
+  copy={text.copy}
 />
