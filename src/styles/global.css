@@ -78,6 +78,13 @@
     }
   }
 
+  /* keep keyboard focus clear of the fixed contact dock on phones */
+  @media (max-width: 760px) {
+    html {
+      scroll-padding-bottom: calc(96px + env(safe-area-inset-bottom));
+    }
+  }
+
   body {
     margin: 0;
     background: var(--c-abyss);

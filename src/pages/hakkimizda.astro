@@ -503,7 +503,8 @@ const description = `${lead.slice(0, lead.lastIndexOf(' ', 155))}…`;
   .mission__axis span {
     position: absolute;
     top: -5px;
-    left: var(--gutter);
+    /* the container's content edge, so the dot continues the story rail above */
+    left: calc(max(0px, (100% - var(--maxw)) / 2) + var(--gutter));
     width: 11px;
     height: 11px;
     border-radius: 50%;
