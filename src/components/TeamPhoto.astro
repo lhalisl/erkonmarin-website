@@ -12,8 +12,8 @@ interface Props {
 const { eager = false, sizes = '(max-width: 900px) calc(100vw - 40px), 36vw', class: className } = Astro.props;
 const lang = langOf(Astro.currentLocale);
 const copy = {
-  tr: { alt: 'Erkon Marin ekibinden iki kişi; arkalarında İstanbul Boğazı', years: 'yıl denizcilik elektroniği deneyimi' },
-  en: { alt: 'Two members of the Erkon Marin team with the Bosphorus behind them', years: 'years in marine electronics' },
+  tr: { alt: 'Erkon Marin ekibinden dört kişi, bir etkinlik salonunun girişinde', years: 'yıl denizcilik elektroniği deneyimi' },
+  en: { alt: 'Four members of the Erkon Marin team at the entrance of an event venue', years: 'years in marine electronics' },
 }[lang];
 ---
 
@@ -21,8 +21,10 @@ const copy = {
   <Image
     src={team}
     alt={copy.alt}
-    widths={[420, 640, 900, 1070]}
+    width={1040}
+    widths={[420, 640, 900, 1040]}
     sizes={sizes}
+    quality={75}
     loading={eager ? 'eager' : 'lazy'}
     fetchpriority={eager ? 'high' : 'auto'}
   />
@@ -43,7 +45,7 @@ const copy = {
     aspect-ratio: 4 / 5;
     object-fit: cover;
     border-radius: var(--r-xl);
-    /* the source is a small, upscaled snapshot; a gentle grade keeps it in the site's palette */
+    /* an evening snapshot under warm lights; a gentle grade keeps it in the site's palette */
     filter: saturate(0.9) contrast(1.04);
   }
   .stat {
