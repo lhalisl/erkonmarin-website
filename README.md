@@ -64,7 +64,7 @@ src/
     TeamPhoto.astro         team photo with the 35+ badge
     Audience.astro          who the service is for
     Contact.astro           request section: globe, contact list, WhatsApp / e-mail form
-    SocialRail.astro        phone, e-mail and Instagram buttons fixed in the bottom-right corner
+    SocialRail.astro        phone, e-mail and Instagram bar fixed to the middle of the right edge
     Footer.astro, MobileDock.astro
     ui/                     shadcn-style React components (timeline, contact-with-globe, button)
   scripts/stage/

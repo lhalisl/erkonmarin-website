@@ -1,6 +1,7 @@
 ---
-// Phone, e-mail and Instagram in the bottom-right corner of every page. It steps
-// aside while the request form or the footer (which list the same links) is on screen.
+// Phone, e-mail and Instagram on a bar fixed to the middle of the right edge, on
+// every page. It steps aside while the request form or the footer (which list the
+// same links) is on screen.
 import Icon from './Icon.astro';
 import { site } from '../data/site';
 import { langOf, ui } from '../i18n';
@@ -59,78 +60,89 @@ const handle = instagram && `@${new URL(instagram).pathname.replaceAll('/', '')}
 
 <style>
   .rail {
+    --size: 62px;
+    --icon: 27px;
     position: fixed;
-    right: 24px;
-    bottom: calc(24px + env(safe-area-inset-bottom));
+    right: 0;
+    top: 50%;
     z-index: 90;
+    transform: translateY(-50%);
     transition:
-      opacity 0.3s,
-      transform 0.45s var(--ease-out),
+      transform 0.5s var(--ease-out),
       visibility 0s;
   }
   .rail[data-hidden] {
-    opacity: 0;
-    transform: translateX(24px);
+    transform: translate(110%, -50%);
     visibility: hidden;
     transition:
-      opacity 0.3s,
-      transform 0.45s var(--ease-out),
-      visibility 0s 0.45s;
+      transform 0.5s var(--ease-out),
+      visibility 0s 0.5s;
+  }
+  /* soft cyan halo behind the bar */
+  .rail::before {
+    content: '';
+    position: absolute;
+    inset: 10px 0 10px 10px;
+    z-index: -1;
+    border-radius: 22px 0 0 22px;
+    background: var(--c-signal);
+    filter: blur(18px);
+    opacity: 0.45;
   }
   .rail__list {
     display: grid;
-    gap: 4px;
     margin: 0;
-    padding: 5px;
+    padding: 6px 0;
     list-style: none;
-    border: 1px solid var(--c-line-dark-2);
-    border-radius: var(--r-pill);
-    background: rgba(6, 12, 30, 0.82);
-    box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.55);
-    -webkit-backdrop-filter: blur(14px);
-    backdrop-filter: blur(14px);
+    border-radius: 22px 0 0 22px;
+    background: var(--c-signal);
+    box-shadow:
+      inset 0 0 0 1px rgba(255, 255, 255, 0.28),
+      0 22px 44px -16px rgba(0, 0, 0, 0.55);
+  }
+  .rail__list li + li {
+    border-top: 1px solid rgba(5, 10, 25, 0.16);
   }
   .rail__link {
     position: relative;
     display: grid;
     place-items: center;
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    color: #fff;
-    transition:
-      background-color 0.25s,
-      color 0.25s;
+    width: var(--size);
+    height: var(--size);
+    color: var(--c-abyss);
   }
   .rail__link :global(svg) {
-    width: 20px;
-    height: 20px;
+    width: var(--icon);
+    height: var(--icon);
+    transition: transform 0.3s var(--ease-out);
   }
-  .rail__link:hover,
-  .rail__link:focus-visible {
-    background: rgba(255, 255, 255, 0.1);
-    color: var(--c-signal);
+  .rail__link:hover :global(svg),
+  .rail__link:focus-visible :global(svg) {
+    transform: scale(1.14);
   }
   .rail__link:focus-visible {
-    border-radius: 50%;
+    outline: 2px solid var(--c-abyss);
+    outline-offset: -6px;
+    border-radius: 12px;
   }
   /* the number, address or handle slides out to the left on hover and focus */
   .rail__tip {
     position: absolute;
-    right: calc(100% + 14px);
+    right: calc(100% + 12px);
     top: 50%;
-    padding: 9px 16px;
+    padding: 11px 18px;
     border: 1px solid var(--c-line-dark-2);
     border-radius: var(--r-pill);
-    background: rgba(6, 12, 30, 0.9);
+    background: rgba(6, 12, 30, 0.92);
+    box-shadow: 0 16px 34px -14px rgba(0, 0, 0, 0.6);
     color: #fff;
     font-family: var(--f-display);
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 600;
     white-space: nowrap;
     pointer-events: none;
     opacity: 0;
-    transform: translate(8px, -50%);
+    transform: translate(10px, -50%);
     transition:
       opacity 0.2s,
       transform 0.3s var(--ease-out);
@@ -151,30 +163,29 @@ const handle = instagram && `@${new URL(instagram).pathname.replaceAll('/', '')}
       clip-path: inset(50%);
     }
   }
-  /* phones: smaller, stacked above the quick-contact dock */
   @media (max-width: 760px) {
     .rail {
-      right: 12px;
-      bottom: calc(12px + 60px + 10px + env(safe-area-inset-bottom));
-    }
-    .rail__list {
-      padding: 4px;
-      gap: 2px;
-    }
-    .rail__link {
-      width: 40px;
-      height: 40px;
-    }
-    .rail__link :global(svg) {
-      width: 18px;
-      height: 18px;
+      --size: 52px;
+      --icon: 24px;
     }
   }
-  @media (prefers-reduced-motion: reduce) {
-    .rail,
-    .rail[data-hidden],
-    .rail__tip {
-      transition-duration: 0.01s;
+  @media (prefers-reduced-motion: no-preference) {
+    /* slides in from the edge once the page has settled, then the halo breathes */
+    .rail {
+      animation: rail-in 0.8s var(--ease-out) 0.9s backwards;
+    }
+    .rail::before {
+      animation: rail-glow 3.2s ease-in-out infinite;
+    }
+  }
+  @keyframes rail-in {
+    from {
+      transform: translate(110%, -50%);
+    }
+  }
+  @keyframes rail-glow {
+    50% {
+      opacity: 0.8;
     }
   }
 </style>
