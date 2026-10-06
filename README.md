@@ -64,7 +64,7 @@ src/
     TeamPhoto.astro         team photo with the 35+ badge
     Audience.astro          who the service is for
     Contact.astro           request section: globe, contact list, WhatsApp / e-mail form
-    SocialRail.astro        phone, e-mail and Instagram bar fixed to the middle of the right edge
+    SocialRail.astro        phone, e-mail, Instagram and LinkedIn bar fixed to the right edge
     Footer.astro, MobileDock.astro
     ui/                     shadcn-style React components (timeline, contact-with-globe, button)
   scripts/stage/
@@ -130,7 +130,7 @@ old site. Everything below was written for this build and needs sign-off:
 - The English translation as a whole, ideally read by someone at Erkon Marin.
 - The privacy page (`src/views/PrivacyPage.astro`) against KVKK requirements.
 - Which number answers WhatsApp (`src/data/site.ts`, currently +90 549 574 24 24).
-- Facebook URL (empty entries are hidden; Instagram is @erkon_marin).
+- Facebook URL (empty entries are hidden; Instagram and LinkedIn are set).
 - Domain, for canonical and absolute Open Graph URLs (`SITE_URL`).
 - Real project photography for the coming Galeri page.
 - Licensed Grift and Commune webfont files (see Typography).

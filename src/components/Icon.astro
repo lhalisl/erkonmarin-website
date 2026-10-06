@@ -1,6 +1,6 @@
 ---
 interface Props {
-  name: 'arrow' | 'arrow-down' | 'arrow-up-right' | 'phone' | 'whatsapp' | 'menu' | 'close' | 'clock' | 'pin' | 'mail' | 'instagram';
+  name: 'arrow' | 'arrow-down' | 'arrow-up-right' | 'phone' | 'whatsapp' | 'menu' | 'close' | 'clock' | 'pin' | 'mail' | 'instagram' | 'linkedin';
   class?: string;
 }
 const { name, class: className } = Astro.props;
@@ -94,6 +94,15 @@ const cls = [name === 'arrow' ? 'arrow' : '', className].filter(Boolean).join(' 
       <rect x="3.5" y="3.5" width="17" height="17" rx="5" stroke="currentColor" stroke-width="1.6" />
       <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.6" />
       <circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" />
+    </svg>
+  )
+}
+{
+  name === 'linkedin' && (
+    <svg class={cls} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <rect x="3.5" y="3.5" width="17" height="17" rx="3.5" stroke="currentColor" stroke-width="1.6" />
+      <circle cx="8.2" cy="7.9" r="1.1" fill="currentColor" />
+      <path d="M8.2 10.6v5.9M11.6 16.5v-5.9m0 2.7c0-1.6 1-2.9 2.5-2.9s2.3 1 2.3 2.7v3.4" stroke="currentColor" stroke-width="1.6" />
     </svg>
   )
 }

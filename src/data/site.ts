@@ -33,6 +33,7 @@ export const site = {
   // empty entries are not rendered; confirm: Facebook URL
   social: {
     instagram: 'https://www.instagram.com/erkon_marin/',
+    linkedin: 'https://www.linkedin.com/in/erkon-marin-7532b9387/',
     facebook: '',
   },
 } as const;

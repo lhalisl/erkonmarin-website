@@ -1,5 +1,5 @@
 ---
-// Phone, e-mail and Instagram on a bar fixed to the middle of the right edge, on
+// Phone, e-mail, Instagram and LinkedIn on a bar fixed to the middle of the right edge, on
 // every page. It steps aside while the request form or the footer (which list the
 // same links) is on screen.
 import Icon from './Icon.astro';
@@ -10,6 +10,7 @@ const t = ui[lang].rail;
 const phone = site.phones[0];
 const instagram = site.social.instagram;
 const handle = instagram && `@${new URL(instagram).pathname.replaceAll('/', '')}`;
+const linkedin = site.social.linkedin;
 ---
 
 <aside class="rail" aria-label={t.label} data-rail>
@@ -35,6 +36,16 @@ const handle = instagram && `@${new URL(instagram).pathname.replaceAll('/', '')}
               <span class="visually-hidden">{t.instagram}: </span>
               {handle}
             </span>
+          </a>
+        </li>
+      )
+    }
+    {
+      linkedin && (
+        <li>
+          <a class="rail__link" href={linkedin} target="_blank" rel="noopener">
+            <Icon name="linkedin" />
+            <span class="rail__tip">LinkedIn</span>
           </a>
         </li>
       )

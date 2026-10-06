@@ -50,7 +50,7 @@ const socials = Object.entries(site.social).filter(([, url]) => url);
         {
           socials.map(([name, url]) => (
             <a class="footer__link" href={url} target="_blank" rel="noopener">
-              {name === 'instagram' ? 'Instagram' : 'Facebook'}
+              {({ instagram: 'Instagram', linkedin: 'LinkedIn', facebook: 'Facebook' } as Record<string, string>)[name]}
             </a>
           ))
         }
