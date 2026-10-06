@@ -71,7 +71,6 @@ export const services: Service[] = [
     slug: { tr: 'seyir-sistemleri', en: 'navigation-systems' },
     tr: {
       title: 'Seyir Sistemleri',
-      // confirm: no English name was supplied for this one
       subtitle: 'Navigation Systems',
       paragraphs: [
         'Köprü üstü seyir sistemlerinde, 35 yılı aşan sektör tecrübemizle; tamir, montaj, arıza tespiti ve demontaj işlemlerini profesyonel şekilde gerçekleştirmekteyiz.',
