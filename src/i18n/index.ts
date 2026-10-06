@@ -86,6 +86,7 @@ export const ui = {
       top: 'Başa dön',
     },
     dock: { label: 'Hızlı iletişim', call: 'Ara', request: 'Servis talebi' },
+    rail: { label: 'Telefon, e-posta ve Instagram', phone: 'Telefon', email: 'E-posta', instagram: 'Instagram' },
   },
   en: {
     skip: 'Skip to content',
@@ -112,5 +113,6 @@ export const ui = {
       top: 'Back to top',
     },
     dock: { label: 'Quick contact', call: 'Call', request: 'Request' },
+    rail: { label: 'Phone, e-mail and Instagram', phone: 'Phone', email: 'E-mail', instagram: 'Instagram' },
   },
 } as const;

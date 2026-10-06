@@ -11,6 +11,7 @@ import '../styles/global.css';
 import archivoLatin from '@fontsource-variable/archivo/files/archivo-latin-wdth-normal.woff2?url';
 import displayLatin from '@fontsource-variable/urbanist/files/urbanist-latin-wght-normal.woff2?url';
 import LogoSprite from '../components/LogoSprite.astro';
+import SocialRail from '../components/SocialRail.astro';
 import { site } from '../data/site';
 import { langOf, ui, type Alternates } from '../i18n';
 import { JS_CLASS } from '../scripts/inline.mjs';
@@ -41,6 +42,7 @@ const ld = {
   description: site.description[lang],
   telephone: site.phones.map((p) => p.e164),
   email: site.email,
+  sameAs: Object.values(site.social).filter(Boolean),
   address: {
     '@type': 'PostalAddress',
     streetAddress: site.address.street,
@@ -127,6 +129,7 @@ const ld = {
     <a class="skip-link" href="#main">{ui[lang].skip}</a>
     <LogoSprite />
     <slot />
+    <SocialRail />
     <script>
       // Keyboard focus that lands partly under the fixed header (the browser leaves
       // partly visible elements where they are) is nudged just below it. The

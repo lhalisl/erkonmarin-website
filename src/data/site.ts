@@ -30,9 +30,9 @@ export const site = {
     tr: 'Pazartesi – Cuma, 10:00 – 18:00',
     en: 'Monday – Friday, 10:00 – 18:00',
   },
-  // confirm: profile URLs; empty entries are not rendered
+  // empty entries are not rendered; confirm: Facebook URL
   social: {
-    instagram: '',
+    instagram: 'https://www.instagram.com/erkon_marin/',
     facebook: '',
   },
 } as const;

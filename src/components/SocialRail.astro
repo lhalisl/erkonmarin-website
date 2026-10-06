@@ -1,0 +1,180 @@
+---
+// Phone, e-mail and Instagram in the bottom-right corner of every page. It steps
+// aside while the request form or the footer (which list the same links) is on screen.
+import Icon from './Icon.astro';
+import { site } from '../data/site';
+import { langOf, ui } from '../i18n';
+const lang = langOf(Astro.currentLocale);
+const t = ui[lang].rail;
+const phone = site.phones[0];
+const instagram = site.social.instagram;
+const handle = instagram && `@${new URL(instagram).pathname.replaceAll('/', '')}`;
+---
+
+<aside class="rail" aria-label={t.label} data-rail>
+  <ul role="list" class="rail__list">
+    <li>
+      <a class="rail__link" href={phone.href}>
+        <Icon name="phone" />
+        <span class="rail__tip"><span class="visually-hidden">{t.phone}: </span>{phone.display}</span>
+      </a>
+    </li>
+    <li>
+      <a class="rail__link" href={`mailto:${site.email}`}>
+        <Icon name="mail" />
+        <span class="rail__tip"><span class="visually-hidden">{t.email}: </span>{site.email}</span>
+      </a>
+    </li>
+    {
+      instagram && (
+        <li>
+          <a class="rail__link" href={instagram} target="_blank" rel="noopener">
+            <Icon name="instagram" />
+            <span class="rail__tip">
+              <span class="visually-hidden">{t.instagram}: </span>
+              {handle}
+            </span>
+          </a>
+        </li>
+      )
+    }
+  </ul>
+</aside>
+
+<script>
+  const rail = document.querySelector<HTMLElement>('[data-rail]');
+  const form = document.querySelector('[data-request]');
+  const footer = document.querySelector('footer');
+  if (rail && 'IntersectionObserver' in window) {
+    const seen = new Set<Element>();
+    const track = (e: IntersectionObserverEntry) => {
+      if (e.isIntersecting) seen.add(e.target);
+      else seen.delete(e.target);
+      rail.toggleAttribute('data-hidden', seen.size > 0);
+    };
+    if (form) new IntersectionObserver((es) => es.forEach(track), { threshold: 0.15 }).observe(form);
+    if (footer) new IntersectionObserver((es) => es.forEach(track), { rootMargin: '0px 0px -60px 0px' }).observe(footer);
+  }
+</script>
+
+<style>
+  .rail {
+    position: fixed;
+    right: 24px;
+    bottom: calc(24px + env(safe-area-inset-bottom));
+    z-index: 90;
+    transition:
+      opacity 0.3s,
+      transform 0.45s var(--ease-out),
+      visibility 0s;
+  }
+  .rail[data-hidden] {
+    opacity: 0;
+    transform: translateX(24px);
+    visibility: hidden;
+    transition:
+      opacity 0.3s,
+      transform 0.45s var(--ease-out),
+      visibility 0s 0.45s;
+  }
+  .rail__list {
+    display: grid;
+    gap: 4px;
+    margin: 0;
+    padding: 5px;
+    list-style: none;
+    border: 1px solid var(--c-line-dark-2);
+    border-radius: var(--r-pill);
+    background: rgba(6, 12, 30, 0.82);
+    box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.55);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+  }
+  .rail__link {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    color: #fff;
+    transition:
+      background-color 0.25s,
+      color 0.25s;
+  }
+  .rail__link :global(svg) {
+    width: 20px;
+    height: 20px;
+  }
+  .rail__link:hover,
+  .rail__link:focus-visible {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--c-signal);
+  }
+  .rail__link:focus-visible {
+    border-radius: 50%;
+  }
+  /* the number, address or handle slides out to the left on hover and focus */
+  .rail__tip {
+    position: absolute;
+    right: calc(100% + 14px);
+    top: 50%;
+    padding: 9px 16px;
+    border: 1px solid var(--c-line-dark-2);
+    border-radius: var(--r-pill);
+    background: rgba(6, 12, 30, 0.9);
+    color: #fff;
+    font-family: var(--f-display);
+    font-size: 15px;
+    font-weight: 600;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transform: translate(8px, -50%);
+    transition:
+      opacity 0.2s,
+      transform 0.3s var(--ease-out);
+  }
+  .rail__link:hover .rail__tip,
+  .rail__link:focus-visible .rail__tip {
+    opacity: 1;
+    transform: translate(0, -50%);
+  }
+  /* touch screens: no hover, so keep the text for screen readers only */
+  @media (hover: none) {
+    .rail__tip {
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      border: 0;
+      overflow: hidden;
+      clip-path: inset(50%);
+    }
+  }
+  /* phones: smaller, stacked above the quick-contact dock */
+  @media (max-width: 760px) {
+    .rail {
+      right: 12px;
+      bottom: calc(12px + 60px + 10px + env(safe-area-inset-bottom));
+    }
+    .rail__list {
+      padding: 4px;
+      gap: 2px;
+    }
+    .rail__link {
+      width: 40px;
+      height: 40px;
+    }
+    .rail__link :global(svg) {
+      width: 18px;
+      height: 18px;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .rail,
+    .rail[data-hidden],
+    .rail__tip {
+      transition-duration: 0.01s;
+    }
+  }
+</style>

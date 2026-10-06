@@ -390,6 +390,7 @@
   .site-header,
   .mobile-menu,
   .dock,
+  .rail,
   canvas {
     display: none !important;
   }
