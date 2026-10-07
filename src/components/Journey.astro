@@ -259,6 +259,10 @@ const copy = {
 
   /* ---- Story --------------------------------------------------- */
   .story {
+    /* on the home page it follows the 3D stage, whose sticky viewport runs past the
+       stage's end; sit above it so the stage doesn't show through */
+    position: relative;
+    z-index: 1;
     padding-block: clamp(88px, 11vw, 168px);
     background: var(--c-paper-hi);
     color: var(--c-ink);

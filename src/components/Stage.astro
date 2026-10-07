@@ -12,16 +12,20 @@ const realPoster = await getImage({ src: photos.msb.src, width: 2000, format: 'w
 
 const lang = langOf(Astro.currentLocale);
 
+// The hero tells one story: the claim first, then, chapter by chapter as the
+// camera moves through the scene, what we actually do on board.
 const copy = {
   tr: {
     hidden: 'Erkon Marin, gemi elektrik ve otomasyon servisi. ',
-    title: ['Ana panoda', 'tahmine', 'yer yok.'],
-    lead: 'Kontrol odası, MSB ve tüm otomasyon panolarında arıza tespiti, bakım, montaj ve demontaj. Geminiz rıhtımda beklerken her saatin değerini bilen bir ekiple.',
+    eyebrow: 'Gemi elektrik ve otomasyon servisi',
+    title: ['İşimizde', 'en hızlı,', 'en iyi biziz.'],
+    lead: 'Kontrol odasından ana dağıtım panosuna, otomasyondan köprüüstüne: arızayı kaynağında bulur; bakımını, montajını ve demontajını yaparız. 35 yılı aşkın saha tecrübesiyle işi ilk seferde doğru bitiririz, geminiz rıhtımda boşuna beklemez.',
   },
   en: {
     hidden: 'Erkon Marin, marine electrical and automation service. ',
-    title: ['On the MSB,', 'guesswork', 'has no place.'],
-    lead: 'Fault diagnosis, maintenance, installation and removal across the control room, the MSB and every automation panel, by a team that knows what each hour at the quay costs while your ship waits.',
+    eyebrow: 'Marine electrical and automation service',
+    title: ['The fastest', 'and best', 'at what we do.'],
+    lead: 'From the control room to the main switchboard, from automation to the bridge: we find the fault at its source and handle maintenance, installation and removal. With more than 35 years in the field we get it right the first time, so your ship doesn’t wait at the quay for nothing.',
   },
 }[lang];
 
@@ -29,52 +33,52 @@ const chapters = {
   tr: [
     {
       id: anchors.systems.tr,
-      title: ['Kontrol', 'odası'],
-      text: 'Alarm ve izleme konsolundaki bir uyarı, çoğu zaman sahadaki bir arızanın ilk işaretidir. Sinyali kaynağına kadar izler, arızayı yerinde tespit ederiz.',
-      items: ['Alarm ve izleme konsolları', 'Sinyal ve kablaj takibi', 'Konsol ekipmanlarının bakımı'],
+      title: ['Arızayı', 'yerinde buluruz.'],
+      text: 'Alarm ve izleme konsolundaki bir uyarı, çoğu zaman sahadaki bir arızanın ilk işaretidir. Sinyali şema üzerinden kaynağına kadar izler, arızayı tahminle değil ölçümle tespit ederiz.',
+      items: ['Kontrol odası ve alarm konsolları', 'Sinyal ve kablaj takibi', 'Ölçümle arıza tespiti'],
     },
     {
       id: 'sistem-msb',
-      title: ['Ana dağıtım', 'panosu'],
-      text: 'Geminin bütün enerjisi buradan geçer. Jeneratör, bara ve dağıtım hücrelerinde arıza tespiti ve bakım, enerjiyi kesintisiz tutma disipliniyle yapılır.',
-      items: ['Jeneratör ve senkronizasyon panoları', 'Hava ve kompakt devre kesiciler (ACB / MCCB)', 'Ölçü, koruma ve kontrol devreleri'],
+      title: ['Enerjiyi', 'kesintisiz tutarız.'],
+      text: 'Geminin bütün enerjisi ana dağıtım panosundan geçer. Ana ve yardımcı makinelerin elektrik sistemlerinde, jeneratörlerde ve devre kesicilerde bakım ve onarımı bu disiplinle yaparız.',
+      items: ['Ana ve yardımcı makine elektrik sistemleri', 'Jeneratör ve senkronizasyon panoları', 'Hava ve kompakt devre kesiciler (ACB / MCCB)'],
     },
     {
       id: 'sistem-otomasyon',
-      title: ['Otomasyon', 'panoları'],
-      text: 'PLC’den röleye, klemensten operatör paneline: otomasyon arızalarını şema üzerinden adım adım izler, gereken parçayı değiştirir, sistemi yeniden devreye alırız.',
-      items: ['PLC ve I/O modülleri', 'Röle, kontaktör ve starter devreleri', 'Operatör panelleri (HMI)'],
+      title: ['Otomasyon ve seyir', 'tek elden.'],
+      text: 'PLC’den röleye, operatör panelinden köprüüstü cihazlarına: arızayı şema üzerinden adım adım izler, gereken parçayı değiştirir, sistemi yeniden devreye alırız.',
+      items: ['PLC, I/O ve röle devreleri', 'Operatör panelleri (HMI)', 'Radar, gyro, autopilot ve VHF'],
     },
     {
       id: 'sistem-montaj',
-      title: ['Montaj ve', 'demontaj'],
-      text: 'Yeni panonun montajından eski sistemin sökümüne kadar işi uçtan uca üstleniriz. Her bağlantı etiketlenir, her adım kayda geçer.',
+      title: ['Kurar, söker,', 'kayda geçiririz.'],
+      text: 'Yeni panonun montajından eski sistemin sökümüne kadar işi uçtan uca üstleniriz. Ticari gemilerde, romorkörlerde ve SAR botlarında her bağlantı etiketlenir, her adım kayda geçer.',
       items: ['Pano montajı ve devreye alma', 'Kontrollü söküm ve etiketleme', 'Test ve teslim raporu'],
     },
   ],
   en: [
     {
       id: anchors.systems.en,
-      title: ['Control', 'room'],
-      text: 'An alert on the alarm and monitoring console is often the first sign of a fault out in the plant. We trace the signal back to its source and pinpoint the fault on site.',
-      items: ['Alarm and monitoring consoles', 'Signal and wiring tracing', 'Maintenance of console equipment'],
+      title: ['We find the fault', 'on site.'],
+      text: 'An alert on the alarm and monitoring console is often the first sign of a fault out in the plant. We trace the signal back to its source on the drawings and pinpoint the fault by measurement, not guesswork.',
+      items: ['Control rooms and alarm consoles', 'Signal and wiring tracing', 'Fault diagnosis by measurement'],
     },
     {
       id: 'system-msb',
-      title: ['Main', 'switchboard'],
-      text: 'All of the ship’s power passes through here. Fault diagnosis and maintenance on generator, busbar and distribution sections are done with the discipline of keeping the power on.',
-      items: ['Generator and synchronising panels', 'Air and moulded-case circuit breakers (ACB / MCCB)', 'Metering, protection and control circuits'],
+      title: ['We keep the power', 'on.'],
+      text: 'All of the ship’s power passes through the main switchboard. We maintain and repair main and auxiliary engine electrical systems, generators and circuit breakers with that discipline.',
+      items: ['Main and auxiliary engine electrical systems', 'Generator and synchronising panels', 'Air and moulded-case circuit breakers (ACB / MCCB)'],
     },
     {
       id: 'system-automation',
-      title: ['Automation', 'panels'],
-      text: 'From PLC to relay, from terminal block to operator panel: we trace automation faults step by step on the drawings, replace the part that needs replacing and bring the system back into service.',
-      items: ['PLC and I/O modules', 'Relay, contactor and starter circuits', 'Operator panels (HMI)'],
+      title: ['Automation and navigation,', 'one team.'],
+      text: 'From PLC to relay, from operator panel to bridge equipment: we trace the fault step by step on the drawings, replace the part that needs replacing and bring the system back into service.',
+      items: ['PLC, I/O and relay circuits', 'Operator panels (HMI)', 'Radar, gyro, autopilot and VHF'],
     },
     {
       id: 'system-installation',
-      title: ['Installation and', 'removal'],
-      text: 'From fitting a new panel to removing an old system, we take on the job end to end. Every connection is labelled and every step is recorded.',
+      title: ['We install, remove', 'and record it all.'],
+      text: 'From fitting a new panel to removing an old system, we take on the job end to end. On merchant ships, tugs and SAR boats, every connection is labelled and every step is recorded.',
       items: ['Panel installation and commissioning', 'Controlled removal and labelling', 'Test and handover report'],
     },
   ],
@@ -94,6 +98,7 @@ const chapters = {
     <div class="step step--hero" data-step id={anchors.intro[lang]}>
       <div class="container">
         <div class="hero">
+          <p class="hero__eyebrow" aria-hidden="true">{copy.eyebrow}</p>
           <h1 class="hero__title display" id="hero-title">
             <span class="visually-hidden">{copy.hidden}</span>
             <span class="hero__line">{copy.title[0]}</span>
@@ -292,6 +297,26 @@ const chapters = {
   .hero {
     max-width: 720px;
   }
+  /* brand label: Montserrat SemiBold caps, wide tracking, after a short cyan dash */
+  .hero__eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 26px;
+    color: #c9d3ea;
+    font-family: var(--f-display);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+  .hero__eyebrow::before {
+    content: '';
+    flex: none;
+    width: 32px;
+    height: 2px;
+    background: var(--c-signal);
+  }
   .hero__title {
     font-size: clamp(56px, min(7.4vw, 12vh), 128px);
   }
@@ -422,6 +447,15 @@ const chapters = {
   }
 
   @media (max-width: 520px) {
+    /* one line on phones: smaller, tighter, no dash */
+    .hero__eyebrow {
+      margin-bottom: 18px;
+      font-size: 11px;
+      letter-spacing: 0.14em;
+    }
+    .hero__eyebrow::before {
+      display: none;
+    }
     .hero__actions .btn {
       flex: 1 1 100%;
     }
