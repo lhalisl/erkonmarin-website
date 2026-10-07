@@ -372,6 +372,16 @@ export async function createStage(o: StageOptions): Promise<StageHandle> {
   sample(0);
   camPos.copy(desiredPos);
   camTgt.copy(desiredTgt);
+  // Compile every shader up front (in parallel where the browser supports it) and draw
+  // one frame, so the speed check doesn't mistake first-use compiles for a slow GPU.
+  // Windows (ANGLE / Direct3D) is slow at these on a cold shader cache.
+  try {
+    if (renderer.extensions.has('KHR_parallel_shader_compile')) await renderer.compileAsync(scene, camera);
+    else renderer.compile(scene, camera);
+    composer.render(0);
+  } catch {
+    // fall back to compiling on first use
+  }
   start();
 
   return {

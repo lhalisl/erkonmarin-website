@@ -112,6 +112,8 @@ fall back to Urbanist (for Grift) and Fraunces (for Commune). To switch over:
 ## 3D behaviour
 
 - Loads after the page is idle; the poster image covers the gap.
+- Compiles all shaders before the first frame, so a cold shader cache (slow on Windows) isn't
+  mistaken for a slow device by the speed check below.
 - Falls back to the poster when WebGL2 is unavailable, the browser is rendering in software
   (SwiftShader / llvmpipe, e.g. a blocklisted GPU), or the visitor has Data Saver on.
 - Shuts itself down and returns to the poster if frames stay slower than ~11 fps after warm-up.
