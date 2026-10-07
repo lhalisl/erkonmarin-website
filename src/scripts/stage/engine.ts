@@ -13,7 +13,6 @@ export interface StageOptions {
   canvas: HTMLCanvasElement;
   host: HTMLElement; // sticky viewport, used for sizing and visibility
   annotations: HTMLElement;
-  hud: HTMLElement | null;
   reduced: boolean;
   /** Skip the slow-device bail-out (testing). */
   force?: boolean;
@@ -229,17 +228,6 @@ export async function createStage(o: StageOptions): Promise<StageHandle> {
     }
   };
 
-  /* ---------------- HUD ---------------- */
-  const hud = o.hud
-    ? {
-        v: o.hud.querySelector<HTMLElement>('[data-hud="v"]'),
-        hz: o.hud.querySelector<HTMLElement>('[data-hud="hz"]'),
-        load: o.hud.querySelector<HTMLElement>('[data-hud="load"]'),
-        bar: o.hud.querySelector<HTMLElement>('[data-hud="bar"]'),
-      }
-    : null;
-  let hudAcc = 1;
-
   /* ---------------- loop ---------------- */
   const live: Live = { load: 0.62, dg1: 312, dg2: 298, hz: 60, volts: 440, t: 0 };
   let lastTime = performance.now();
@@ -291,15 +279,6 @@ export async function createStage(o: StageOptions): Promise<StageHandle> {
 
     composer.render(dt);
     placeAnnotations();
-
-    hudAcc += dt;
-    if (hud && hudAcc > 0.25) {
-      hudAcc = 0;
-      if (hud.v) hud.v.textContent = live.volts.toFixed(0);
-      if (hud.hz) hud.hz.textContent = live.hz.toFixed(1);
-      if (hud.load) hud.load.textContent = String(Math.round(live.load * 100));
-      if (hud.bar) hud.bar.style.transform = `scaleX(${live.load.toFixed(3)})`;
-    }
 
     if (firstFrame) {
       firstFrame = false;

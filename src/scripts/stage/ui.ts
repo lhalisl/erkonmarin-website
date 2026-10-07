@@ -11,7 +11,6 @@ export function initStage() {
   const host = root.querySelector<HTMLElement>('[data-stage-viewport]')!;
   const canvas = root.querySelector<HTMLCanvasElement>('[data-stage-canvas]')!;
   const annotations = root.querySelector<HTMLElement>('[data-stage-annotations]')!;
-  const hud = root.querySelector<HTMLElement>('[data-stage-hud]');
   const steps = Array.from(root.querySelectorAll<HTMLElement>('[data-step]'));
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   // ?force3d runs the scene even on software rendering (screenshots, debugging)
@@ -82,7 +81,6 @@ export function initStage() {
           canvas,
           host,
           annotations,
-          hud,
           reduced,
           force,
           onFail: () => {
