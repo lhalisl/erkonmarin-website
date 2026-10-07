@@ -1,15 +1,9 @@
 ---
-import '@fontsource-variable/archivo/wdth.css';
+// Plex Mono only draws the equipment screens inside the 3D scene; page text is Franie
 import '@fontsource/ibm-plex-mono/400.css';
 import '@fontsource/ibm-plex-mono/500.css';
-// Stand-ins for Grift (display) and Commune (serif) until the licensed files are in public/fonts
-import '@fontsource-variable/urbanist/wght.css';
-import '@fontsource-variable/fraunces/opsz.css';
-import '@fontsource-variable/fraunces/opsz-italic.css';
 import '../styles/fonts.css';
 import '../styles/global.css';
-import archivoLatin from '@fontsource-variable/archivo/files/archivo-latin-wdth-normal.woff2?url';
-import displayLatin from '@fontsource-variable/urbanist/files/urbanist-latin-wght-normal.woff2?url';
 import LogoSprite from '../components/LogoSprite.astro';
 import SocialRail from '../components/SocialRail.astro';
 import { site } from '../data/site';
@@ -91,13 +85,13 @@ const ld = {
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <meta name="theme-color" content="#050a19" />
+    <meta name="theme-color" content="#08112a" />
     <link rel="icon" href="/favicon.ico" sizes="32x32" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
-    <link rel="preload" href={archivoLatin} as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href={displayLatin} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/franie-400.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/franie-900.woff2" as="font" type="font/woff2" crossorigin />
 
     {canonical && <link rel="canonical" href={canonical} />}
     {

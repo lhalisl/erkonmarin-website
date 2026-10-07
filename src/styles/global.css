@@ -1,12 +1,16 @@
 /* ---------------------------------------------------------------
    Erkon Marin — design tokens
-   Palette is drawn from the logo (navy #22398f, cyan #2bbbe5) and
-   from the equipment itself: RAL 7035 panel grey, indicator lamps,
-   caution amber.
+   Brand palette (brand identity guidelines):
+     Lacivert       #22398f  Navy, primary
+     Sinyal Mavisi  #2bbbe5  Signal Cyan, accent / signal only
+     Gece Laciverti #08112a  Deep Navy, dark grounds and ink
+     Pano Grisi     #cbd0cc  Steel, RAL 7035
+     Kâğıt          #f1f2ef  Paper, light grounds and text on dark
+   Everything else below is a tint or a functional colour.
 ---------------------------------------------------------------- */
 :root {
-  --c-abyss: #050a19;
-  --c-deep: #08112a;
+  --c-abyss: #08112a; /* Gece Laciverti — page ground */
+  --c-deep: #0a1432; /* Gece Laciverti lifted 8% toward Lacivert, alternate dark sections */
   --c-night: #0d1a3d;
   --c-navy: #22398f;
   --c-navy-deep: #16296d;
@@ -14,10 +18,10 @@
   --c-signal-hi: #8fe4fb;
   --c-signal-dim: #1b6f8c;
 
-  --c-steel: #cbd0cc; /* RAL 7035 */
-  --c-paper: #e6e8e4;
-  --c-paper-hi: #f1f2ef;
-  --c-ink: #0a1128;
+  --c-steel: #cbd0cc; /* Pano Grisi, RAL 7035 */
+  --c-paper: #e6e8e4; /* Kâğıt toward Pano Grisi, for a light section next to a Kâğıt one */
+  --c-paper-hi: #f1f2ef; /* Kâğıt */
+  --c-ink: #08112a; /* Gece Laciverti as text on light grounds */
   --c-ink-2: #3a4560;
   --c-ink-3: #69728a;
 
@@ -32,9 +36,11 @@
   --c-lamp-green: #3ee08f;
   --c-lamp-red: #ff5a4e;
 
-  --f-sans: 'Archivo Variable', 'Archivo', 'Helvetica Neue', Arial, sans-serif;
-  --f-display: 'Grift', 'Urbanist Variable', 'Helvetica Neue', Arial, sans-serif;
-  --f-serif: 'Commune', 'GC Commune', 'Fraunces Variable', Georgia, serif;
+  /* Franie for everything; Rumelaz Gekinsa only for numerals, English subtitles
+     and the italic accent word (it lacks İ Ş ş Ğ ğ; see fonts.css) */
+  --f-sans: 'Franie', 'Helvetica Neue', Arial, sans-serif;
+  --f-display: 'Franie', 'Helvetica Neue', Arial, sans-serif;
+  --f-serif: 'Rumelaz Gekinsa', Georgia, serif;
   --f-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
 
   --r-sm: 12px;
@@ -93,7 +99,7 @@
   body {
     margin: 0;
     background: var(--c-abyss);
-    color: #eef2fb;
+    color: var(--c-paper-hi);
     font-family: var(--f-sans);
     font-size: 17px;
     line-height: 1.6;
@@ -194,24 +200,26 @@
 }
 
 /* ---- Type ------------------------------------------------------
-   Two voices: Grift for the bold, engineered headline, Commune
-   italic for the editorial accent word inside it.
+   Two voices: Franie Black for the headline, Rumelaz Gekinsa
+   italic for the one accent word inside it.
 ------------------------------------------------------------------ */
 .display,
 .h2,
 .h3 {
   font-family: var(--f-display);
-  font-weight: 800;
-  letter-spacing: -0.035em;
-  line-height: 0.94;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  /* Franie's Turkish tails (ş ç ğ) run deep; tighter than 1 lets them touch the line below */
+  line-height: 1;
   text-wrap: balance;
 }
+/* sized for Franie, which runs wider than a typical grotesk */
 .h2 {
-  font-size: clamp(42px, 5.8vw, 96px);
+  font-size: clamp(36px, 5.4vw, 90px);
 }
 .h3 {
-  font-weight: 750;
-  letter-spacing: -0.025em;
+  font-weight: 700;
+  letter-spacing: -0.02em;
   line-height: 1.02;
 }
 .display em,
@@ -220,15 +228,20 @@
   font-family: var(--f-serif);
   font-style: italic;
   font-weight: 400;
-  font-variation-settings: 'opsz' 144;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
 }
-/* running-text serif: let the optical size follow the font size */
 .serif {
   font-family: var(--f-serif);
   font-style: italic;
   font-weight: 400;
-  font-optical-sizing: auto;
+}
+/* Rumelaz Gekinsa has no İ Ş ş Ğ ğ: an accent containing one is set in Franie Italic
+   (same weight as the serif accent, so it keeps the light-against-Black contrast) */
+.display em.sans,
+.h2 em.sans,
+.h3 em.sans,
+.serif.sans {
+  font-family: var(--f-display);
 }
 .display em,
 .h2 em,
@@ -236,12 +249,13 @@
   /* serif italics sit visually smaller than the bold sans beside them */
   font-size: 1.06em;
   padding-right: 0.04em;
+  /* a little more room on the accent line, so ş/ç tails above don't touch serif ascenders */
+  line-height: 1.2;
 }
 
 .numeral {
   font-family: var(--f-serif);
   font-weight: 400;
-  font-variation-settings: 'opsz' 144;
   font-feature-settings: 'lnum';
   letter-spacing: -0.03em;
   line-height: 1;
@@ -335,8 +349,9 @@
 }
 
 /* ---- Lamps (status dots, used across sections) ----------------- */
+/* cyan is the brand's signal colour; amber/red stay for real warnings */
 .lamp {
-  --lamp: var(--c-lamp-green);
+  --lamp: var(--c-signal);
   display: inline-block;
   width: 8px;
   height: 8px;

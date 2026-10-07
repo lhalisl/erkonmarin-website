@@ -1,4 +1,5 @@
 ---
+import { accent } from '../lib/utils';
 import { Image } from 'astro:assets';
 import { galleryRows } from '../data/photos';
 import { anchors, langOf } from '../i18n';
@@ -36,7 +37,7 @@ const sizesFor = (share: number) =>
       <div class="container">
         <header class="sahadan__head">
           <h2 class="h2" id="field-title" data-reveal>
-            {copy.title[0]} <em>{copy.title[1]}</em> {copy.title[2]}
+            {copy.title[0]} <em class={accent(copy.title[1])}>{copy.title[1]}</em> {copy.title[2]}
           </h2>
           <p class="sahadan__lead" data-reveal style="--d:120">
             {copy.lead}

@@ -15,7 +15,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, serifMissing } from "@/lib/utils";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger, SplitText);
@@ -428,13 +428,13 @@ export default function Timeline({
             <div className="col-start-1 row-start-1 pr-[3vw] min-[900px]:pr-[2vw]">
               <h2
                 id={headingId}
-                className="-mt-[0.12em] font-display text-[clamp(44px,12vw,64px)] leading-[0.94] font-extrabold tracking-[-0.035em] text-balance min-[900px]:text-[clamp(40px,4.05vw,76px)] [&_em]:pr-[0.04em] [&_em]:font-serif [&_em]:text-[1.06em] [&_em]:font-normal [&_em]:tracking-[-0.02em] [&_em]:[font-variation-settings:'opsz'_144]"
+                className="-mt-[0.12em] font-display text-[clamp(44px,12vw,64px)] leading-[0.94] font-black tracking-[-0.03em] text-balance min-[900px]:text-[clamp(36px,3.5vw,66px)] [&_em]:pr-[0.04em] [&_em]:font-serif [&_em]:text-[1.06em] [&_em]:leading-[1.2] [&_em]:font-normal [&_em]:tracking-[-0.01em]"
               >
                 {title}
                 {titleEmphasis ? (
                   <>
                     {" "}
-                    <em>{titleEmphasis}</em>
+                    <em className={serifMissing.test(titleEmphasis) ? "!font-display" : undefined}>{titleEmphasis}</em>
                   </>
                 ) : null}
               </h2>

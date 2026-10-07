@@ -31,7 +31,7 @@ const request = requestHref(Astro.url.pathname, lang);
     <div class="bar">
       <a class="brand" href={routes.home[lang]} aria-label={t.homeLabel}>
         <svg class="brand__mark" aria-hidden="true"><use href="#erkon-mark"></use></svg>
-        <span class="brand__word" aria-hidden="true"><span class="brand__a">ERKON</span><span class="brand__b">MARİN</span></span>
+        <svg class="brand__word" aria-hidden="true"><use href="#erkon-word"></use></svg>
       </a>
 
       <nav class="nav" aria-label={t.mainNav}>
@@ -255,16 +255,14 @@ const request = requestHref(Astro.url.pathname, lang);
     width: 50px;
     height: 45px;
   }
+  /* outlined wordmark (LogoSprite): sized in em so the old font sizes still apply */
   .brand__word {
-    display: flex;
-    gap: 0.42em;
-    font-stretch: 125%;
-    font-weight: 560;
+    --word-a: var(--c-signal);
+    flex: none;
     font-size: 14.5px;
-    letter-spacing: 0.16em;
-  }
-  .brand__a {
-    color: var(--c-signal);
+    width: 10.551em;
+    height: 1.064em;
+    overflow: visible;
   }
 
   .nav ul {
@@ -332,6 +330,7 @@ const request = requestHref(Astro.url.pathname, lang);
     font-size: 15.5px;
     font-weight: 600;
     font-variant-numeric: tabular-nums;
+    white-space: nowrap;
     text-decoration: none;
     color: var(--nav-fg);
     transition: color var(--tone-t) linear;
@@ -345,6 +344,7 @@ const request = requestHref(Astro.url.pathname, lang);
     min-height: 48px;
     padding: 0 22px;
     font-size: 15px;
+    white-space: nowrap;
   }
 
   .menu-toggle {
@@ -449,7 +449,8 @@ const request = requestHref(Astro.url.pathname, lang);
     color: #fff;
   }
 
-  @media (max-width: 1300px) {
+  /* Franie runs wide: the phone number leaves the bar before the nav gets crowded */
+  @media (max-width: 1480px) {
     /* language switch: a small pill beside the call-to-action */
   .lang-switch {
     display: inline-grid;

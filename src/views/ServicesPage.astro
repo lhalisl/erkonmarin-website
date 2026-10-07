@@ -1,4 +1,5 @@
 ---
+import { accent } from '../lib/utils';
 import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import Header from '../components/Header.astro';
@@ -111,7 +112,7 @@ const copy = {
                     </span>
                     <h2 class="h2 svc__title" id={`${slug}-title`}>
                       {s[lang].title}{' '}
-                      <em lang={subLang}>{s[lang].subtitle}</em>
+                      <em class={accent(s[lang].subtitle)} lang={subLang}>{s[lang].subtitle}</em>
                     </h2>
                   </header>
                   <figure class="svc__media">
@@ -157,7 +158,7 @@ const copy = {
     <section class="close" aria-labelledby="close-title">
       <div class="close__axis" aria-hidden="true"><span></span></div>
       <div class="container close__inner">
-        <h2 class="display close__title" id="close-title" data-reveal>{copy.close[0]} <em>{copy.close[1]}</em> {copy.close[2]}</h2>
+        <h2 class="display close__title" id="close-title" data-reveal>{copy.close[0]} <em class={accent(copy.close[1])}>{copy.close[1]}</em> {copy.close[2]}</h2>
         <p class="lead close__lead" data-reveal style="--d:120">
           {copy.closeLead} {site.hours[lang]}.
         </p>
@@ -228,7 +229,7 @@ const copy = {
     align-items: end;
   }
   .hero__title {
-    font-size: clamp(56px, 8.4vw, 144px);
+    font-size: clamp(46px, 7.2vw, 124px);
   }
   .hero__lead {
     max-width: 26ch;

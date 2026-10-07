@@ -14,7 +14,7 @@ const socials = Object.entries(site.social).filter(([, url]) => url);
     <div class="footer__top">
       <a class="footer__brand" href={routes.home[lang]} aria-label={ui[lang].homeLabel}>
         <svg class="footer__mark" aria-hidden="true"><use href="#erkon-mark"></use></svg>
-        <span class="footer__word" aria-hidden="true"><span>ERKON</span> MARİN</span>
+        <svg class="footer__word" aria-hidden="true"><use href="#erkon-word"></use></svg>
       </a>
       <p class="footer__pitch">{t.pitch}</p>
       <a class="btn btn--signal" href={requestHref(Astro.url.pathname, lang)}>
@@ -89,7 +89,7 @@ const socials = Object.entries(site.social).filter(([, url]) => url);
       <span>© {year} Erkon Marin</span>
       <span>{t.tagline}</span>
       <a href={routes.privacy[lang]}>{t.privacy}</a>
-      <a href="#top">{t.top} ↑</a>
+      <a class="footer__top" href="#top">{t.top}<Icon name="arrow-down" class="footer__up" /></a>
     </div>
   </div>
 
@@ -129,13 +129,23 @@ const socials = Object.entries(site.social).filter(([, url]) => url);
     height: 84px;
   }
   .footer__word {
-    font-stretch: 125%;
-    font-weight: 560;
+    --word-a: var(--c-signal);
+    flex: none;
     font-size: 22px;
-    letter-spacing: 0.16em;
+    width: 10.551em;
+    height: 1.064em;
+    overflow: visible;
   }
-  .footer__word span {
-    color: var(--c-signal);
+  /* Franie's ↑ reads like a "t", so the arrow is the site's own icon, turned up */
+  .footer__top {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .footer__top :global(.footer__up) {
+    width: 0.95em;
+    height: 0.95em;
+    transform: rotate(180deg);
   }
   .footer__pitch {
     max-width: 420px;

@@ -1,4 +1,5 @@
 ---
+import { accent } from '../lib/utils';
 import { langOf } from '../i18n';
 // A sine trace on an oscilloscope graticule: AC waveform and sea swell in one line.
 const W = 1200;
@@ -48,7 +49,7 @@ const copy = {
 
   <div class="container statement__inner">
     <h2 class="statement__big display" id="statement-title" data-reveal>
-      {copy.title[0]} <em>{copy.title[1]}</em>{lang === 'tr' ? ' ' : ''}{copy.title[2]}
+      {copy.title[0]} <em class={accent(copy.title[1])}>{copy.title[1]}</em>{lang === 'tr' ? ' ' : ''}{copy.title[2]}
     </h2>
     <div class="statement__cols">
       <p class="lead" data-reveal style="--d:120">{copy.lead}</p>

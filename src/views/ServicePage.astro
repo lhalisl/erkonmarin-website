@@ -1,4 +1,5 @@
 ---
+import { accent } from '../lib/utils';
 import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import Header from '../components/Header.astro';
@@ -55,7 +56,7 @@ const summary = lead.length > 158 ? `${lead.slice(0, lead.lastIndexOf(' ', 155))
             </a>
             <h1 class="display hero__title" id="svc-title">
               {text.title}{' '}
-              <em lang={subLang}>{text.subtitle}</em>
+              <em class={accent(text.subtitle)} lang={subLang}>{text.subtitle}</em>
             </h1>
           </div>
           <figure class="hero__media">
@@ -79,7 +80,7 @@ const summary = lead.length > 158 ? `${lead.slice(0, lead.lastIndexOf(' ', 155))
           </div>
 
           <aside class="ask" aria-labelledby="ask-title">
-            <h2 class="h3 ask__title" id="ask-title">{copy.ask[0]} <em>{copy.ask[1]}</em> {copy.ask[2]}</h2>
+            <h2 class="h3 ask__title" id="ask-title">{copy.ask[0]} <em class={accent(copy.ask[1])}>{copy.ask[1]}</em> {copy.ask[2]}</h2>
             <p class="ask__hours">{site.hours[lang]}</p>
             <div class="ask__phones">
               {
@@ -108,7 +109,7 @@ const summary = lead.length > 158 ? `${lead.slice(0, lead.lastIndexOf(' ', 155))
 
     <nav class="more" aria-labelledby="more-title">
       <div class="container">
-        <h2 class="h2 more__title" id="more-title">{copy.more[0]} <em>{copy.more[1]}</em></h2>
+        <h2 class="h2 more__title" id="more-title">{copy.more[0]} <em class={accent(copy.more[1])}>{copy.more[1]}</em></h2>
         <ul role="list" class="more__list">
           {
             others.map((s) => (
@@ -171,7 +172,7 @@ const summary = lead.length > 158 ? `${lead.slice(0, lead.lastIndexOf(' ', 155))
     transform: rotate(180deg) translateX(4px);
   }
   .hero__title {
-    font-size: clamp(48px, 6.4vw, 108px);
+    font-size: clamp(40px, 5.4vw, 92px);
   }
   .hero__title em {
     display: block;

@@ -3,6 +3,7 @@
 // symbol hanging off the main bus. Breakers close (energise) as the section
 // scrolls in, and on hover.
 import { anchors, langOf } from '../i18n';
+import { accent, serifMissing } from '../lib/utils';
 const lang = langOf(Astro.currentLocale);
 
 const copy = {
@@ -62,12 +63,14 @@ const copy = {
   },
 }[lang];
 const services = copy.items;
+// one face for the whole list: if any deliverable needs Franie, they all get it
+const outClass = accent(services.some((s) => serifMissing.test(s.out)) ? 'ş' : '', 'serif');
 ---
 
 <section class="services" data-nav-tone="light" id={anchors.scope[lang]} aria-labelledby="scope-title">
   <div class="container">
     <header class="services__head">
-      <h2 class="h2" id="scope-title" data-reveal>{copy.title[0]}<br /><em>{copy.title[1]}</em></h2>
+      <h2 class="h2" id="scope-title" data-reveal>{copy.title[0]}<br /><em class={accent(copy.title[1])}>{copy.title[1]}</em></h2>
       <p class="lead services__lead" data-reveal style="--d:160">{copy.lead}</p>
     </header>
 
@@ -104,7 +107,7 @@ const services = copy.items;
                 <h3 class="feeder__title h3">{s.title}</h3>
                 <p class="feeder__text">{s.text}</p>
                 <p class="feeder__out">
-                  {copy.out} <em class="serif">{s.out}</em>
+                  {copy.out} <em class={outClass}>{s.out}</em>
                 </p>
               </div>
             </li>
@@ -259,7 +262,7 @@ const services = copy.items;
   }
   .feeder__title {
     margin-top: 10px;
-    font-size: clamp(28px, 2.6vw, 38px);
+    font-size: clamp(24px, 2.15vw, 32px);
   }
   .feeder__text {
     margin-top: 16px;
@@ -408,7 +411,7 @@ const services = copy.items;
     }
     .feeder__title {
     margin-top: 10px;
-    font-size: clamp(28px, 2.6vw, 38px);
+    font-size: clamp(24px, 2.15vw, 32px);
   }
     .feeder__body::before {
       display: none;

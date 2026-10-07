@@ -1,4 +1,5 @@
 ---
+import { accent } from '../lib/utils';
 import { getImage } from 'astro:assets';
 import Icon from './Icon.astro';
 import { site } from '../data/site';
@@ -96,7 +97,7 @@ const chapters = {
           <h1 class="hero__title display" id="hero-title">
             <span class="visually-hidden">{copy.hidden}</span>
             <span class="hero__line">{copy.title[0]}</span>
-            <em class="hero__line">{copy.title[1]}</em>
+            <em class={accent(copy.title[1], 'hero__line')}>{copy.title[1]}</em>
             <span class="hero__line">{copy.title[2]}</span>
           </h1>
           <p class="hero__lead">{copy.lead}</p>
@@ -120,7 +121,7 @@ const chapters = {
           <div class="container">
             <div class="chapter">
               <h2 class="chapter__title h2" id={`${c.id}-title`}>
-                {c.title[0]} <em>{c.title[1]}</em>
+                {c.title[0]} <em class={accent(c.title[1])}>{c.title[1]}</em>
               </h2>
               <p class="chapter__text">{c.text}</p>
               <ul class="chapter__list" role="list">
@@ -144,7 +145,7 @@ const chapters = {
 <style>
   .stage {
     position: relative;
-    background: #070d22;
+    background: var(--c-abyss);
   }
 
   .stage__viewport {
@@ -169,7 +170,7 @@ const chapters = {
   :global(html:not([data-stage-static])) .stage__poster {
     background:
       url('/media/stage-poster.webp') right center / cover no-repeat,
-      radial-gradient(60% 70% at 72% 55%, #18295a 0%, #070d22 70%);
+      radial-gradient(60% 70% at 72% 55%, #18295a 0%, #08112a 70%);
   }
   .stage__canvas {
     opacity: 0;
@@ -186,9 +187,9 @@ const chapters = {
     inset: 0;
     pointer-events: none;
     background:
-      linear-gradient(90deg, rgba(5, 10, 25, 0.94) 0%, rgba(5, 10, 25, 0.72) 32%, rgba(5, 10, 25, 0) 58%),
-      linear-gradient(0deg, rgba(5, 10, 25, 0.85) 0%, rgba(5, 10, 25, 0) 22%),
-      linear-gradient(180deg, var(--scrim-top, rgba(5, 10, 25, 0.7)) 0%, rgba(5, 10, 25, 0) var(--scrim-top-end, 20%));
+      linear-gradient(90deg, rgba(8, 17, 42, 0.94) 0%, rgba(8, 17, 42, 0.72) 32%, rgba(8, 17, 42, 0) 58%),
+      linear-gradient(0deg, rgba(8, 17, 42, 0.85) 0%, rgba(8, 17, 42, 0) 22%),
+      linear-gradient(180deg, var(--scrim-top, rgba(8, 17, 42, 0.7)) 0%, rgba(8, 17, 42, 0) var(--scrim-top-end, 20%));
   }
 
   /* Labels pinned to equipment (positioned by the engine) */
@@ -324,7 +325,7 @@ const chapters = {
     max-width: 500px;
   }
   .chapter__title {
-    font-size: clamp(44px, 5vw, 80px);
+    font-size: clamp(40px, 4.4vw, 70px);
   }
   .chapter__title em {
     color: var(--c-signal-hi);
@@ -362,7 +363,7 @@ const chapters = {
   :global(html[data-stage-static]) .stage,
   .stage:global(.is-static) {
     /* darker top band so the nav stays legible over the bright photo */
-    --scrim-top: rgba(5, 10, 25, 0.9);
+    --scrim-top: rgba(8, 17, 42, 0.9);
     --scrim-top-end: 30%;
   }
   :global(html[data-stage-static]) .stage__canvas,
@@ -373,14 +374,14 @@ const chapters = {
   .stage:global(.is-static) .stage__poster {
     background:
       var(--real-poster) 62% center / cover no-repeat,
-      #070d22;
+      #08112a;
   }
 
   @media (max-width: 959px) {
     .stage__scrim {
       background:
-        linear-gradient(0deg, rgba(5, 10, 25, 0.98) 0%, rgba(5, 10, 25, 0.9) 44%, rgba(5, 10, 25, 0.62) 62%, rgba(5, 10, 25, 0) 80%),
-        linear-gradient(180deg, var(--scrim-top, rgba(5, 10, 25, 0.8)) 0%, rgba(5, 10, 25, 0) var(--scrim-top-end, 22%));
+        linear-gradient(0deg, rgba(8, 17, 42, 0.98) 0%, rgba(8, 17, 42, 0.9) 44%, rgba(8, 17, 42, 0.62) 62%, rgba(8, 17, 42, 0) 80%),
+        linear-gradient(180deg, var(--scrim-top, rgba(8, 17, 42, 0.8)) 0%, rgba(8, 17, 42, 0) var(--scrim-top-end, 22%));
     }
     .stage__poster {
       background-position: 70% 20%;

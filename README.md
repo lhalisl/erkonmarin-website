@@ -50,7 +50,7 @@ src/
   layouts/Base.astro        <head>, fonts, hreflang, JSON-LD, logo sprite, reveal-on-scroll
   styles/global.css         design tokens, type system (display + serif accent), buttons
   styles/tailwind.css       Tailwind v4 for the React islands (no preflight, scoped scan)
-  styles/fonts.css          @font-face slots for the licensed Grift and Commune files
+  styles/fonts.css          @font-face rules for the brand fonts (Franie, Rumelaz Gekinsa)
   scripts/inline.mjs        pre-paint inline scripts (hashed into the CSP)
   components/
     LogoSprite.astro        vector logo mark (traced from the supplied PNG)
@@ -98,16 +98,25 @@ public/
 
 ## Typography
 
-Headlines pair a bold geometric sans (**Grift**) with an italic serif accent word
-(**Commune**). In markup, the accent is an `<em>` inside `.display`, `.h2` or `.h3`.
-Body copy is Archivo; IBM Plex Mono is kept only for the 3D scene's instrument faces.
+Brand fonts, from the brand identity guidelines (`brand/`):
 
-Grift and Commune are licensed fonts and are not in the repo yet. Until they are, the stacks
-fall back to Urbanist (for Grift) and Fraunces (for Commune). To switch over:
+- **Franie** (geometric sans) for headlines (Black), sub-heads (Bold), labels (SemiBold)
+  and body text (Regular).
+- **Rumelaz Gekinsa** (serif) for numerals, English subtitles and the one italic accent word
+  in a headline: an `<em>` inside `.display`, `.h2` or `.h3`.
 
-1. Add the webfont files (`.woff2`, with a web licence) to `public/fonts/`.
-2. Uncomment the `@font-face` blocks in `src/styles/fonts.css` and match the file names.
-3. Check Turkish glyphs (ğ ş ı İ ç ö ü) render in both faces.
+The webfonts in `public/fonts/` are subset to Latin + Turkish. Franie's Regular file is the
+body weight, so it answers both 400 and 500. IBM Plex Mono is kept only for the 3D scene's
+instrument faces.
+
+Rumelaz Gekinsa has no İ Ş ş Ğ ğ. Give every accent `class={accent(text)}` (from
+`src/lib/utils.ts`). Accents that need one of those letters then switch to Franie Italic, so
+a word is never split across two typefaces. As a safety net, fonts.css draws the five letters
+from Franie wherever the serif is used without that helper.
+
+Brand colours: Lacivert #22398F, Sinyal Mavisi #2BBBE5, Gece Laciverti #08112A (page ground),
+Pano Grisi #CBD0CC (RAL 7035) and Kâğıt #F1F2EF (light ground, and text on dark). The tokens
+at the top of `src/styles/global.css` map them.
 
 ## 3D behaviour
 
@@ -136,7 +145,6 @@ old site. Everything below was written for this build and needs sign-off:
 - Facebook URL (empty entries are hidden; Instagram and LinkedIn are set).
 - Domain, for canonical and absolute Open Graph URLs (`SITE_URL`).
 - Real project photography for the coming Galeri page.
-- Licensed Grift and Commune webfont files (see Typography).
 
-The wordmark is set in Archivo Expanded rather than traced, so it stays sharp at every size;
-the mark itself is a vector trace of the supplied logo.
+The wordmark (`#erkon-word` in `LogoSprite.astro`) is outlined from Archivo at 125% width,
+so it no longer depends on a site font; the mark itself is a vector trace of the supplied logo.

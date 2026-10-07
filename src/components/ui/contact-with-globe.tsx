@@ -8,7 +8,7 @@
 
 import * as React from "react";
 import { useEffect, useId, useRef, useState, useSyncExternalStore } from "react";
-import { cn } from "@/lib/utils";
+import { cn, serifMissing } from "@/lib/utils";
 import { ArrowRight, Clock, Mail, MapPin, MessageCircle, Phone, type LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import * as SeparatorPrimitive from "@radix-ui/react-separator";
@@ -60,7 +60,7 @@ const GLOBE = {
   highlight: "#8fe4fb",
   rim: "rgba(143, 228, 251, 0.5)",
   pin: "#8fe4fb",
-  label: "#eef2fb",
+  label: "#f1f2ef",
   halo: "rgba(8, 17, 42, 0.9)",
 };
 // The sway moves a pixel or two per redraw at these rates; phones get fewer redraws
@@ -468,7 +468,7 @@ interface ContactWithGlobeProps {
 const reveal = (delay = 0) => ({ "data-reveal": "", style: { "--d": delay } as React.CSSProperties });
 
 const fieldClass =
-  "w-full rounded-xl border border-white/15 bg-white/[0.05] px-4 py-3 text-[17px] text-[#eef2fb] placeholder:text-mist transition-colors duration-200 hover:border-white/25 focus:border-signal focus:bg-white/[0.07] aria-[invalid=true]:border-[#ff8f86]";
+  "w-full rounded-xl border border-white/15 bg-white/[0.05] px-4 py-3 text-[17px] text-[#f1f2ef] placeholder:text-mist transition-colors duration-200 hover:border-white/25 focus:border-signal focus:bg-white/[0.07] aria-[invalid=true]:border-[#ff8f86]";
 const labelClass = "font-display text-[12px] font-semibold tracking-[0.12em] text-mist uppercase";
 
 export default function ContactWithGlobe({
@@ -569,7 +569,7 @@ export default function ContactWithGlobe({
         id={id}
         aria-labelledby={ids.title}
         className={cn(
-          "relative w-full overflow-hidden py-[clamp(96px,12vw,180px)] text-[#eef2fb]",
+          "relative w-full overflow-hidden py-[clamp(96px,12vw,180px)] text-[#f1f2ef]",
           "bg-[radial-gradient(60%_80%_at_0%_100%,rgba(43,187,229,0.18),transparent_70%),linear-gradient(160deg,#1d3388_0%,var(--c-navy-deep)_55%,#0f1f57_100%)]",
           className
         )}
@@ -579,9 +579,9 @@ export default function ContactWithGlobe({
             <h2
               {...reveal(0)}
               id={ids.title}
-              className="font-display text-[clamp(40px,5.4vw,84px)] leading-[0.96] font-extrabold tracking-[-0.035em] text-balance [&_em]:pr-[0.04em] [&_em]:font-serif [&_em]:text-[1.06em] [&_em]:font-normal [&_em]:tracking-[-0.02em] [&_em]:text-signal-hi [&_em]:[font-variation-settings:'opsz'_144]"
+              className="font-display text-[clamp(40px,5.4vw,84px)] leading-[0.96] font-black tracking-[-0.03em] text-balance [&_em]:pr-[0.04em] [&_em]:font-serif [&_em]:text-[1.06em] [&_em]:leading-[1.2] [&_em]:font-normal [&_em]:tracking-[-0.01em] [&_em]:text-signal-hi"
             >
-              {title} {titleEmphasis ? <em>{titleEmphasis}</em> : null} {titleEnd}
+              {title} {titleEmphasis ? <em className={serifMissing.test(titleEmphasis) ? "!font-display" : undefined}>{titleEmphasis}</em> : null} {titleEnd}
             </h2>
             {description ? (
               <p
@@ -618,12 +618,12 @@ export default function ContactWithGlobe({
                           <a
                             href={href}
                             {...(external ? { target: "_blank", rel: "noopener" } : {})}
-                            className="group flex w-fit items-center gap-3 font-display text-[16px] font-semibold text-[#eef2fb] no-underline transition-colors duration-200 hover:text-signal-hi"
+                            className="group flex w-fit items-center gap-3 font-display text-[16px] font-semibold text-[#f1f2ef] no-underline transition-colors duration-200 hover:text-signal-hi"
                           >
                             {inner}
                           </a>
                         ) : (
-                          <span className="group flex w-fit items-center gap-3 font-display text-[16px] font-semibold text-[#eef2fb]">{inner}</span>
+                          <span className="group flex w-fit items-center gap-3 font-display text-[16px] font-semibold text-[#f1f2ef]">{inner}</span>
                         )}
                       </li>
                     );
@@ -778,7 +778,7 @@ export default function ContactWithGlobe({
                     name="via"
                     value="email"
                     variant="outline"
-                    className="h-14 gap-3 rounded-full border-white/25 bg-transparent px-7 font-display text-[16px] font-semibold text-[#eef2fb] hover:border-signal hover:bg-white/[0.05] hover:text-signal-hi focus-visible:ring-0 focus-visible:ring-offset-0"
+                    className="h-14 gap-3 rounded-full border-white/25 bg-transparent px-7 font-display text-[16px] font-semibold text-[#f1f2ef] hover:border-signal hover:bg-white/[0.05] hover:text-signal-hi focus-visible:ring-0 focus-visible:ring-offset-0"
                   >
                     <Mail aria-hidden="true" className="size-[18px]" />
                     {copy.sendEmail}

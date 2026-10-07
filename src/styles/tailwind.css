@@ -39,11 +39,11 @@
 
   /* shadcn/ui semantic tokens, mapped to the brand (components sit on the dark navy sections) */
   --color-background: var(--c-abyss);
-  --color-foreground: #eef2fb;
+  --color-foreground: #f1f2ef;
   --color-primary: var(--c-signal);
   --color-primary-foreground: var(--c-abyss);
   --color-secondary: rgba(255, 255, 255, 0.08);
-  --color-secondary-foreground: #eef2fb;
+  --color-secondary-foreground: #f1f2ef;
   --color-accent: rgba(43, 187, 229, 0.12);
   --color-accent-foreground: var(--c-signal-hi);
   --color-muted: rgba(255, 255, 255, 0.06);

@@ -1,4 +1,5 @@
 ---
+import { accent } from '../lib/utils';
 // "Mesleki yolculuğumuz": the career rail from /hakkimizda/ (and /en/about/).
 // With `intro`, it opens with the About lead and team photo (the home page's
 // about block) and the headings step down a level under its h2.
@@ -63,7 +64,7 @@ const copy = {
         </div>
       )
     }
-    <Title class="h2 story__title" id="story-title" data-reveal>{copy.story[0]}{' '}<em>{copy.story[1]}</em></Title>
+    <Title class="h2 story__title" id="story-title" data-reveal>{copy.story[0]}{' '}<em class={accent(copy.story[1])}>{copy.story[1]}</em></Title>
 
     <div class="journey" data-journey>
       <div class="journey__rail" aria-hidden="true"><span data-journey-fill></span></div>
@@ -263,7 +264,7 @@ const copy = {
     color: var(--c-ink);
   }
   .story__title {
-    font-size: clamp(42px, 5.2vw, 88px);
+    font-size: clamp(34px, 5.2vw, 88px);
   }
   .story__title em {
     color: var(--c-navy);
@@ -379,7 +380,6 @@ const copy = {
     font-family: var(--f-serif);
     font-style: italic;
     font-size: clamp(21px, 1.9vw, 30px);
-    font-variation-settings: 'opsz' 72;
     line-height: 1.1;
     color: var(--c-ink);
   }
@@ -429,7 +429,7 @@ const copy = {
   }
   .stop[data-lit] .annunciator .lamp,
   :global(html:not(.js)) .annunciator .lamp {
-    --lamp: var(--c-lamp-green);
+    --lamp: var(--c-signal);
     box-shadow:
       0 0 0 2px color-mix(in srgb, var(--lamp) 22%, transparent),
       0 0 12px var(--lamp);

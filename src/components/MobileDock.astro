@@ -42,7 +42,8 @@ const t = ui[lang];
       bottom: calc(12px + env(safe-area-inset-bottom));
       z-index: 90;
       display: grid;
-      grid-template-columns: 1fr 1fr 1.6fr;
+      /* sized to content: Franie runs wide, the request button takes what is left */
+      grid-template-columns: auto auto minmax(0, 1fr);
       gap: 4px;
       padding: 5px;
       background: rgba(6, 12, 30, 0.88);
@@ -65,10 +66,11 @@ const t = ui[lang];
       justify-content: center;
       gap: 8px;
       min-height: 50px;
+      padding-inline: 12px;
       border-radius: var(--r-pill);
       color: #fff;
       font-family: var(--f-display);
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 650;
       text-decoration: none;
       white-space: nowrap;
@@ -84,6 +86,23 @@ const t = ui[lang];
     }
     .dock__item--cta :global(svg) {
       color: var(--c-abyss);
+    }
+  }
+  /* narrow phones: call and WhatsApp keep their icon, the label stays for screen readers */
+  @media (max-width: 400px) {
+    .dock {
+      grid-template-columns: 52px 52px minmax(0, 1fr);
+    }
+    .dock__item:not(.dock__item--cta) {
+      padding-inline: 0;
+    }
+    .dock__item:not(.dock__item--cta) span {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
     }
   }
 </style>
