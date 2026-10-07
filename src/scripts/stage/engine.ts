@@ -248,10 +248,9 @@ export async function createStage(o: StageOptions): Promise<StageHandle> {
   let visible = true;
   let firstFrame = true;
   let frames = 0;
-  let measured = 0;
-  let frameTime = 0;
-  let steppedDown = false;
-  let startedAt = 0;
+  const samples: number[] = [];
+  let sampled = 0;
+  let settled = false;
 
   const step = () => {
     raf = requestAnimationFrame(step);
@@ -307,32 +306,46 @@ export async function createStage(o: StageOptions): Promise<StageHandle> {
       o.host.classList.add('is-live');
     }
 
-    // Performance guard, on real frame time. Skip the first frames (shader compiles).
+    // Speed check on real frame times, after a few warm-up frames. It judges the median,
+    // so a one-off stall (other scripts starting up, image decoding, GC) can't sink a
+    // capable GPU. When frames are slow it first renders fewer pixels and drops bloom,
+    // and falls back to the photo only if the lowest quality still can't hold ~11 fps.
     frames++;
-    if (frames === 1) startedAt = now;
-    // Fewer than 20 frames in the first 3 s: this device can't run the scene
-    if (!o.force && frames < 20 && now - startedAt > 3000) {
-      fail();
-      return;
-    }
-    if (frames > 3 && measured < 120) {
-      frameTime += realDt;
-      measured++;
-      // Can't hold ~11 fps: hand the main thread back and fall back to the poster
-      const avg = frameTime / measured;
-      if (!o.force && ((measured >= 2 && avg > 0.4) || (measured >= 4 && frameTime > 1.2 && avg > 0.09))) {
-        fail();
-        return;
-      }
-      // Struggling but usable: lower the pixel ratio, and drop bloom if needed
-      if (measured === 120 && !steppedDown && avg > 0.034) {
-        steppedDown = true;
-        pixelRatio = Math.max(1, pixelRatio * 0.7);
-        renderer.setPixelRatio(pixelRatio);
-        resize();
-        if (avg > 0.05) bloom.enabled = false;
+    if (!o.force && !settled && frames > 3) {
+      samples.push(realDt);
+      sampled += realDt;
+      const n = samples.length;
+      const m = n >= 3 ? [...samples].sort((a, b) => a - b)[n >> 1] : 0;
+      if (m > 0.25) {
+        // under ~4 fps: go straight to the lowest quality, or give up there
+        if (!lower('floor')) return fail();
+      } else if (n >= 40 || (n >= 8 && sampled > 2.5)) {
+        if (m > 0.09) {
+          if (!lower('step')) return fail();
+        } else if (m > 0.034) {
+          // usable but under ~30 fps: trade sharpness for smoothness, not below 1x
+          if (!lower('soft')) settled = true;
+        } else settled = true;
       }
     }
+  };
+
+  /** One notch down the quality ladder; false when there is nothing left to lower. */
+  const lower = (mode: 'step' | 'soft' | 'floor') => {
+    const before = `${pixelRatio}|${bloom.enabled}`;
+    if (mode === 'floor') {
+      pixelRatio = Math.min(pixelRatio, 0.75);
+      bloom.enabled = false;
+    } else if (pixelRatio > 1) pixelRatio = 1;
+    else if (bloom.enabled) bloom.enabled = false;
+    else if (mode === 'step') pixelRatio = Math.min(pixelRatio, 0.75);
+    if (`${pixelRatio}|${bloom.enabled}` === before) return false;
+    renderer.setPixelRatio(pixelRatio);
+    resize();
+    frames = 0;
+    samples.length = 0;
+    sampled = 0;
+    return true;
   };
 
   const fail = () => {
@@ -345,11 +358,11 @@ export async function createStage(o: StageOptions): Promise<StageHandle> {
   const start = () => {
     if (raf || !visible || document.hidden) return;
     lastTime = performance.now();
-    // a pause during warm-up (tab hidden, scrolled away) restarts the measurement
-    if (frames < 20) {
+    // a pause before the speed check has settled (tab hidden, scrolled away) restarts it
+    if (!settled) {
       frames = 0;
-      measured = 0;
-      frameTime = 0;
+      samples.length = 0;
+      sampled = 0;
     }
     raf = requestAnimationFrame(step);
   };

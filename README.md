@@ -116,9 +116,10 @@ fall back to Urbanist (for Grift) and Fraunces (for Commune). To switch over:
   mistaken for a slow device by the speed check below.
 - Falls back to the poster when WebGL2 is unavailable, the browser is rendering in software
   (SwiftShader / llvmpipe, e.g. a blocklisted GPU), or the visitor has Data Saver on.
-- Shuts itself down and returns to the poster if frames stay slower than ~11 fps after warm-up.
+- Speed check on the median frame time (a one-off stall doesn't count). Below ~30 fps it renders
+  fewer pixels and drops bloom; it returns to the poster only if the lowest quality still can't
+  hold ~11 fps.
 - Pauses when off-screen or in a background tab.
-- Drops pixel ratio, then bloom, if the first two seconds run slowly.
 - `prefers-reduced-motion`: no idle drift, blinking or flowing current; the camera still follows scroll.
 - URL flags for testing: `?force3d` runs the scene even on a software renderer, `?snap` disables camera easing.
 
