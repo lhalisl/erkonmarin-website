@@ -4,7 +4,7 @@ LOGO: copy the attached logo files exactly, same strokes: navy sail outline and 
 
 COLOUR: only flat Paper #F1F2EF, Steel #CBD0CC, Navy #22398F, Deep Navy #08112A and Signal Cyan #2BBBE5. About a third of the pages are Deep Navy. Cyan is a signal colour only: lamps, callout rings, short dashes, one accent word on dark pages. Photos keep natural colour.
 
-TYPE: letterforms from the attached type reference, never its words. Franie (wide geometric sans) for headlines (Black, tight, one italic accent word), labels (SemiBold uppercase, wide tracking, after a short cyan dash) and body. Rumelaz Gekinsa (bookish serif) only for big numerals and English subtitles. At this scale body copy appears as fine grey text lines too small to read; do not write readable sentences except the quoted strings.
+TYPE: letterforms from the attached type reference, never its words. Montserrat (geometric sans) for headlines (Black, tight, one italic accent word), labels (SemiBold uppercase, wide tracking, after a short cyan dash) and body. Rumelaz Gekinsa (bookish serif) only for big numerals and English subtitles. At this scale body copy appears as fine grey text lines too small to read; do not write readable sentences except the quoted strings.
 
 PHOTOS: the attached real field photos, faithful, 4 mm rounded corners, captions below. Callouts: cyan ring with a dot on the equipment, thin cyan leader, small rounded Deep Navy label card. Signature devices: the logo's double wake line sweeping across the cover spread, a thin single-line electrical bus bar with four feeder taps indexing the four services, Steel hairlines, small cyan indicator-lamp dots.
 

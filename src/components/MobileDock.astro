@@ -42,7 +42,7 @@ const t = ui[lang];
       bottom: calc(12px + env(safe-area-inset-bottom));
       z-index: 90;
       display: grid;
-      /* sized to content: Franie runs wide, the request button takes what is left */
+      /* sized to content: Montserrat runs wide, the request button takes what is left */
       grid-template-columns: auto auto minmax(0, 1fr);
       gap: 4px;
       padding: 5px;
@@ -89,7 +89,7 @@ const t = ui[lang];
     }
   }
   /* narrow phones: call and WhatsApp keep their icon, the label stays for screen readers */
-  @media (max-width: 400px) {
+  @media (max-width: 370px) {
     .dock {
       grid-template-columns: 52px 52px minmax(0, 1fr);
     }

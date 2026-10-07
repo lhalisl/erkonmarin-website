@@ -1,74 +1,31 @@
 /* ---------------------------------------------------------------
    Brand fonts (Erkon Marin brand identity guidelines)
 
-   Franie — primary typeface: headlines, labels, body text.
+   Montserrat — primary typeface: headlines, labels, body text.
+   Variable (wght 100–900), SIL Open Font License.
    Rumelaz Gekinsa — accent serif: numerals, English subtitles and
    the italic accent word in a headline.
 
    Files in public/fonts/ are subset to Latin + Turkish (woff2).
-   Franie's "Regular" file is the brand's body weight, so it answers
-   both 400 and 500; its SemiLight cut is not loaded.
 
    Rumelaz Gekinsa has no İ Ş ş Ğ ğ. Those five letters fall back to
-   Franie (last faces below) as a safety net, but an accent containing
-   them should be set in Franie as a whole: give it class={accent(text)}
-   (src/lib/utils.ts), which adds .sans (global.css).
+   Montserrat (last faces below) as a safety net, but an accent
+   containing them should be set in Montserrat as a whole: give it
+   class={accent(text)} (src/lib/utils.ts), which adds .sans (global.css).
 ---------------------------------------------------------------- */
 
 @font-face {
-  font-family: 'Franie';
-  src: url('/fonts/franie-300.woff2') format('woff2');
-  font-weight: 300;
+  font-family: 'Montserrat';
+  src: url('/fonts/montserrat-var.woff2') format('woff2');
+  font-weight: 100 900;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
-  font-family: 'Franie';
-  src: url('/fonts/franie-400.woff2') format('woff2');
-  font-weight: 400 500;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Franie';
-  src: url('/fonts/franie-400-italic.woff2') format('woff2');
-  font-weight: 400 500;
+  font-family: 'Montserrat';
+  src: url('/fonts/montserrat-var-italic.woff2') format('woff2');
+  font-weight: 100 900;
   font-style: italic;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Franie';
-  src: url('/fonts/franie-600.woff2') format('woff2');
-  font-weight: 600;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Franie';
-  src: url('/fonts/franie-600-italic.woff2') format('woff2');
-  font-weight: 600;
-  font-style: italic;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Franie';
-  src: url('/fonts/franie-700.woff2') format('woff2');
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Franie';
-  src: url('/fonts/franie-800.woff2') format('woff2');
-  font-weight: 800;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Franie';
-  src: url('/fonts/franie-900.woff2') format('woff2');
-  font-weight: 900;
-  font-style: normal;
   font-display: swap;
 }
 
@@ -86,10 +43,10 @@
   font-style: italic;
   font-display: swap;
 }
-/* the five Turkish letters Rumelaz Gekinsa lacks, from Franie Italic */
+/* the five Turkish letters Rumelaz Gekinsa lacks, from Montserrat */
 @font-face {
   font-family: 'Rumelaz Gekinsa';
-  src: url('/fonts/franie-400-italic.woff2') format('woff2');
+  src: url('/fonts/montserrat-var-italic.woff2') format('woff2');
   font-weight: 400;
   font-style: italic;
   font-display: swap;
@@ -97,7 +54,7 @@
 }
 @font-face {
   font-family: 'Rumelaz Gekinsa';
-  src: url('/fonts/franie-400.woff2') format('woff2');
+  src: url('/fonts/montserrat-var.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
   font-display: swap;

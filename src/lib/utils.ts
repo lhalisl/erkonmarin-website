@@ -9,7 +9,7 @@ export function cn(...inputs: ClassValue[]) {
 export const serifMissing = /[İŞşĞğ]/;
 
 /**
- * Class for an accent set in the serif: "sans" (Franie Italic, see global.css)
+ * Class for an accent set in the serif: "sans" (Montserrat Italic, see global.css)
  * when the text needs a letter Rumelaz Gekinsa lacks, so a word is never
  * split across two typefaces.
  */

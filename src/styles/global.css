@@ -36,10 +36,10 @@
   --c-lamp-green: #3ee08f;
   --c-lamp-red: #ff5a4e;
 
-  /* Franie for everything; Rumelaz Gekinsa only for numerals, English subtitles
+  /* Montserrat for everything; Rumelaz Gekinsa only for numerals, English subtitles
      and the italic accent word (it lacks İ Ş ş Ğ ğ; see fonts.css) */
-  --f-sans: 'Franie', 'Helvetica Neue', Arial, sans-serif;
-  --f-display: 'Franie', 'Helvetica Neue', Arial, sans-serif;
+  --f-sans: 'Montserrat', 'Helvetica Neue', Arial, sans-serif;
+  --f-display: 'Montserrat', 'Helvetica Neue', Arial, sans-serif;
   --f-serif: 'Rumelaz Gekinsa', Georgia, serif;
   --f-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
 
@@ -200,7 +200,7 @@
 }
 
 /* ---- Type ------------------------------------------------------
-   Two voices: Franie Black for the headline, Rumelaz Gekinsa
+   Two voices: Montserrat Black for the headline, Rumelaz Gekinsa
    italic for the one accent word inside it.
 ------------------------------------------------------------------ */
 .display,
@@ -209,11 +209,11 @@
   font-family: var(--f-display);
   font-weight: 900;
   letter-spacing: -0.03em;
-  /* Franie's Turkish tails (ş ç ğ) run deep; tighter than 1 lets them touch the line below */
+  /* Turkish tails (ş ç ğ) run deep in the Black weight; tighter than 1 lets them touch the line below */
   line-height: 1;
   text-wrap: balance;
 }
-/* sized for Franie, which runs wider than a typical grotesk */
+/* sized for Montserrat, which runs wider than a typical grotesk */
 .h2 {
   font-size: clamp(36px, 5.4vw, 90px);
 }
@@ -235,7 +235,7 @@
   font-style: italic;
   font-weight: 400;
 }
-/* Rumelaz Gekinsa has no İ Ş ş Ğ ğ: an accent containing one is set in Franie Italic
+/* Rumelaz Gekinsa has no İ Ş ş Ğ ğ: an accent containing one is set in Montserrat Italic
    (same weight as the serif accent, so it keeps the light-against-Black contrast) */
 .display em.sans,
 .h2 em.sans,

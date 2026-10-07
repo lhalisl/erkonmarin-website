@@ -252,6 +252,7 @@ const request = requestHref(Astro.url.pathname, lang);
     margin-right: auto;
   }
   .brand__mark {
+    flex: none;
     width: 50px;
     height: 45px;
   }
@@ -336,6 +337,7 @@ const request = requestHref(Astro.url.pathname, lang);
     transition: color var(--tone-t) linear;
   }
   .bar__phone :global(svg) {
+    flex: none;
     width: 18px;
     height: 18px;
     color: var(--c-signal);
@@ -449,8 +451,8 @@ const request = requestHref(Astro.url.pathname, lang);
     color: #fff;
   }
 
-  /* Franie runs wide: the phone number leaves the bar before the nav gets crowded */
-  @media (max-width: 1480px) {
+  /* the phone number leaves the bar before the nav gets crowded (fits from ~1380px) */
+  @media (max-width: 1400px) {
     /* language switch: a small pill beside the call-to-action */
   .lang-switch {
     display: inline-grid;

@@ -65,7 +65,7 @@ const smooth = (a: number, b: number, x: number) => {
 export async function createStage(o: StageOptions): Promise<StageHandle> {
   // Canvas text needs the web fonts; don't wait forever for them.
   await Promise.race([
-    Promise.all([document.fonts.load(`500 16px ${MONO}`), document.fonts.load('600 16px "Franie"'), document.fonts.load('700 16px "Franie"')]),
+    Promise.all([document.fonts.load(`500 16px ${MONO}`), document.fonts.load('600 16px "Montserrat"')]),
     new Promise((r) => setTimeout(r, 1500)),
   ]);
 

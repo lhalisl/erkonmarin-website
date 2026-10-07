@@ -4,7 +4,7 @@ import * as THREE from 'three';
 // so the scene ships without image assets.
 
 export const MONO = '"IBM Plex Mono", ui-monospace, Menlo, monospace';
-export const SANS = '"Franie", "Helvetica Neue", Arial, sans-serif';
+export const SANS = '"Montserrat", "Helvetica Neue", Arial, sans-serif';
 
 /** Pixels per metre on panel fronts. */
 export const PX = 800;
